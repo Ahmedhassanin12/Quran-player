@@ -1,4 +1,22 @@
-# Project Lyrics
+# Project Quran-player
+
+## Quran-player
+- Is Quran player App created with React js 
+- Redux toolkit for state management and fetch API
+- Tailwind css for styling App
+
+## demo 
+- https://quranplayer.vercel.app/
+- https://quran-app-ahmed.netlify.app/
+
+
+## VIWE
+![1](https://user-images.githubusercontent.com/89364017/194591197-d6cd72a2-b978-417d-bd1c-f0096d466633.png)
+![2](https://user-images.githubusercontent.com/89364017/194591233-9dc0d70b-c5bf-4698-912b-6026a740b2b3.png)
+![3](https://user-images.githubusercontent.com/89364017/194591255-4bb29698-6c33-45be-8a4d-72b63940f48d.png)
+![4](https://user-images.githubusercontent.com/89364017/194591283-a857a37b-2ce5-45b7-98ea-4a131c01cb84.png)
+![5](https://user-images.githubusercontent.com/89364017/194591304-2afc0036-599c-4e3d-bb78-85e5ac62d020.png)
+
 
 Develop an elegant React.js Music Application. 
 
