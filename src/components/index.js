@@ -4,10 +4,15 @@ import SurahCard from './SurahCard';
 import TopPlay from './TopPlay';
 import ArtistCard from './ArtistCard';
 import DetailsHeader from './DetailsHeader';
-
 import QuranPlayer from './QuranPlayer';
 import Loader from './Loader';
 import Error from './Error';
+import PlayPause from './PlayPause';
+import {
+  RubElHizbIcon,
+  SurahMedallion,
+  ReciterAvatar,
+} from './IslamicArtwork';
 
 export {
   TopPlay,
@@ -16,9 +21,11 @@ export {
   Searchbar,
   ArtistCard,
   DetailsHeader,
-  // SongBar,
-  // RelatedSongs,
   QuranPlayer,
   Loader,
   Error,
+  PlayPause,
+  RubElHizbIcon,
+  SurahMedallion,
+  ReciterAvatar,
 };

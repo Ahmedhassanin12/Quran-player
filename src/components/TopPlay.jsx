@@ -1,144 +1,182 @@
-import React, { useEffect, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-
-import { mainPlay } from "../assets";
-import PlayPause from "./PlayPause";
-import { playPause, setActiveSura } from "../redux/features/playerSlice";
+import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { playPause, setActiveSura, setReciter } from '../redux/features/playerSlice';
+import PlayPause from './PlayPause';
+import { SurahMedallion, ReciterAvatar } from './IslamicArtwork';
+import { VERIFIED_RECITERS } from '../assets/recitersData';
 import {
   useGetAllChaptersQuery,
   useGetAllSurahAudioQuery,
-} from "../redux/services/quranCore";
+} from '../redux/services/quranCore';
 
-const TopChartCard = ({
-  sura,
-  i,
-  isPlaying,
-  activeSura,
-  handlePauseClick,
-  handlePlayClick,
-  audioData,
-}) => (
-  <div
-    className={`w-full flex flex-row items-center hover:bg-[#4c426e] ${
-      activeSura?.id === sura?.id ? "bg-[#4c426e]" : "bg-transparent"
-    } py-2 p-4 rounded-lg cursor-pointer mb-2`}
-  >
-    <h3 className="font-bold text-base text-white mr-3">{i + 1}.</h3>
-    <div className="flex-1 flex flex-row justify-between items-center">
-      <img className="w-20 h-20 rounded-lg" src={mainPlay} alt={sura?.id} />
-      <div className="flex-1 flex flex-col justify-center mx-3">
-        <Link to={`/surah/${sura.id}`}>
-          <p className="text-xl font-bold text-white">{sura.name_arabic}</p>
-        </Link>
-        <Link to={`/surah/${sura.id}`}>
-          <p className="text-base text-gray-300 mt-1">{sura.name_simple}</p>
-        </Link>
-      </div>
-    </div>
-    <PlayPause
-      isPlaying={isPlaying}
-      activeSura={activeSura}
-      sura={sura}
-      audioData={audioData}
-      handlePause={handlePauseClick}
-      handlePlay={handlePlayClick}
-    />
-  </div>
-);
-// /************************ /*
+const RECOMMENDED_SURAH_IDS = [1, 18, 36, 55, 56, 67];
+
 const TopPlay = () => {
   const dispatch = useDispatch();
-  const { activeSura, isPlaying } = useSelector((state) => state.player);
-  const { data } = useGetAllChaptersQuery();
-  const { data: audioData } = useGetAllSurahAudioQuery(1);
+  const { activeSura, isPlaying, currentReciter } = useSelector((state) => state.player);
 
-  let allData = [];
+  const reciterId = currentReciter?.id || 7;
+  const { data: chaptersData } = useGetAllChaptersQuery();
+  const { data: audioData } = useGetAllSurahAudioQuery(reciterId);
 
-  for (let i = 0; i < audioData?.audio_files?.length; i++) {
-    allData.push({ ...audioData.audio_files[i], ...data?.chapters[i] });
-  }
+  // Audio map by chapter_id
+  const audioMap = useMemo(() => {
+    const map = {};
+    if (audioData?.audio_files && Array.isArray(audioData.audio_files)) {
+      audioData.audio_files.forEach((file) => {
+        if (file?.chapter_id) {
+          map[file.chapter_id] = file;
+        }
+      });
+    }
+    return map;
+  }, [audioData]);
 
-  const divRef = useRef(null);
-
-  useEffect(() => {
-    divRef.current.scrollIntoView({ behavior: "smooth" });
-  });
-
-  const topPlays = allData.sort(() => 0.5 - Math.random()).slice(0, 5);
+  // Curated list of recommended surahs with audio attached
+  const recommendedList = useMemo(() => {
+    if (!chaptersData?.chapters) return [];
+    return RECOMMENDED_SURAH_IDS.map((id) => {
+      const chapter = chaptersData.chapters.find((c) => c.id === id);
+      const audio = audioMap[id];
+      if (!chapter) return null;
+      return {
+        ...chapter,
+        audio_url: audio?.audio_url || '',
+        chapter_id: id,
+        reciter_id: reciterId,
+      };
+    }).filter(Boolean);
+  }, [chaptersData, audioMap, reciterId]);
 
   const handlePauseClick = () => {
     dispatch(playPause(false));
   };
 
-  const handlePlayClick = (sura, i) => {
-    dispatch(setActiveSura({ sura, data, i }));
+  const handlePlayClick = (sura, index) => {
+    dispatch(
+      setActiveSura({
+        sura,
+        i: index,
+        data: recommendedList,
+        reciter: currentReciter,
+      }),
+    );
     dispatch(playPause(true));
   };
 
+  const featuredReciters = VERIFIED_RECITERS.slice(0, 4);
+
   return (
-    <div
-      ref={divRef}
-      className="xl:ml-6 ml-0 xl:mb-0 mb-6 flex-1 xl:max-w-[500px] max-w-full flex flex-col"
-    >
-      <div className="w-full flex flex-col">
-        <div className="flex flex-row justify-between items-center">
-          <h2 className="text-white font-bold text-2xl">Most Listened</h2>
-          {/* <Link to="/top-Surah">
-            <p className="text-gray-300 text-base cursor-pointer">See more</p>
-          </Link> */}
-        </div>
-
-        <div className="mt-4 flex flex-col gap-1">
-          {topPlays?.map((sura, i) => (
-            <TopChartCard
-              key={sura.id}
-              sura={sura}
-              i={i}
-              isPlaying={isPlaying}
-              activeSura={activeSura}
-              audioData={audioData?.audio_files}
-              handlePauseClick={handlePauseClick}
-              handlePlayClick={() => handlePlayClick(sura, i)}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* <div className="w-full flex flex-col mt-8">
-        <div className="flex flex-row justify-between items-center">
-          <h2 className="text-white font-bold text-2xl">Top Artists</h2>
-          <Link to="/top-artists">
-            <p className="text-gray-300 text-base cursor-pointer">See more</p>
+    <div className="flex flex-col space-y-5 select-none w-full">
+      {/* Featured Reciters Quick Switch Banner */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-charcoal-850/90 border border-charcoal-700/70 shadow-lg">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-xs font-bold text-slate-100 uppercase tracking-wider">
+            Featured Reciters
+          </h3>
+          <Link
+            to="/top-reciters"
+            className="text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold"
+          >
+            All (12) →
           </Link>
         </div>
 
-        <Swiper
-          slidesPerView="auto"
-          spaceBetween={15}
-          freeMode
-          centeredSlides
-          centeredSlidesBounds
-          modules={[FreeMode]}
-          className="mt-4"
-        >
-          {topPlays?.slice(0, 5).map((artist) => (
-            <SwiperSlide
-              key={artist?.key}
-              style={{ width: "25%", height: "auto" }}
-              className="shadow-lg rounded-full animate-slideright"
-            >
-              <Link to={`/artists/${artist?.artists[0].adamid}`}>
-                <img
-                  src={artist?.images?.background}
-                  alt="Name"
-                  className="rounded-full w-full object-cover"
+        <div className="grid grid-cols-2 gap-2">
+          {featuredReciters.map((reciter) => {
+            const isSelected = currentReciter?.id === reciter.id;
+            return (
+              <button
+                type="button"
+                key={reciter.id}
+                onClick={() => dispatch(setReciter(reciter))}
+                className={`flex items-center space-x-2 p-2 rounded-xl text-left transition-all ${
+                  isSelected
+                    ? 'bg-emerald-950/70 border border-emerald-500/40 shadow-sm'
+                    : 'bg-charcoal-800/60 hover:bg-charcoal-800 border border-charcoal-700/40 text-slate-300'
+                }`}
+              >
+                <ReciterAvatar
+                  photoUrl={reciter.photo_url}
+                  name={reciter.reciter_name}
+                  arabicName={reciter.arabic_name}
+                  size="sm"
                 />
-              </Link>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div> */}
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold truncate text-slate-200">
+                    {reciter.reciter_name.split(' ')[0]}
+                  </p>
+                  <p className="text-[10px] text-gold-400/80 font-arabic truncate">
+                    {reciter.arabic_name.split(' ').slice(0, 2).join(' ')}
+                  </p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Recommended Surahs Card List */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-charcoal-850/90 border border-charcoal-700/70 shadow-lg">
+        <div className="flex items-center justify-between mb-3.5">
+          <h3 className="text-xs font-bold text-slate-100 uppercase tracking-wider">
+            Recommended Surahs
+          </h3>
+          <span className="text-[11px] text-gold-400/80 font-medium">سُوَرٌ مُبَارَكَة</span>
+        </div>
+
+        <div className="flex flex-col space-y-2">
+          {recommendedList.map((sura, idx) => {
+            const isCurrent =
+              activeSura &&
+              ((activeSura.chapter_id && activeSura.chapter_id === sura.id) ||
+                activeSura.id === sura.id);
+
+            return (
+              <div
+                key={sura.id}
+                onClick={() => handlePlayClick(sura, idx)}
+                className={`flex items-center justify-between p-2 rounded-xl transition-all cursor-pointer border ${
+                  isCurrent
+                    ? 'bg-emerald-950/40 border-emerald-500/40'
+                    : 'bg-charcoal-800/40 hover:bg-charcoal-800 border-charcoal-700/30'
+                }`}
+              >
+                <div className="flex items-center space-x-2.5 min-w-0">
+                  <SurahMedallion
+                    number={sura.id}
+                    size="sm"
+                    isPlaying={isCurrent && isPlaying}
+                  />
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-slate-200 truncate">
+                      {sura.name_simple}
+                    </p>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      {sura.translated_name?.name || 'Surah'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2 shrink-0">
+                  <span className="font-arabic text-xs text-gold-400 font-bold hidden sm:inline">
+                    {sura.name_arabic}
+                  </span>
+                  <PlayPause
+                    isPlaying={isPlaying}
+                    activeSura={activeSura}
+                    sura={sura}
+                    handlePause={handlePauseClick}
+                    handlePlay={() => handlePlayClick(sura, idx)}
+                    size="sm"
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };

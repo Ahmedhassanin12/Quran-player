@@ -1,42 +1,28 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { FiSearch, FiX } from 'react-icons/fi';
 
-import { FiSearch } from "react-icons/fi";
-
-const Searchbar = () => {
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    navigate(`/search/${searchTerm}`);
-  };
-
-  return (
-    <form
-      onSubmit={handleSubmit}
-      autoComplete="off"
-      className="p-2 text-gray-400 focus-within:text-gray-600"
-    >
-      <label htmlFor="search-field" className="sr-only">
-        Search all files
-      </label>
-      <div className="flex flex-row justify-start items-center">
-        <FiSearch aria-hidden="true" className="w-5 h-5 ml-4" />
-        <input
-          name="search-field"
-          autoComplete="off"
-          id="search-field"
-          className="flex-1 bg-transparent border-none placeholder-gray-500 outline-none text-base text-white p-4"
-          placeholder="Search"
-          type="search"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-    </form>
-  );
-};
+const Searchbar = ({ value, onChange, placeholder = 'Search Surah name, number, or Arabic title...' }) => (
+  <div className="relative w-full max-w-md">
+    <div className="relative flex items-center">
+      <FiSearch className="absolute left-3.5 w-4 h-4 text-emerald-400 pointer-events-none" />
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full pl-10 pr-9 py-2.5 bg-charcoal-850/90 hover:bg-charcoal-800 text-sm text-slate-100 placeholder-slate-400 rounded-xl border border-charcoal-700/80 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+      />
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange('')}
+          className="absolute right-3 text-slate-400 hover:text-slate-200 transition-colors"
+        >
+          <FiX className="w-4 h-4" />
+        </button>
+      )}
+    </div>
+  </div>
+);
 
 export default Searchbar;

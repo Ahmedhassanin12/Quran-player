@@ -1,26 +1,127 @@
-import { useEffect } from 'react';
-import axios from 'axios';
-
-import { ArtistCard, Error, Loader, SurahCard } from '../components';
-import { useGetAllRecitationsQuery } from '../redux/services/quranCore';
+import React, { useState, useMemo } from 'react';
+import { ArtistCard, Searchbar } from '../components';
+import { VERIFIED_RECITERS } from '../assets/recitersData';
 
 const TopReaders = () => {
-  const { data, isFetching, error } = useGetAllRecitationsQuery();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedStyle, setSelectedStyle] = useState('all'); // 'all' | 'Murattal' | 'Mujawwad' | 'Muallim'
 
-  if (isFetching) {
-    return <Loader title="loading songs" />;
-  }
+  const filteredReciters = useMemo(() => {
+    let list = VERIFIED_RECITERS;
 
-  if (error) return <Error />;
+    if (selectedStyle !== 'all') {
+      list = list.filter(
+        (r) => (r.style || 'Murattal').toLowerCase() === selectedStyle.toLowerCase(),
+      );
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(
+        (r) =>
+          r.reciter_name.toLowerCase().includes(q) ||
+          (r.arabic_name && r.arabic_name.includes(q)) ||
+          (r.country && r.country.toLowerCase().includes(q)),
+      );
+    }
+
+    return list;
+  }, [searchQuery, selectedStyle]);
 
   return (
-    <div className="flex flex-col">
-      <h2 className="font-bold text-white text-3xl mt-4 mb-4">Top Reciters</h2>
-      <div className="flex flex-wrap sm:justify-start justify-center gap-8">
-        {data?.recitations?.map((reader, i) => (
-          <ArtistCard key={reader.id} reader={reader} />
-        ))}
+    <div className="flex flex-col space-y-6">
+      {/* Header Banner */}
+      <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-charcoal-850 via-charcoal-900 to-charcoal-850 border border-charcoal-700/80 shadow-xl overflow-hidden">
+        <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
+        <div className="relative z-10 pr-10 md:pr-0">
+          <div className="flex items-center space-x-2 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-1.5">
+            <span>Verified Qari Roster</span>
+            <span>•</span>
+            <span>12 Global Masters</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight">
+            Quran Reciters (القراء)
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400 font-arabic mt-1">
+            نخبة من كبار قراء العالم الإسلامي برواية حفص عن عاصم بمختلف المقامات
+          </p>
+        </div>
       </div>
+
+      {/* Search & Style Filter Toolbar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <Searchbar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search reciter by English or Arabic name..."
+        />
+
+        {/* Style Tabs */}
+        <div className="flex p-1 rounded-xl bg-charcoal-850 border border-charcoal-700/80 text-xs">
+          <button
+            type="button"
+            onClick={() => setSelectedStyle('all')}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
+              selectedStyle === 'all'
+                ? 'bg-emerald-500 text-charcoal-950 font-semibold shadow'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            All Styles
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelectedStyle('Murattal')}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
+              selectedStyle === 'Murattal'
+                ? 'bg-emerald-500 text-charcoal-950 font-semibold shadow'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            Murattal (مرتل)
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelectedStyle('Mujawwad')}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
+              selectedStyle === 'Mujawwad'
+                ? 'bg-emerald-500 text-charcoal-950 font-semibold shadow'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            Mujawwad (مجود)
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelectedStyle('Muallim')}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
+              selectedStyle === 'Muallim'
+                ? 'bg-emerald-500 text-charcoal-950 font-semibold shadow'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            Muallim (معلم)
+          </button>
+        </div>
+      </div>
+
+      {/* Reciters Grid */}
+      {filteredReciters.length === 0 ? (
+        <div className="p-12 text-center rounded-2xl bg-charcoal-850 border border-charcoal-700/60">
+          <p className="text-base text-slate-300 font-semibold">
+            No reciters found matching &ldquo;{searchQuery}&rdquo;
+          </p>
+          <p className="text-xs text-slate-400 mt-1">
+            Try searching with a different name or changing the style filter.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5">
+          {filteredReciters.map((reader) => (
+            <ArtistCard key={reader.id} reader={reader} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

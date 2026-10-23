@@ -1,48 +1,50 @@
-import { useSelector } from "react-redux";
-import { Route, Routes } from "react-router-dom";
-
-import { Searchbar, Sidebar, QuranPlayer, TopPlay } from "./components";
+import React from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import { Sidebar, QuranPlayer, TopPlay } from './components';
 import {
   ArtistDetails,
   TopReaders,
   Discover,
-  // Search,
   SuraDetails,
-  // TopSurah,
-} from "./pages";
+} from './pages';
 
 const App = () => {
-  const { activeSura } = useSelector((state) => state.player);
+  const location = useLocation();
+  const isSurahReadingPage = location.pathname.startsWith('/surah/');
 
   return (
-    <div className="relative flex">
+    <div className="relative flex h-screen w-full overflow-hidden bg-[#070A0D] text-slate-100 font-sans">
+      {/* Primary Sidebar */}
       <Sidebar />
-      <div className="flex-1 flex flex-col bg-gradient-to-br from-black to-[#121286]">
-        <div className="invisible">
-          <Searchbar />
-        </div>
-        <div className="px-6 h-[calc(100vh-72px)] overflow-y-scroll hide-scrollbar flex xl:flex-row flex-col-reverse">
-          <div className="flex-1 h-fit pb-40">
-            <Routes>
-              <Route path="/" element={<Discover />} />
-              <Route path="/top-reciters" element={<TopReaders />} />
-              {/* <Route path="/top-Surah" element={<TopSurah />} /> */}
-              <Route path="/reader/:id" element={<ArtistDetails />} />
-              <Route path="/surah/:surahId" element={<SuraDetails />} />
-              {/* <Route path="/search/:searchTerm" element={<Search />} /> */}
-            </Routes>
-          </div>
-          <div className="xl:sticky relative top-0 h-fit">
-            <TopPlay />
-          </div>
-        </div>
-      </div>
 
-      {activeSura?.id && (
-        <div className="absolute h-28 bottom-0 left-0 right-0 flex animate-slideup bg-gradient-to-br from-white/10 to-[#2a2a80] backdrop-blur-lg rounded-t-3xl z-10">
-          <QuranPlayer />
-        </div>
-      )}
+      {/* Main Content Viewport */}
+      <div className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden relative">
+        <main className="flex-1 min-w-0 overflow-y-auto px-4 sm:px-6 lg:px-8 py-5 pb-36 focus:outline-none">
+          <div className="max-w-7xl mx-auto flex flex-col xl:flex-row gap-8 items-start w-full">
+            {/* Primary Router Outlet */}
+            <div className="flex-1 min-w-0 w-full">
+              <Routes>
+                <Route path="/" element={<Discover />} />
+                <Route path="/top-reciters" element={<TopReaders />} />
+                <Route path="/reciters" element={<TopReaders />} />
+                <Route path="/reader/:id" element={<ArtistDetails />} />
+                <Route path="/surah/:surahId" element={<SuraDetails />} />
+                <Route path="*" element={<Discover />} />
+              </Routes>
+            </div>
+
+            {/* Right Column: Quick Reciter & Recommended Surahs */}
+            {!isSurahReadingPage && (
+              <aside className="hidden xl:block xl:w-80 2xl:w-96 shrink-0 sticky top-0">
+                <TopPlay />
+              </aside>
+            )}
+          </div>
+        </main>
+
+        {/* Persistent Bottom Audio Player */}
+        <QuranPlayer />
+      </div>
     </div>
   );
 };

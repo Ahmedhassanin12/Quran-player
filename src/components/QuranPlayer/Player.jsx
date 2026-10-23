@@ -1,44 +1,62 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 
 const Player = ({
   activeSura,
   isPlaying,
   volume,
   seekTime,
+  repeat,
   onEnded,
   onTimeUpdate,
   onLoadedData,
-  repeat,
+  onError,
 }) => {
   const ref = useRef(null);
-  // eslint-disable-next-line no-unused-expressions
-  if (ref.current) {
+
+  // Safely manage playback state
+  useEffect(() => {
+    const audio = ref.current;
+    if (!audio) return;
+
     if (isPlaying) {
-      ref.current.play();
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          // Play was interrupted or disallowed by browser autoplay policy
+          // eslint-disable-next-line no-console
+          console.warn('Playback was prevented or interrupted:', error);
+        });
+      }
     } else {
-      ref.current.pause();
+      audio.pause();
     }
-  }
+  }, [isPlaying, activeSura?.audio_url]);
 
+  // Manage volume
   useEffect(() => {
-    ref.current.volume = volume;
+    if (ref.current) {
+      ref.current.volume = Math.max(0, Math.min(1, volume));
+    }
   }, [volume]);
-  // updates audio element only on seekTime change (and not on each rerender):
-  useEffect(() => {
-    ref.current.currentTime = seekTime;
-  }, [seekTime]);
 
-  // console.log(activeSura);
+  // Manage seeking
+  useEffect(() => {
+    if (ref.current && typeof seekTime === 'number') {
+      ref.current.currentTime = seekTime;
+    }
+  }, [seekTime]);
 
   return (
     <audio
-      src={activeSura?.audio_url}
       ref={ref}
+      src={activeSura?.audio_url}
       loop={repeat}
       onEnded={onEnded}
       onTimeUpdate={onTimeUpdate}
       onLoadedData={onLoadedData}
+      onError={onError}
+      preload="auto"
     />
   );
 };

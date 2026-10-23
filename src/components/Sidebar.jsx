@@ -1,55 +1,160 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { RiCloseLine } from "react-icons/ri";
-import { HiOutlineMenu } from "react-icons/hi";
-import { logo } from "../assets";
-import { links } from "../assets/constants";
+import React, { useState } from 'react';
+import { NavLink, Link } from 'react-router-dom';
+import { RiCloseLine } from 'react-icons/ri';
+import { HiOutlineMenuAlt2 } from 'react-icons/hi';
+import { useSelector } from 'react-redux';
+import { links } from '../assets/constants';
+import { RubElHizbIcon, ReciterAvatar } from './IslamicArtwork';
 
 const NavLinks = ({ handleClick }) => (
-  <div className="mt-10">
+  <nav className="flex flex-col space-y-1.5 mt-6">
     {links.map((item) => (
       <NavLink
         to={item.to}
         key={item.name}
-        className="flex flex-row justify-start items-center my-8 text-sm font-medium text-gray-400 hover:text-cyan-400"
+        end={item.to === '/'}
         onClick={() => handleClick && handleClick()}
+        className={({ isActive }) =>
+          `flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+            isActive
+              ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-charcoal-800/60'
+          }`
+        }
       >
-        <item.icon className="h-6 w-6 mr-2" />
-        {item.name}
+        <item.icon className="h-5 w-5 mr-3 shrink-0" />
+        <span>{item.name}</span>
       </NavLink>
     ))}
-  </div>
+  </nav>
 );
 
 const Sidebar = () => {
-  const [mobileMenue, setMobileMenue] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { currentReciter } = useSelector((state) => state.player);
+
   return (
     <>
-      <div className="md:flex hidden flex-col w[280px] py-10 px-8 bg-[#191624]">
-        <img src={logo} alt="logo" className="w-full h-40 rounded-full object-contain " />
-        <NavLinks />
-      </div>
-      {/* mobile */}
-      <div className="absolute md:hidden block top-6 right-3">
-        {mobileMenue ? (
-          <RiCloseLine
-            className="w-6 h-6 text-white mr-2 cursor-pointer"
-            onClick={() => setMobileMenue(false)}
-          />
-        ) : (
-          <HiOutlineMenu
-            className="w-6 h-6 text-white mr-2 cursor-pointer"
-            onClick={() => setMobileMenue(true)}
-          />
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex flex-col justify-between w-64 lg:w-72 h-screen shrink-0 bg-charcoal-900 border-r border-charcoal-700/60 p-5 select-none">
+        <div>
+          {/* Logo & Brand Header */}
+          <Link to="/" className="flex items-center space-x-3 px-2 py-3 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center text-white shadow-md shadow-emerald-950/50 group-hover:scale-105 transition-transform">
+              <RubElHizbIcon className="w-6 h-6 text-gold-400" />
+            </div>
+            <div>
+              <h1 className="font-arabic font-bold text-xl text-slate-100 tracking-wide leading-none group-hover:text-emerald-400 transition-colors">
+                القرآن الكريم
+              </h1>
+              <p className="text-[11px] text-slate-400 font-medium tracking-wider uppercase mt-1">
+                Quran Kareem Player
+              </p>
+            </div>
+          </Link>
+
+          {/* Navigation Links */}
+          <NavLinks />
+        </div>
+
+        {/* Selected Reciter Card in Sidebar Footer */}
+        {currentReciter && (
+          <div className="p-3.5 rounded-2xl bg-charcoal-850 border border-charcoal-700/80">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400">
+                Current Reciter
+              </span>
+              <Link
+                to="/top-reciters"
+                className="text-[11px] text-gold-400/90 hover:underline hover:text-gold-300"
+              >
+                Change
+              </Link>
+            </div>
+            <div className="flex items-center space-x-3">
+              <ReciterAvatar
+                photoUrl={currentReciter.photo_url}
+                name={currentReciter.reciter_name}
+                arabicName={currentReciter.arabic_name}
+                size="sm"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-slate-200 truncate">
+                  {currentReciter.reciter_name}
+                </p>
+                <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                  {currentReciter.style || 'Murattal'}
+                </p>
+              </div>
+            </div>
+          </div>
         )}
+      </aside>
+
+      {/* Mobile Menu Button */}
+      <div className="md:hidden fixed top-4 right-4 z-50">
+        <button
+          type="button"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle navigation menu"
+          className="p-2.5 rounded-xl bg-charcoal-850 border border-charcoal-700 text-slate-200 hover:text-emerald-400 shadow-lg focus:outline-none"
+        >
+          {mobileMenuOpen ? (
+            <RiCloseLine className="w-6 h-6" />
+          ) : (
+            <HiOutlineMenuAlt2 className="w-6 h-6" />
+          )}
+        </button>
       </div>
+
+      {/* Mobile Drawer Backdrop */}
+      {mobileMenuOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile Drawer Content */}
       <div
-        className={`absolute top-0 h-screen w-2/3 bg-gradient-to-tl from-white/10 to-[#483c8b] backdrop-blur-lg z-10 p-6 md:hidden smooth-transition ${
-          mobileMenue ? "left-0" : "-left-full"
+        className={`md:hidden fixed top-0 bottom-0 left-0 w-3/4 max-w-xs bg-charcoal-900 border-r border-charcoal-700 z-50 p-6 flex flex-col justify-between transition-transform duration-300 ease-in-out ${
+          mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <img src={logo} alt="logo" className="w-full h-14 object-contain" />
-        <NavLinks handleClick={() => setMobileMenue(false)} />
+        <div>
+          <Link
+            to="/"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center space-x-3 px-1 py-2"
+          >
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center text-white shadow-md">
+              <RubElHizbIcon className="w-6 h-6 text-gold-400" />
+            </div>
+            <div>
+              <h2 className="font-arabic font-bold text-xl text-slate-100">
+                القرآن الكريم
+              </h2>
+              <p className="text-[11px] text-slate-400 uppercase tracking-wider">
+                Quran Player
+              </p>
+            </div>
+          </Link>
+          <NavLinks handleClick={() => setMobileMenuOpen(false)} />
+        </div>
+
+        {currentReciter && (
+          <div className="p-3 rounded-xl bg-charcoal-850 border border-charcoal-700">
+            <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400 block mb-1">
+              Active Reciter
+            </span>
+            <p className="text-xs font-semibold text-slate-200 truncate">
+              {currentReciter.reciter_name}
+            </p>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              {currentReciter.style}
+            </p>
+          </div>
+        )}
       </div>
     </>
   );
