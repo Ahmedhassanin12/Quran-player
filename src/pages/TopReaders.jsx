@@ -31,7 +31,7 @@ const TopReaders = () => {
   return (
     <div className="flex flex-col space-y-6">
       {/* Header Banner */}
-      <div className="relative rounded-xl p-6 sm:p-8 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
+      <div className="relative rounded-xl p-2 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
         <div className="relative z-10 pr-10 md:pr-0">
           <div className="flex items-center space-x-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1.5">
@@ -39,7 +39,7 @@ const TopReaders = () => {
             <span>•</span>
             <span>12 Global Masters</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
             Quran Reciters (القراء)
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 font-arabic mt-1">

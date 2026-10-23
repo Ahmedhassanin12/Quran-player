@@ -134,7 +134,7 @@ const Discover = () => {
       />
 
       {/* Header Banner */}
-      <div className="relative rounded-xl p-4 sm:p-5 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
+      <div className="relative rounded-xl p-2 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -180,83 +180,88 @@ const Discover = () => {
         currentReciter={currentReciter}
       />
 
-      {/* Search & Filter Toolbar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-        {/* Search Input */}
+      {/* Tier 1: Search Input */}
+      <div className="w-full pt-1">
         <Searchbar
           value={searchQuery}
           onChange={setSearchQuery}
           placeholder="Search by name, number, or Arabic title..."
         />
+      </div>
 
-        {/* Tab Filters & View Mode */}
-        <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-end overflow-x-auto pb-1 sm:pb-0">
-          {/* Tabs */}
-          <div className="flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80 text-xs shrink-0">
-            <button
-              type="button"
-              onClick={() => {
-                setActiveTab('all');
-                setSelectedCollectionId(null);
-              }}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
-                activeTab === 'all' && !selectedCollectionId
-                  ? 'bg-indigo-500 text-white font-semibold shadow'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              All (114)
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('makkah')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
-                activeTab === 'makkah'
-                  ? 'bg-indigo-500 text-white font-semibold shadow'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Meccan
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('madinah')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
-                activeTab === 'madinah'
-                  ? 'bg-indigo-500 text-white font-semibold shadow'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Medinan
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('favorites')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1 ${
-                activeTab === 'favorites'
-                  ? 'bg-indigo-500 text-white font-semibold shadow'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <span>⭐</span>
-              <span>Favorites ({favorites.length})</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('history')}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1 ${
-                activeTab === 'history'
-                  ? 'bg-indigo-500 text-white font-semibold shadow'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <span>🕒</span>
-              <span>History</span>
-            </button>
-          </div>
+      {/* Tier 2: Dedicated Filter Tabs & View Mode Row (100% Visible - Zero Clipping) */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+        {/* All Tabs: All (114), Meccan, Medinan, Favorites, History */}
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-midnight-850 border border-midnight-700/80 text-xs shadow-sm">
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab('all');
+              setSelectedCollectionId(null);
+            }}
+            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all ${
+              activeTab === 'all' && !selectedCollectionId
+                ? 'bg-indigo-500 text-white font-semibold shadow'
+                : 'text-slate-400 hover:text-white hover:bg-midnight-800'
+            }`}
+          >
+            All (114)
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('makkah')}
+            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all ${
+              activeTab === 'makkah'
+                ? 'bg-indigo-500 text-white font-semibold shadow'
+                : 'text-slate-400 hover:text-white hover:bg-midnight-800'
+            }`}
+          >
+            Meccan
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('madinah')}
+            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all ${
+              activeTab === 'madinah'
+                ? 'bg-indigo-500 text-white font-semibold shadow'
+                : 'text-slate-400 hover:text-white hover:bg-midnight-800'
+            }`}
+          >
+            Medinan
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('favorites')}
+            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 ${
+              activeTab === 'favorites'
+                ? 'bg-indigo-500 text-white font-semibold shadow'
+                : 'text-slate-400 hover:text-white hover:bg-midnight-800'
+            }`}
+          >
+            <span>⭐</span>
+            <span>Favorites ({favorites.length})</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('history')}
+            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 ${
+              activeTab === 'history'
+                ? 'bg-indigo-500 text-white font-semibold shadow'
+                : 'text-slate-400 hover:text-white hover:bg-midnight-800'
+            }`}
+          >
+            <span>🕒</span>
+            <span>History ({recents.length})</span>
+          </button>
+        </div>
 
-          {/* View Mode Toggle */}
-          <div className="hidden lg:flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80">
+        {/* Right Side: Result Count & View Mode Toggle */}
+        <div className="flex items-center space-x-3 text-xs text-slate-400">
+          <span className="font-mono text-slate-400 hidden sm:inline">
+            {filteredSurahs.length} {filteredSurahs.length === 1 ? 'Surah' : 'Surahs'}
+          </span>
+
+          <div className="flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80">
             <button
               type="button"
               onClick={() => setViewMode('grid')}
