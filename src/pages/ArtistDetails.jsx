@@ -125,7 +125,7 @@ const ArtistDetails = () => {
       />
 
       {/* Reciter Action Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-midnight-850/80 border border-midnight-700/80">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-xl bg-midnight-850/80 border border-midnight-700/80">
         <div className="flex items-center space-x-3">
           <button
             type="button"

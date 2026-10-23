@@ -86,18 +86,18 @@ const Discover = () => {
   }
 
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="flex flex-col space-y-3">
       {/* Header Banner */}
-      <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
+      <div className="relative rounded-xl p-1 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 pr-10 md:pr-0">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 pr-5 md:pr-0">
           <div>
             <div className="flex items-center space-x-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1.5">
               <span>Holy Quran Library</span>
               <span>•</span>
               <span>114 Surahs</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
               Discover Recitations
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 font-arabic mt-1">
@@ -108,7 +108,7 @@ const Discover = () => {
           {/* Active Reciter Pill */}
           <Link
             to="/top-reciters"
-            className="flex items-center space-x-3 px-4 py-2.5 rounded-2xl bg-midnight-800/80 hover:bg-midnight-800 border border-indigo-500/30 text-left transition-all hover:border-indigo-500/60 group shadow-md"
+            className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-midnight-800/80 hover:bg-midnight-800 border border-indigo-500/30 text-left transition-all hover:border-indigo-500/60 group shadow-md"
           >
             <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
               <FiMic size={16} />
@@ -126,7 +126,7 @@ const Discover = () => {
       </div>
 
       {/* Search & Filter Toolbar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         {/* Search Input */}
         <Searchbar
           value={searchQuery}

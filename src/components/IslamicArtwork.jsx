@@ -59,7 +59,7 @@ export const SurahMedallion = ({
 
       {/* Playing sound indicator glow */}
       {isPlaying && (
-        <div className="absolute bottom-1 flex items-center justify-center space-x-0.5 z-20">
+        <div className="absolute bottom-0 flex items-center justify-center space-x-0.5 z-20">
           <span className="w-1 h-1.5 bg-indigo-400 rounded-full animate-pulse" />
           <span className="w-1 h-2.5 bg-indigo-300 rounded-full animate-pulse [animation-delay:0.2s]" />
           <span className="w-1 h-1.5 bg-indigo-400 rounded-full animate-pulse [animation-delay:0.4s]" />

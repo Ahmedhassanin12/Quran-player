@@ -160,7 +160,7 @@ const ExpandedPlayer = ({
 
           {/* Reciter Badge */}
           {currentReciter && (
-            <div className="flex items-center space-x-3.5 px-4 py-2.5 rounded-2xl bg-midnight-850/80 border border-midnight-700/80">
+            <div className="flex items-center space-x-3.5 px-4 py-2.5 rounded-xl bg-midnight-850/80 border border-midnight-700/80">
               <ReciterAvatar
                 photoUrl={currentReciter.photo_url}
                 name={currentReciter.reciter_name}
@@ -181,7 +181,7 @@ const ExpandedPlayer = ({
 
         {/* Right: Queue Drawer */}
         {showQueue && (
-          <div className="w-full lg:w-80 h-72 lg:h-96 rounded-2xl bg-midnight-850 border border-midnight-700 p-4 flex flex-col shadow-2xl">
+          <div className="w-full lg:w-80 h-72 lg:h-96 rounded-xl bg-midnight-850 border border-midnight-700 p-4 flex flex-col shadow-2xl">
             <div className="flex items-center justify-between pb-3 mb-2 border-b border-midnight-700">
               <h4 className="text-xs uppercase font-bold tracking-wider text-slate-300">
                 Surah Queue ({currentSura?.length || 0})

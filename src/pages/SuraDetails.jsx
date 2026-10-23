@@ -94,13 +94,13 @@ const SuraDetails = () => {
   const showBismillah = numSurahId !== 1 && numSurahId !== 9;
 
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="flex flex-col space-y-3">
       {/* Surah Header Banner */}
       <DetailsHeader chapterData={chapter} />
 
       {/* Action Bar: Play Button + Surah Navigation + Tabs */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-midnight-850/80 border border-midnight-700/80 shadow-md">
-        <div className="flex items-center space-x-3 w-full sm:w-auto">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-xl bg-midnight-850/80 border border-midnight-700/80 shadow-md">
+        <div className="flex items-center space-x-1 w-full sm:w-auto">
           <button
             type="button"
             onClick={handlePlaySurah}
@@ -208,7 +208,7 @@ const SuraDetails = () => {
 
       {/* Verses Tab Content */}
       {activeTab === 'verses' && (
-        <div className="p-6 sm:p-10 rounded-3xl bg-midnight-850/60 border border-midnight-700/60 shadow-xl">
+        <div className="p-6 sm:p-10 rounded-xl bg-midnight-850/60 border border-midnight-700/60 shadow-xl">
           {/* Bismillah Banner */}
           {showBismillah && (
             <div className="text-center my-6 py-4">
@@ -238,12 +238,12 @@ const SuraDetails = () => {
 
       {/* Info Tab Content */}
       {activeTab === 'info' && (
-        <div className="p-6 sm:p-8 rounded-3xl bg-midnight-850/60 border border-midnight-700/60 leading-relaxed text-slate-300 space-y-4">
+        <div className="p-6 sm:p-8 rounded-xl bg-midnight-850/60 border border-midnight-700/60 leading-relaxed text-slate-300 space-y-4">
           <h3 className="text-lg font-bold text-slate-100">
             Historical Context & Revelation
           </h3>
           {infoData?.chapter_info?.short_text && (
-            <p className="text-indigo-300/90 font-medium bg-indigo-950/40 border border-indigo-500/20 p-4 rounded-2xl">
+            <p className="text-indigo-300/90 font-medium bg-indigo-950/40 border border-indigo-500/20 p-4 rounded-xl">
               {infoData.chapter_info.short_text}
             </p>
           )}

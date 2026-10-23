@@ -59,7 +59,7 @@ const Sidebar = () => {
 
         {/* Selected Reciter Card in Sidebar Footer */}
         {currentReciter && (
-          <div className="p-3.5 rounded-2xl bg-midnight-800 border border-midnight-700/80">
+          <div className="p-3.5 rounded-xl bg-midnight-800 border border-midnight-700/80">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400">
                 Current Reciter

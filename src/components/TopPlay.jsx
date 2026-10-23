@@ -68,9 +68,9 @@ const TopPlay = () => {
   const featuredReciters = VERIFIED_RECITERS.slice(0, 4);
 
   return (
-    <div className="flex flex-col space-y-5 select-none w-full">
+    <div className="flex flex-col space-y-3 select-none w-full">
       {/* Featured Reciters Quick Switch Banner */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
+      <div className="p-4 sm:p-5 rounded-xl bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
             Featured Reciters
@@ -118,7 +118,7 @@ const TopPlay = () => {
       </div>
 
       {/* Recommended Surahs Card List */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
+      <div className="p-4 sm:p-5 rounded-xl bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
         <div className="flex items-center justify-between mb-3.5">
           <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
             Recommended Surahs

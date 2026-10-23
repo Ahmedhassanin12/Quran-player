@@ -13,7 +13,7 @@ const DetailsHeader = ({
   const isReciter = Boolean(readerId || readerName);
 
   return (
-    <div className="relative w-full rounded-3xl overflow-hidden bg-gradient-to-br from-midnight-850 via-midnight-900 to-midnight-950 border border-midnight-700/80 p-6 md:p-8 mb-8 shadow-xl">
+    <div className="relative w-full rounded-xl overflow-hidden bg-gradient-to-br from-midnight-850 via-midnight-900 to-midnight-950 border border-midnight-700/80 p-6 md:p-8 mb-4 shadow-xl">
       {/* Decorative Nocturnal Glow */}
       <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-600/10 blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-indigo-950/20 blur-3xl pointer-events-none" />
