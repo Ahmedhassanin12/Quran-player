@@ -51,51 +51,62 @@ const ArtistCard = ({ reader }) => {
       onClick={handleCardClick}
       className={`group relative flex flex-col justify-between p-5 rounded-2xl transition-all duration-300 cursor-pointer border ${
         isSelected
-          ? 'bg-gradient-to-br from-charcoal-800 to-emerald-950/40 border-emerald-500/50 shadow-xl shadow-emerald-950/30 ring-1 ring-emerald-500/30'
-          : 'bg-charcoal-850/80 hover:bg-charcoal-800/90 border-charcoal-700/60 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-black/40'
+          ? 'bg-gradient-to-br from-charcoal-800 to-emerald-950/40 border-emerald-500/60 shadow-xl shadow-emerald-950/40 ring-1 ring-emerald-500/40'
+          : 'bg-charcoal-850/90 hover:bg-charcoal-800 border-charcoal-700/60 hover:border-emerald-500/40 hover:shadow-lg hover:shadow-black/50'
       }`}
     >
       {/* Background subtle Islamic pattern */}
       <div className="absolute inset-0 rounded-2xl opacity-5 bg-islamic-pattern pointer-events-none" />
 
-      {/* Top area: Avatar + Quick Play Action */}
-      <div className="relative z-10 flex items-center space-x-3.5">
+      {/* Top Header: Style Badge */}
+      <div className="relative z-10 flex items-center justify-between mb-3">
+        <span className="text-[10px] uppercase tracking-wider font-bold text-emerald-400 bg-emerald-950/70 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+          {style}
+        </span>
+        {isSelected && (
+          <span className="text-[10px] font-semibold text-emerald-300 bg-emerald-500/20 border border-emerald-500/40 px-2 py-0.5 rounded-full">
+            Active
+          </span>
+        )}
+      </div>
+
+      {/* Center: Reciter Portrait & Names */}
+      <div className="relative z-10 flex flex-col items-center text-center my-2">
         <ReciterAvatar
           photoUrl={photoUrl}
           name={englishName}
           arabicName={arabicName}
-          size="md"
+          size="lg"
           isPlaying={isSelected && isPlaying}
+          className="shadow-md shadow-black/60 mb-3"
         />
 
-        <div className="flex-1 min-w-0">
-          <span className="text-[10px] uppercase tracking-wider font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-500/20 px-2 py-0.5 rounded-full inline-block mb-1">
-            {style}
-          </span>
-          <h3 className="font-semibold text-sm sm:text-base text-slate-100 group-hover:text-emerald-300 transition-colors leading-tight line-clamp-2">
-            {englishName}
-          </h3>
-          <p className="font-arabic text-base text-gold-400/90 leading-tight mt-1 truncate">
-            {arabicName}
-          </p>
-        </div>
+        {/* Full Arabic Name (Full Width, No Ellipsis) */}
+        <h4 className="font-arabic text-xl font-bold text-gold-400/95 leading-normal w-full">
+          {arabicName}
+        </h4>
+
+        {/* English Name (Full Width, Clean Wrap) */}
+        <h3 className="font-semibold text-sm sm:text-base text-slate-100 group-hover:text-emerald-300 transition-colors mt-0.5 leading-snug w-full">
+          {englishName}
+        </h3>
       </div>
 
       {/* Divider */}
-      <div className="relative z-10 my-4 h-px bg-gradient-to-r from-transparent via-charcoal-700 to-transparent" />
+      <div className="relative z-10 my-3 h-px bg-gradient-to-r from-transparent via-charcoal-700 to-transparent" />
 
-      {/* Bottom bar: Recording count & Select/Listen button */}
-      <div className="relative z-10 flex items-center justify-between">
+      {/* Bottom Bar: Surah Count & Select Button */}
+      <div className="relative z-10 flex items-center justify-between pt-1">
         <span className="text-xs text-slate-400">
-          114 Surahs available
+          114 Surahs
         </span>
 
         <button
           type="button"
           onClick={handleSelectReciter}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
             isSelected
-              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+              ? 'bg-emerald-500 text-charcoal-950 shadow-md shadow-emerald-500/30'
               : 'bg-charcoal-700 hover:bg-emerald-600 hover:text-white text-slate-200'
           }`}
         >

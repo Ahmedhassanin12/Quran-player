@@ -19,7 +19,7 @@ const App = () => {
 
       {/* Main Content Viewport */}
       <div className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden relative">
-        <main className="flex-1 min-w-0 overflow-y-auto px-4 sm:px-6 lg:px-8 py-5 pb-36 focus:outline-none">
+        <main className="flex-1 min-w-0 overflow-y-auto px-4 sm:px-6 lg:px-8 py-5 pb-8 focus:outline-none">
           <div className="max-w-7xl mx-auto flex flex-col xl:flex-row gap-8 items-start w-full">
             {/* Primary Router Outlet */}
             <div className="flex-1 min-w-0 w-full">
