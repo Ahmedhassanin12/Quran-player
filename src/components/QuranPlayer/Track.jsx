@@ -37,7 +37,7 @@ const Track = ({ isPlaying, isActive, activeSura, currentReciter }) => {
           <p className="font-semibold text-sm text-slate-100 truncate">
             {nameSimple}
           </p>
-          <span className="font-arabic font-bold text-sm text-gold-400 shrink-0">
+          <span className="font-arabic font-bold text-sm text-indigo-300 shrink-0">
             {nameArabic}
           </span>
         </div>

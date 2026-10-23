@@ -60,7 +60,6 @@ const SuraDetails = () => {
       return;
     }
 
-    // Find audio file for this surah from current reciter
     const audioFile = audioData?.audio_files?.find(
       (f) => f.chapter_id === numSurahId,
     );
@@ -92,7 +91,7 @@ const SuraDetails = () => {
 
   const chapter = chapterData?.chapter;
   const verses = versesData?.verses || [];
-  const showBismillah = numSurahId !== 1 && numSurahId !== 9; // Not Al-Fatihah or At-Tawbah
+  const showBismillah = numSurahId !== 1 && numSurahId !== 9;
 
   return (
     <div className="flex flex-col space-y-6">
@@ -100,12 +99,12 @@ const SuraDetails = () => {
       <DetailsHeader chapterData={chapter} />
 
       {/* Action Bar: Play Button + Surah Navigation + Tabs */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-charcoal-850/80 border border-charcoal-700/80 shadow-md">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-midnight-850/80 border border-midnight-700/80 shadow-md">
         <div className="flex items-center space-x-3 w-full sm:w-auto">
           <button
             type="button"
             onClick={handlePlaySurah}
-            className="flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-charcoal-950 font-bold text-sm shadow-lg shadow-emerald-500/25 transition-transform transform active:scale-95"
+            className="flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white font-bold text-sm shadow-lg shadow-indigo-950/60 transition-transform transform active:scale-95"
           >
             {isCurrentAndPlaying ? (
               <>
@@ -131,7 +130,7 @@ const SuraDetails = () => {
           {numSurahId > 1 && (
             <Link
               to={`/surah/${numSurahId - 1}`}
-              className="flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-charcoal-700 hover:bg-charcoal-600 text-slate-200 text-xs font-medium transition-colors"
+              className="flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-midnight-750 hover:bg-midnight-700 text-slate-200 text-xs font-medium transition-colors"
             >
               <FiChevronLeft size={16} />
               <span>Surah {numSurahId - 1}</span>
@@ -141,7 +140,7 @@ const SuraDetails = () => {
           {numSurahId < 114 && (
             <Link
               to={`/surah/${numSurahId + 1}`}
-              className="flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-charcoal-700 hover:bg-charcoal-600 text-slate-200 text-xs font-medium transition-colors"
+              className="flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-midnight-750 hover:bg-midnight-700 text-slate-200 text-xs font-medium transition-colors"
             >
               <span>Surah {numSurahId + 1}</span>
               <FiChevronRight size={16} />
@@ -151,14 +150,14 @@ const SuraDetails = () => {
       </div>
 
       {/* Tabs: Verses vs Info */}
-      <div className="flex items-center justify-between border-b border-charcoal-700 pb-2">
+      <div className="flex items-center justify-between border-b border-midnight-700 pb-2">
         <div className="flex space-x-3 text-sm">
           <button
             type="button"
             onClick={() => setActiveTab('verses')}
             className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-semibold transition-all ${
               activeTab === 'verses'
-                ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/30'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -171,7 +170,7 @@ const SuraDetails = () => {
             onClick={() => setActiveTab('info')}
             className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-semibold transition-all ${
               activeTab === 'info'
-                ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/30'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -181,25 +180,25 @@ const SuraDetails = () => {
         </div>
 
         {activeTab === 'verses' && (
-          <div className="hidden sm:flex items-center space-x-1 bg-charcoal-850 border border-charcoal-700 rounded-xl p-1 text-xs text-slate-400">
+          <div className="hidden sm:flex items-center space-x-1 bg-midnight-850 border border-midnight-700 rounded-xl p-1 text-xs text-slate-400">
             <button
               type="button"
               onClick={() => setFontSize('text-xl')}
-              className={`px-2 py-1 rounded-lg ${fontSize === 'text-xl' ? 'bg-charcoal-700 text-white' : ''}`}
+              className={`px-2 py-1 rounded-lg ${fontSize === 'text-xl' ? 'bg-midnight-700 text-white' : ''}`}
             >
               A
             </button>
             <button
               type="button"
               onClick={() => setFontSize('text-2xl')}
-              className={`px-2 py-1 rounded-lg ${fontSize === 'text-2xl' ? 'bg-charcoal-700 text-white' : ''}`}
+              className={`px-2 py-1 rounded-lg ${fontSize === 'text-2xl' ? 'bg-midnight-700 text-white' : ''}`}
             >
               A+
             </button>
             <button
               type="button"
               onClick={() => setFontSize('text-3xl')}
-              className={`px-2 py-1 rounded-lg ${fontSize === 'text-3xl' ? 'bg-charcoal-700 text-white' : ''}`}
+              className={`px-2 py-1 rounded-lg ${fontSize === 'text-3xl' ? 'bg-midnight-700 text-white' : ''}`}
             >
               A++
             </button>
@@ -209,26 +208,26 @@ const SuraDetails = () => {
 
       {/* Verses Tab Content */}
       {activeTab === 'verses' && (
-        <div className="p-6 sm:p-10 rounded-3xl bg-charcoal-850/60 border border-charcoal-700/60 shadow-xl">
+        <div className="p-6 sm:p-10 rounded-3xl bg-midnight-850/60 border border-midnight-700/60 shadow-xl">
           {/* Bismillah Banner */}
           {showBismillah && (
             <div className="text-center my-6 py-4">
-              <p className="font-quran text-3xl sm:text-4xl text-gold-400 tracking-wide select-none">
+              <p className="font-quran text-3xl sm:text-4xl text-indigo-300 tracking-wide select-none">
                 بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
               </p>
-              <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold-500/40 to-transparent mx-auto mt-3" />
+              <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent mx-auto mt-3" />
             </div>
           )}
 
           {/* Ayat Flow with authentic Uthmani Quranic script and verse markers ۝ */}
           <div
             dir="rtl"
-            className="leading-[2.8] text-right font-quran text-slate-100 selection:bg-emerald-500/30"
+            className="leading-[2.8] text-right font-quran text-slate-100 selection:bg-indigo-500/30"
           >
             {verses.map((verse) => (
-              <span key={verse.id} className={`${fontSize} inline transition-colors hover:text-emerald-300`}>
+              <span key={verse.id} className={`${fontSize} inline transition-colors hover:text-indigo-300`}>
                 <span>{verse.text_uthmani || verse.text_imlaei}</span>
-                <span className="inline-flex items-center justify-center font-sans font-bold text-xs text-gold-400/90 mx-2 px-2 py-0.5 rounded-full bg-charcoal-800 border border-gold-500/30 select-none align-middle">
+                <span className="inline-flex items-center justify-center font-sans font-bold text-xs text-indigo-300 mx-2 px-2 py-0.5 rounded-full bg-midnight-800 border border-indigo-500/30 select-none align-middle">
                   {verse.verse_key?.split(':')[1] || verse.verse_number}
                 </span>
               </span>
@@ -239,12 +238,12 @@ const SuraDetails = () => {
 
       {/* Info Tab Content */}
       {activeTab === 'info' && (
-        <div className="p-6 sm:p-8 rounded-3xl bg-charcoal-850/60 border border-charcoal-700/60 leading-relaxed text-slate-300 space-y-4">
+        <div className="p-6 sm:p-8 rounded-3xl bg-midnight-850/60 border border-midnight-700/60 leading-relaxed text-slate-300 space-y-4">
           <h3 className="text-lg font-bold text-slate-100">
             Historical Context & Revelation
           </h3>
           {infoData?.chapter_info?.short_text && (
-            <p className="text-emerald-300/90 font-medium bg-emerald-950/40 border border-emerald-500/20 p-4 rounded-2xl">
+            <p className="text-indigo-300/90 font-medium bg-indigo-950/40 border border-indigo-500/20 p-4 rounded-2xl">
               {infoData.chapter_info.short_text}
             </p>
           )}

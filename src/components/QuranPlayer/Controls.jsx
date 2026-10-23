@@ -33,7 +33,7 @@ const Controls = ({
       title={`Shuffle: ${shuffle ? 'On' : 'Off'}`}
       className={`hidden sm:flex items-center justify-center p-1.5 rounded-lg transition-colors ${
         shuffle
-          ? 'text-emerald-400 bg-emerald-950/60'
+          ? 'text-indigo-400 bg-indigo-950/70'
           : 'text-slate-400 hover:text-slate-200'
       }`}
     >
@@ -69,7 +69,7 @@ const Controls = ({
       type="button"
       onClick={handlePlayPause}
       aria-label={isPlaying ? 'Pause recitation' : 'Play recitation'}
-      className="w-11 h-11 flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-400 text-charcoal-950 shadow-lg shadow-emerald-500/25 transition-transform duration-150 transform hover:scale-105 active:scale-95 focus:outline-none"
+      className="w-11 h-11 flex items-center justify-center rounded-full bg-indigo-500 hover:bg-indigo-400 text-white shadow-lg shadow-indigo-950/60 transition-transform duration-150 transform hover:scale-105 active:scale-95 focus:outline-none"
     >
       {isPlaying && isActive ? (
         <BsFillPauseFill size={26} />
@@ -110,13 +110,13 @@ const Controls = ({
       title={`Repeat: ${repeatMode}`}
       className={`relative hidden sm:flex items-center justify-center p-1.5 rounded-lg transition-colors ${
         repeatMode !== 'off'
-          ? 'text-emerald-400 bg-emerald-950/60'
+          ? 'text-indigo-400 bg-indigo-950/70'
           : 'text-slate-400 hover:text-slate-200'
       }`}
     >
       <BsArrowRepeat size={18} />
       {repeatMode === 'one' && (
-        <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-emerald-500 text-charcoal-950 rounded-full w-3.5 h-3.5 flex items-center justify-center">
+        <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-indigo-500 text-white rounded-full w-3.5 h-3.5 flex items-center justify-center">
           1
         </span>
       )}

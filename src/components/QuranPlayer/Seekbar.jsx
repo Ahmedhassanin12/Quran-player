@@ -14,7 +14,6 @@ const formatTime = (time) => {
 };
 
 const Seekbar = ({
-  value = 0,
   min = 0,
   max = 0,
   onInput,
@@ -29,10 +28,10 @@ const Seekbar = ({
       </span>
 
       <div className="relative flex-1 flex items-center group py-2">
-        {/* Background track with emerald progress fill */}
-        <div className="w-full h-1.5 bg-charcoal-700 rounded-full overflow-hidden">
+        {/* Background track with indigo progress fill */}
+        <div className="w-full h-1.5 bg-midnight-700 rounded-full overflow-hidden">
           <div
-            className="h-full bg-emerald-500 group-hover:bg-emerald-400 transition-all rounded-full"
+            className="h-full bg-indigo-500 group-hover:bg-indigo-400 transition-all rounded-full"
             style={{ width: `${percentage}%` }}
           />
         </div>

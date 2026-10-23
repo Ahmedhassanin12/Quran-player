@@ -88,11 +88,11 @@ const Discover = () => {
   return (
     <div className="flex flex-col space-y-6">
       {/* Header Banner */}
-      <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-charcoal-850 via-charcoal-900 to-charcoal-850 border border-charcoal-700/80 shadow-xl overflow-hidden">
+      <div className="relative rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 pr-10 md:pr-0">
           <div>
-            <div className="flex items-center space-x-2 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-1.5">
+            <div className="flex items-center space-x-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1.5">
               <span>Holy Quran Library</span>
               <span>•</span>
               <span>114 Surahs</span>
@@ -108,13 +108,13 @@ const Discover = () => {
           {/* Active Reciter Pill */}
           <Link
             to="/top-reciters"
-            className="flex items-center space-x-3 px-4 py-2.5 rounded-2xl bg-charcoal-800/80 hover:bg-charcoal-800 border border-emerald-500/30 text-left transition-all hover:border-emerald-500/60 group shadow-md"
+            className="flex items-center space-x-3 px-4 py-2.5 rounded-2xl bg-midnight-800/80 hover:bg-midnight-800 border border-indigo-500/30 text-left transition-all hover:border-indigo-500/60 group shadow-md"
           >
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
               <FiMic size={16} />
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-emerald-300">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-300">
                 Active Reciter
               </span>
               <p className="text-xs font-semibold text-slate-100 truncate max-w-[160px]">
@@ -137,13 +137,13 @@ const Discover = () => {
         {/* Tab Filters & View Mode */}
         <div className="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-end">
           {/* Tabs */}
-          <div className="flex p-1 rounded-xl bg-charcoal-850 border border-charcoal-700/80 text-xs">
+          <div className="flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80 text-xs">
             <button
               type="button"
               onClick={() => setActiveTab('all')}
               className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
                 activeTab === 'all'
-                  ? 'bg-emerald-500 text-charcoal-950 font-semibold shadow'
+                  ? 'bg-indigo-500 text-white font-semibold shadow'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -154,7 +154,7 @@ const Discover = () => {
               onClick={() => setActiveTab('makkah')}
               className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
                 activeTab === 'makkah'
-                  ? 'bg-emerald-500 text-charcoal-950 font-semibold shadow'
+                  ? 'bg-indigo-500 text-white font-semibold shadow'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -165,7 +165,7 @@ const Discover = () => {
               onClick={() => setActiveTab('madinah')}
               className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
                 activeTab === 'madinah'
-                  ? 'bg-emerald-500 text-charcoal-950 font-semibold shadow'
+                  ? 'bg-indigo-500 text-white font-semibold shadow'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -174,14 +174,14 @@ const Discover = () => {
           </div>
 
           {/* View Mode Toggle */}
-          <div className="hidden lg:flex p-1 rounded-xl bg-charcoal-850 border border-charcoal-700/80">
+          <div className="hidden lg:flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80">
             <button
               type="button"
               onClick={() => setViewMode('grid')}
               aria-label="Grid layout"
               className={`p-1.5 rounded-lg transition-colors ${
                 viewMode === 'grid'
-                  ? 'bg-charcoal-700 text-emerald-400'
+                  ? 'bg-midnight-800 text-indigo-400'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -193,7 +193,7 @@ const Discover = () => {
               aria-label="List layout"
               className={`p-1.5 rounded-lg transition-colors ${
                 viewMode === 'list'
-                  ? 'bg-charcoal-700 text-emerald-400'
+                  ? 'bg-midnight-800 text-indigo-400'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -205,7 +205,7 @@ const Discover = () => {
 
       {/* Surahs Library Grid / List */}
       {filteredSurahs.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl bg-charcoal-850 border border-charcoal-700/60">
+        <div className="p-12 text-center rounded-2xl bg-midnight-850 border border-midnight-700/60">
           <p className="text-base text-slate-300 font-semibold">
             No Surahs found matching &ldquo;{searchQuery}&rdquo;
           </p>

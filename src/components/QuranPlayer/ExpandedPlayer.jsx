@@ -91,16 +91,16 @@ const ExpandedPlayer = ({
   const remainingTime = duration > appTime ? duration - appTime : 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-between bg-charcoal-950/98 backdrop-blur-2xl text-slate-100 p-6 md:p-10 animate-slideup select-none overflow-y-auto">
-      {/* Background Subtle Islamic Geometry */}
+    <div className="fixed inset-0 z-50 flex flex-col justify-between bg-midnight-950/98 backdrop-blur-2xl text-slate-100 p-6 md:p-10 animate-slideup select-none overflow-y-auto">
+      {/* Background Subtle Nocturnal Pattern */}
       <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
 
       {/* Top Header Bar */}
-      <div className="relative z-10 flex items-center justify-between pb-4 border-b border-charcoal-800">
+      <div className="relative z-10 flex items-center justify-between pb-4 border-b border-midnight-700/80">
         <button
           type="button"
           onClick={() => dispatch(setIsExpanded(false))}
-          className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors p-2 -ml-2 rounded-xl hover:bg-charcoal-800"
+          className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors p-2 -ml-2 rounded-xl hover:bg-midnight-800"
         >
           <FiChevronDown size={24} />
           <span className="text-xs font-semibold uppercase tracking-wider hidden sm:inline">
@@ -109,7 +109,7 @@ const ExpandedPlayer = ({
         </button>
 
         <div className="text-center">
-          <span className="text-xs uppercase font-bold tracking-widest text-emerald-400">
+          <span className="text-xs uppercase font-bold tracking-widest text-indigo-400">
             Now Reciting
           </span>
           <p className="text-xs text-slate-400 font-arabic mt-0.5">
@@ -122,8 +122,8 @@ const ExpandedPlayer = ({
           onClick={() => setShowQueue(!showQueue)}
           className={`flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-xl transition-all ${
             showQueue
-              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-              : 'text-slate-400 hover:text-white hover:bg-charcoal-800'
+              ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+              : 'text-slate-400 hover:text-white hover:bg-midnight-800'
           }`}
         >
           <FiList size={18} />
@@ -140,27 +140,27 @@ const ExpandedPlayer = ({
             nameArabic={activeSura?.name_arabic}
             size="xl"
             isPlaying={isPlaying}
-            className="shadow-2xl shadow-emerald-950/80 mb-6"
+            className="shadow-2xl shadow-indigo-950/80 mb-6"
           />
 
           <h2 className="font-arabic text-4xl sm:text-5xl font-bold text-slate-100 mb-2">
             سورة {activeSura?.name_arabic}
           </h2>
 
-          <h3 className="text-xl sm:text-2xl font-bold text-emerald-300 mb-1">
+          <h3 className="text-xl sm:text-2xl font-bold text-indigo-300 mb-1">
             {activeSura?.name_simple || `Surah ${surahId}`}
           </h3>
 
           <p className="text-sm text-slate-400 mb-4">
             {activeSura?.translated_name?.name || 'The Holy Quran'} •{' '}
-            <span className="text-gold-400/90 font-medium">
+            <span className="text-indigo-400 font-medium">
               {activeSura?.verses_count} Verses
             </span>
           </p>
 
           {/* Reciter Badge */}
           {currentReciter && (
-            <div className="flex items-center space-x-3.5 px-4 py-2.5 rounded-2xl bg-charcoal-850/80 border border-charcoal-700/80">
+            <div className="flex items-center space-x-3.5 px-4 py-2.5 rounded-2xl bg-midnight-850/80 border border-midnight-700/80">
               <ReciterAvatar
                 photoUrl={currentReciter.photo_url}
                 name={currentReciter.reciter_name}
@@ -171,7 +171,7 @@ const ExpandedPlayer = ({
                 <p className="text-xs font-semibold text-slate-200">
                   {currentReciter.reciter_name}
                 </p>
-                <p className="text-[11px] text-emerald-400 font-arabic">
+                <p className="text-[11px] text-indigo-400 font-arabic">
                   {currentReciter.arabic_name} • {currentReciter.style || 'Murattal'}
                 </p>
               </div>
@@ -179,14 +179,14 @@ const ExpandedPlayer = ({
           )}
         </div>
 
-        {/* Right: Queue Drawer (Toggleable or Desktop split) */}
+        {/* Right: Queue Drawer */}
         {showQueue && (
-          <div className="w-full lg:w-80 h-72 lg:h-96 rounded-2xl bg-charcoal-850 border border-charcoal-700 p-4 flex flex-col shadow-2xl">
-            <div className="flex items-center justify-between pb-3 mb-2 border-b border-charcoal-700">
+          <div className="w-full lg:w-80 h-72 lg:h-96 rounded-2xl bg-midnight-850 border border-midnight-700 p-4 flex flex-col shadow-2xl">
+            <div className="flex items-center justify-between pb-3 mb-2 border-b border-midnight-700">
               <h4 className="text-xs uppercase font-bold tracking-wider text-slate-300">
                 Surah Queue ({currentSura?.length || 0})
               </h4>
-              <span className="text-[11px] text-emerald-400">
+              <span className="text-[11px] text-indigo-400 font-semibold">
                 114 Surahs
               </span>
             </div>
@@ -214,8 +214,8 @@ const ExpandedPlayer = ({
                     }}
                     className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all ${
                       isItemCurrent
-                        ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/40'
-                        : 'hover:bg-charcoal-800 text-slate-300'
+                        ? 'bg-midnight-800 text-indigo-300 border border-indigo-500/50 shadow-sm'
+                        : 'hover:bg-midnight-800 text-slate-300'
                     }`}
                   >
                     <div className="flex items-center space-x-2.5 truncate">
@@ -226,7 +226,7 @@ const ExpandedPlayer = ({
                         {item.name_simple || `Surah ${itemId}`}
                       </span>
                     </div>
-                    <span className="font-arabic text-xs font-bold text-gold-400/80">
+                    <span className="font-arabic text-xs font-bold text-indigo-300">
                       {item.name_arabic}
                     </span>
                   </button>
@@ -246,9 +246,9 @@ const ExpandedPlayer = ({
           </span>
 
           <div className="relative flex-1 flex items-center group py-2">
-            <div className="w-full h-2 bg-charcoal-800 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-midnight-700 rounded-full overflow-hidden">
               <div
-                className="h-full bg-emerald-500 group-hover:bg-emerald-400 transition-all rounded-full"
+                className="h-full bg-indigo-500 group-hover:bg-indigo-400 transition-all rounded-full"
                 style={{ width: `${progressPercentage}%` }}
               />
             </div>
@@ -278,7 +278,7 @@ const ExpandedPlayer = ({
             aria-label="Toggle shuffle"
             className={`p-2.5 rounded-xl transition-colors ${
               shuffle
-                ? 'text-emerald-400 bg-emerald-950/60'
+                ? 'text-indigo-400 bg-indigo-950/70'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -310,7 +310,7 @@ const ExpandedPlayer = ({
               type="button"
               onClick={() => dispatch(playPause(!isPlaying))}
               aria-label={isPlaying ? 'Pause' : 'Play'}
-              className="w-16 h-16 flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-400 text-charcoal-950 shadow-xl shadow-emerald-500/30 transition-transform transform hover:scale-105 active:scale-95"
+              className="w-16 h-16 flex items-center justify-center rounded-full bg-indigo-500 hover:bg-indigo-400 text-white shadow-xl shadow-indigo-950/70 transition-transform transform hover:scale-105 active:scale-95"
             >
               {isPlaying ? (
                 <BsFillPauseFill size={36} />
@@ -345,13 +345,13 @@ const ExpandedPlayer = ({
             aria-label="Cycle repeat mode"
             className={`relative p-2.5 rounded-xl transition-colors ${
               repeatMode !== 'off'
-                ? 'text-emerald-400 bg-emerald-950/60'
+                ? 'text-indigo-400 bg-indigo-950/70'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
             <BsArrowRepeat size={22} />
             {repeatMode === 'one' && (
-              <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-emerald-500 text-charcoal-950 rounded-full w-3.5 h-3.5 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 text-[9px] font-bold bg-indigo-500 text-white rounded-full w-3.5 h-3.5 flex items-center justify-center">
                 1
               </span>
             )}
@@ -359,7 +359,7 @@ const ExpandedPlayer = ({
         </div>
 
         {/* Volume Bar in expanded player footer */}
-        <div className="flex items-center justify-center space-x-3 mt-4 pt-3 border-t border-charcoal-800/60">
+        <div className="flex items-center justify-center space-x-3 mt-4 pt-3 border-t border-midnight-700/80">
           <button
             type="button"
             onClick={() => onVolumeChange(volume === 0 ? 0.8 : 0)}

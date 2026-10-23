@@ -21,14 +21,14 @@ const PlayPause = ({
 
   const sizeClasses = {
     sm: 'w-8 h-8 text-sm',
-    md: 'w-11 h-11 text-base',
-    lg: 'w-14 h-14 text-xl',
+    md: 'w-10 h-10 text-base',
+    lg: 'w-13 h-13 text-xl',
   };
 
   const iconSizes = {
-    sm: 16,
-    md: 22,
-    lg: 28,
+    sm: 15,
+    md: 20,
+    lg: 26,
   };
 
   const btnDimension = sizeClasses[size] || sizeClasses.md;
@@ -42,7 +42,7 @@ const PlayPause = ({
         e.stopPropagation();
         handlePause();
       }}
-      className={`${btnDimension} flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-400 text-charcoal-950 shadow-lg shadow-emerald-500/30 transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-400`}
+      className={`${btnDimension} flex items-center justify-center rounded-full bg-indigo-500 hover:bg-indigo-400 text-white shadow-md shadow-indigo-950/50 transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-400/50`}
     >
       <BsFillPauseFill size={iconSize} />
     </button>
@@ -54,7 +54,7 @@ const PlayPause = ({
         e.stopPropagation();
         handlePlay();
       }}
-      className={`${btnDimension} flex items-center justify-center rounded-full bg-emerald-500 hover:bg-emerald-400 text-charcoal-950 shadow-lg shadow-emerald-500/30 transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-400 pl-0.5`}
+      className={`${btnDimension} flex items-center justify-center rounded-full bg-midnight-800 hover:bg-indigo-500 text-slate-200 hover:text-white border border-midnight-700 hover:border-indigo-400 shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-400/50 pl-0.5`}
     >
       <BsFillPlayFill size={iconSize} />
     </button>

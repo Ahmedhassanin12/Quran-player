@@ -13,13 +13,10 @@ const DetailsHeader = ({
   const isReciter = Boolean(readerId || readerName);
 
   return (
-    <div className="relative w-full rounded-3xl overflow-hidden bg-gradient-to-br from-charcoal-850 via-charcoal-900 to-charcoal-950 border border-charcoal-700/80 p-6 md:p-8 mb-8 shadow-xl">
-      {/* Decorative Islamic Background Pattern */}
-      <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
-
-      {/* Decorative Glow */}
-      <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-gold-500/5 blur-3xl pointer-events-none" />
+    <div className="relative w-full rounded-3xl overflow-hidden bg-gradient-to-br from-midnight-850 via-midnight-900 to-midnight-950 border border-midnight-700/80 p-6 md:p-8 mb-8 shadow-xl">
+      {/* Decorative Nocturnal Glow */}
+      <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-600/10 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-indigo-950/20 blur-3xl pointer-events-none" />
 
       <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start space-y-5 md:space-y-0 md:space-x-6 text-center md:text-left">
         {isReciter ? (
@@ -42,11 +39,11 @@ const DetailsHeader = ({
         <div className="flex-1 min-w-0">
           {/* Top category / style pill */}
           <div className="flex items-center justify-center md:justify-start space-x-2 mb-2">
-            <span className="text-[11px] uppercase tracking-wider font-bold text-emerald-400 bg-emerald-950/70 border border-emerald-500/30 px-3 py-1 rounded-full">
+            <span className="text-[11px] uppercase tracking-wider font-bold text-indigo-300 bg-indigo-950/70 border border-indigo-500/30 px-3 py-1 rounded-full">
               {isReciter ? readerStyle || 'Murattal' : 'Holy Quran Chapter'}
             </span>
             {!isReciter && chapterData?.revelation_place && (
-              <span className="text-[11px] font-medium text-gold-400 bg-gold-950/40 border border-gold-500/30 px-3 py-1 rounded-full">
+              <span className="text-[11px] font-semibold text-slate-300 bg-midnight-800 border border-midnight-700 px-3 py-1 rounded-full">
                 {chapterData.revelation_place.toLowerCase() === 'makkah'
                   ? 'مكية • Meccan'
                   : 'مدنية • Medinan'}
@@ -59,7 +56,7 @@ const DetailsHeader = ({
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-100 tracking-tight">
               {isReciter ? readerName : chapterData?.name_simple}
             </h1>
-            <span className="font-arabic font-bold text-2xl sm:text-3xl text-gold-400/90 mt-1 md:mt-0">
+            <span className="font-arabic font-bold text-2xl sm:text-3xl text-indigo-300 mt-1 md:mt-0">
               {isReciter ? readerArabicName : chapterData?.name_arabic}
             </span>
           </div>
@@ -80,7 +77,7 @@ const DetailsHeader = ({
               <span>•</span>
               <span>
                 Verses:{' '}
-                <strong className="text-emerald-400">
+                <strong className="text-indigo-400">
                   {chapterData?.verses_count || '—'}
                 </strong>
               </span>

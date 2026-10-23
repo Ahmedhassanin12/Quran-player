@@ -17,8 +17,8 @@ const NavLinks = ({ handleClick }) => (
         className={({ isActive }) =>
           `flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
             isActive
-              ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-sm'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-charcoal-800/60'
+              ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 shadow-sm'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-800/60'
           }`
         }
       >
@@ -36,15 +36,15 @@ const Sidebar = () => {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col justify-between w-64 lg:w-72 h-screen shrink-0 bg-charcoal-900 border-r border-charcoal-700/60 p-5 select-none">
+      <aside className="hidden md:flex flex-col justify-between w-64 lg:w-72 h-screen shrink-0 bg-midnight-850 border-r border-midnight-700/80 p-5 select-none">
         <div>
           {/* Logo & Brand Header */}
           <Link to="/" className="flex items-center space-x-3 px-2 py-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center text-white shadow-md shadow-emerald-950/50 group-hover:scale-105 transition-transform">
-              <RubElHizbIcon className="w-6 h-6 text-gold-400" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white shadow-md shadow-indigo-950/60 group-hover:scale-105 transition-transform">
+              <RubElHizbIcon className="w-6 h-6 text-indigo-200" />
             </div>
             <div>
-              <h1 className="font-arabic font-bold text-xl text-slate-100 tracking-wide leading-none group-hover:text-emerald-400 transition-colors">
+              <h1 className="font-arabic font-bold text-xl text-slate-100 tracking-wide leading-none group-hover:text-indigo-400 transition-colors">
                 القرآن الكريم
               </h1>
               <p className="text-[11px] text-slate-400 font-medium tracking-wider uppercase mt-1">
@@ -59,14 +59,14 @@ const Sidebar = () => {
 
         {/* Selected Reciter Card in Sidebar Footer */}
         {currentReciter && (
-          <div className="p-3.5 rounded-2xl bg-charcoal-850 border border-charcoal-700/80">
+          <div className="p-3.5 rounded-2xl bg-midnight-800 border border-midnight-700/80">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400">
                 Current Reciter
               </span>
               <Link
                 to="/top-reciters"
-                className="text-[11px] text-gold-400/90 hover:underline hover:text-gold-300"
+                className="text-[11px] text-slate-400 hover:underline hover:text-indigo-300"
               >
                 Change
               </Link>
@@ -82,8 +82,8 @@ const Sidebar = () => {
                 <p className="text-xs font-semibold text-slate-200 truncate">
                   {currentReciter.reciter_name}
                 </p>
-                <p className="text-[11px] text-slate-400 truncate mt-0.5">
-                  {currentReciter.style || 'Murattal'}
+                <p className="text-[11px] text-indigo-300/90 font-arabic truncate mt-0.5">
+                  {currentReciter.arabic_name || currentReciter.style}
                 </p>
               </div>
             </div>
@@ -97,7 +97,7 @@ const Sidebar = () => {
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle navigation menu"
-          className="p-2.5 rounded-xl bg-charcoal-850 border border-charcoal-700 text-slate-200 hover:text-emerald-400 shadow-lg focus:outline-none"
+          className="p-2.5 rounded-xl bg-midnight-800 border border-midnight-700 text-slate-200 hover:text-indigo-400 shadow-lg focus:outline-none"
         >
           {mobileMenuOpen ? (
             <RiCloseLine className="w-6 h-6" />
@@ -110,14 +110,14 @@ const Sidebar = () => {
       {/* Mobile Drawer Backdrop */}
       {mobileMenuOpen && (
         <div
-          className="md:hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
+          className="md:hidden fixed inset-0 bg-black/75 backdrop-blur-sm z-40"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
       {/* Mobile Drawer Content */}
       <div
-        className={`md:hidden fixed top-0 bottom-0 left-0 w-3/4 max-w-xs bg-charcoal-900 border-r border-charcoal-700 z-50 p-6 flex flex-col justify-between transition-transform duration-300 ease-in-out ${
+        className={`md:hidden fixed top-0 bottom-0 left-0 w-3/4 max-w-xs bg-midnight-900 border-r border-midnight-700 z-50 p-6 flex flex-col justify-between transition-transform duration-300 ease-in-out ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -127,8 +127,8 @@ const Sidebar = () => {
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center space-x-3 px-1 py-2"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center text-white shadow-md">
-              <RubElHizbIcon className="w-6 h-6 text-gold-400" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white shadow-md">
+              <RubElHizbIcon className="w-6 h-6 text-indigo-200" />
             </div>
             <div>
               <h2 className="font-arabic font-bold text-xl text-slate-100">
@@ -143,8 +143,8 @@ const Sidebar = () => {
         </div>
 
         {currentReciter && (
-          <div className="p-3 rounded-xl bg-charcoal-850 border border-charcoal-700">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400 block mb-1">
+          <div className="p-3 rounded-xl bg-midnight-800 border border-midnight-700">
+            <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 block mb-1">
               Active Reciter
             </span>
             <p className="text-xs font-semibold text-slate-200 truncate">

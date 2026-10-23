@@ -13,7 +13,7 @@ const App = () => {
   const isSurahReadingPage = location.pathname.startsWith('/surah/');
 
   return (
-    <div className="relative flex h-screen w-full overflow-hidden bg-[#070A0D] text-slate-100 font-sans">
+    <div className="relative flex h-screen w-full overflow-hidden bg-midnight-950 text-slate-100 font-sans">
       {/* Primary Sidebar */}
       <Sidebar />
 

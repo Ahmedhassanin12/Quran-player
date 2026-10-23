@@ -70,14 +70,14 @@ const TopPlay = () => {
   return (
     <div className="flex flex-col space-y-5 select-none w-full">
       {/* Featured Reciters Quick Switch Banner */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-charcoal-850/90 border border-charcoal-700/70 shadow-lg">
+      <div className="p-4 sm:p-5 rounded-2xl bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xs font-bold text-slate-100 uppercase tracking-wider">
+          <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
             Featured Reciters
           </h3>
           <Link
             to="/top-reciters"
-            className="text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold"
+            className="text-[11px] text-indigo-400 hover:text-indigo-300 font-semibold"
           >
             All (12) →
           </Link>
@@ -93,8 +93,8 @@ const TopPlay = () => {
                 onClick={() => dispatch(setReciter(reciter))}
                 className={`flex items-center space-x-2 p-2 rounded-xl text-left transition-all ${
                   isSelected
-                    ? 'bg-emerald-950/70 border border-emerald-500/40 shadow-sm'
-                    : 'bg-charcoal-800/60 hover:bg-charcoal-800 border border-charcoal-700/40 text-slate-300'
+                    ? 'bg-midnight-800 border border-indigo-500/50 shadow-sm'
+                    : 'bg-midnight-800/60 hover:bg-midnight-800 border border-midnight-700/50 text-slate-300'
                 }`}
               >
                 <ReciterAvatar
@@ -107,8 +107,8 @@ const TopPlay = () => {
                   <p className="text-xs font-semibold truncate text-slate-200">
                     {reciter.reciter_name.split(' ')[0]}
                   </p>
-                  <p className="text-[10px] text-gold-400/80 font-arabic truncate">
-                    {reciter.arabic_name.split(' ').slice(0, 2).join(' ')}
+                  <p className="text-[10px] text-indigo-300/90 font-arabic truncate">
+                    {reciter.arabic_name ? reciter.arabic_name.split(' ').slice(0, 2).join(' ') : ''}
                   </p>
                 </div>
               </button>
@@ -118,12 +118,12 @@ const TopPlay = () => {
       </div>
 
       {/* Recommended Surahs Card List */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-charcoal-850/90 border border-charcoal-700/70 shadow-lg">
+      <div className="p-4 sm:p-5 rounded-2xl bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
         <div className="flex items-center justify-between mb-3.5">
-          <h3 className="text-xs font-bold text-slate-100 uppercase tracking-wider">
+          <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
             Recommended Surahs
           </h3>
-          <span className="text-[11px] text-gold-400/80 font-medium">سُوَرٌ مُبَارَكَة</span>
+          <span className="text-[11px] text-indigo-300/80 font-medium">سُوَرٌ مُبَارَكَة</span>
         </div>
 
         <div className="flex flex-col space-y-2">
@@ -139,8 +139,8 @@ const TopPlay = () => {
                 onClick={() => handlePlayClick(sura, idx)}
                 className={`flex items-center justify-between p-2 rounded-xl transition-all cursor-pointer border ${
                   isCurrent
-                    ? 'bg-emerald-950/40 border-emerald-500/40'
-                    : 'bg-charcoal-800/40 hover:bg-charcoal-800 border-charcoal-700/30'
+                    ? 'bg-midnight-800 border-indigo-500/50 shadow-sm'
+                    : 'bg-midnight-800/40 hover:bg-midnight-800 border-midnight-700/40'
                 }`}
               >
                 <div className="flex items-center space-x-2.5 min-w-0">
@@ -160,7 +160,7 @@ const TopPlay = () => {
                 </div>
 
                 <div className="flex items-center space-x-2 shrink-0">
-                  <span className="font-arabic text-xs text-gold-400 font-bold hidden sm:inline">
+                  <span className="font-arabic text-xs text-indigo-300 font-bold hidden sm:inline">
                     {sura.name_arabic}
                   </span>
                   <PlayPause

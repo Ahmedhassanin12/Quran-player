@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const RubElHizbIcon = ({ className = 'w-6 h-6 text-gold-400' }) => (
+export const RubElHizbIcon = ({ className = 'w-6 h-6 text-indigo-400' }) => (
   <svg
     viewBox="0 0 100 100"
     fill="currentColor"
@@ -23,47 +23,46 @@ export const SurahMedallion = ({
   className = '',
 }) => {
   const sizeMap = {
-    sm: 'w-10 h-10 text-xs',
-    md: 'w-16 h-16 text-sm',
-    lg: 'w-24 h-24 text-base',
-    xl: 'w-40 h-40 text-xl',
+    sm: 'w-9 h-9 text-xs',
+    md: 'w-14 h-14 text-sm',
+    lg: 'w-20 h-20 text-base',
+    xl: 'w-36 h-36 text-xl',
   };
 
   const dimension = sizeMap[size] || sizeMap.md;
 
   return (
     <div
-      className={`relative flex items-center justify-center shrink-0 rounded-2xl overflow-hidden border border-emerald-500/20 bg-gradient-to-br from-charcoal-800 to-charcoal-900 shadow-lg ${dimension} ${
-        isPlaying ? 'ring-2 ring-emerald-500/60 shadow-emerald-950/50' : ''
-      } ${className}`}
+      className={`relative flex items-center justify-center shrink-0 rounded-xl overflow-hidden border transition-all ${
+        isPlaying
+          ? 'bg-midnight-800 border-indigo-500/70 ring-1 ring-indigo-500/40 shadow-sm'
+          : 'bg-midnight-850 border-midnight-700/80'
+      } ${dimension} ${className}`}
     >
-      {/* Decorative Islamic Background Pattern */}
-      <div className="absolute inset-0 opacity-15 bg-islamic-pattern" />
-
-      {/* Decorative Geometric Rings */}
-      <div className="absolute inset-1 rounded-xl border border-gold-500/20" />
-      <div className="absolute inset-2 rounded-lg border border-emerald-500/10" />
-
-      {/* Center Rub el Hizb Badge or Surah Number */}
+      {/* Center Surah Number / Badge */}
       <div className="relative z-10 flex flex-col items-center justify-center text-center p-1">
         {number && (
-          <span className="font-semibold text-gold-400/90 tracking-tighter">
+          <span
+            className={`font-semibold tracking-tighter ${
+              isPlaying ? 'text-indigo-300' : 'text-slate-300'
+            }`}
+          >
             {number}
           </span>
         )}
         {nameArabic && size !== 'sm' && (
-          <span className="font-arabic text-emerald-300 text-xs mt-0.5 line-clamp-1 font-bold">
+          <span className="font-arabic text-indigo-300 text-xs mt-0.5 line-clamp-1 font-bold">
             {nameArabic}
           </span>
         )}
       </div>
 
-      {/* Active playing indicator glow */}
+      {/* Playing sound indicator glow */}
       {isPlaying && (
         <div className="absolute bottom-1 flex items-center justify-center space-x-0.5 z-20">
-          <span className="w-1 h-2 bg-emerald-400 rounded-full animate-pulse" />
-          <span className="w-1 h-3 bg-emerald-300 rounded-full animate-pulse [animation-delay:0.2s]" />
-          <span className="w-1 h-2 bg-emerald-400 rounded-full animate-pulse [animation-delay:0.4s]" />
+          <span className="w-1 h-1.5 bg-indigo-400 rounded-full animate-pulse" />
+          <span className="w-1 h-2.5 bg-indigo-300 rounded-full animate-pulse [animation-delay:0.2s]" />
+          <span className="w-1 h-1.5 bg-indigo-400 rounded-full animate-pulse [animation-delay:0.4s]" />
         </div>
       )}
     </div>
@@ -82,7 +81,7 @@ export const ReciterAvatar = ({
     sm: 'w-10 h-10 text-xs',
     md: 'w-16 h-16 text-sm',
     lg: 'w-24 h-24 text-base',
-    xl: 'w-36 h-36 text-xl',
+    xl: 'w-32 h-32 text-xl',
   };
 
   const dimension = sizeMap[size] || sizeMap.md;
@@ -96,9 +95,11 @@ export const ReciterAvatar = ({
 
   return (
     <div
-      className={`relative flex items-center justify-center shrink-0 rounded-2xl overflow-hidden border border-emerald-500/25 bg-gradient-to-br from-charcoal-800 to-charcoal-900 shadow-lg ${dimension} ${
-        isPlaying ? 'ring-2 ring-emerald-500 shadow-emerald-900/60' : ''
-      } ${className}`}
+      className={`relative flex items-center justify-center shrink-0 rounded-2xl overflow-hidden border transition-all ${
+        isPlaying
+          ? 'bg-midnight-800 border-indigo-500 ring-2 ring-indigo-500/30'
+          : 'bg-midnight-850 border-midnight-700/80'
+      } ${dimension} ${className}`}
     >
       {photoUrl ? (
         <img
@@ -106,7 +107,6 @@ export const ReciterAvatar = ({
           alt={name}
           className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
           onError={(e) => {
-            // Gracefully switch to calligraphy fallback if image fails to load
             e.currentTarget.style.display = 'none';
             if (e.currentTarget.nextSibling) {
               e.currentTarget.nextSibling.style.display = 'flex';
@@ -115,23 +115,18 @@ export const ReciterAvatar = ({
         />
       ) : null}
 
-      {/* Graceful Calligraphic / Geometric Seal Fallback */}
+      {/* Graceful Calligraphic Nocturnal Seal Fallback */}
       <div
         style={{ display: photoUrl ? 'none' : 'flex' }}
-        className="w-full h-full flex flex-col items-center justify-center p-2 text-center bg-gradient-to-br from-charcoal-800 via-charcoal-850 to-emerald-950/40"
+        className="w-full h-full flex flex-col items-center justify-center p-2 text-center bg-gradient-to-br from-midnight-850 via-midnight-800 to-indigo-950/40"
       >
-        <div className="absolute inset-1.5 rounded-xl border border-gold-500/25" />
-        <span className="font-arabic text-gold-400 font-bold text-lg select-none">
+        <span className="font-arabic text-indigo-300 font-bold text-lg select-none">
           {arabicName ? arabicName.split(' ')[0] : initials}
         </span>
-        <span className="text-[10px] text-emerald-400/80 font-medium tracking-wide uppercase mt-0.5">
+        <span className="text-[10px] text-indigo-400/80 font-medium tracking-wide uppercase mt-0.5">
           قارئ
         </span>
       </div>
-
-      {isPlaying && (
-        <div className="absolute inset-0 bg-emerald-950/30 ring-2 ring-emerald-400/80 rounded-2xl pointer-events-none" />
-      )}
     </div>
   );
 };

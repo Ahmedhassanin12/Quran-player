@@ -25,7 +25,7 @@ const VolumeBar = ({ value = 0.8, onChange, setVolume }) => {
         type="button"
         onClick={toggleMute}
         aria-label={value === 0 ? 'Unmute volume' : 'Mute volume'}
-        className="text-slate-300 hover:text-emerald-400 transition-colors p-1"
+        className="text-slate-300 hover:text-indigo-400 transition-colors p-1"
       >
         {value === 0 && <BsFillVolumeMuteFill size={20} />}
         {value > 0 && value < 0.5 && <BsFillVolumeDownFill size={20} />}
@@ -33,9 +33,9 @@ const VolumeBar = ({ value = 0.8, onChange, setVolume }) => {
       </button>
 
       <div className="relative w-24 flex items-center group py-2">
-        <div className="w-full h-1.5 bg-charcoal-700 rounded-full overflow-hidden">
+        <div className="w-full h-1.5 bg-midnight-700 rounded-full overflow-hidden">
           <div
-            className="h-full bg-emerald-500 group-hover:bg-emerald-400 transition-all rounded-full"
+            className="h-full bg-indigo-500 group-hover:bg-indigo-400 transition-all rounded-full"
             style={{ width: `${percentage}%` }}
           />
         </div>

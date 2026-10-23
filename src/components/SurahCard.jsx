@@ -41,15 +41,12 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
   return (
     <div
       onClick={handlePlayClick}
-      className={`group relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl transition-all duration-300 cursor-pointer border ${
+      className={`group relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl transition-all duration-200 cursor-pointer border ${
         isCurrent
-          ? 'bg-gradient-to-br from-charcoal-800 to-emerald-950/40 border-emerald-500/60 shadow-xl shadow-emerald-950/40 ring-1 ring-emerald-500/40'
-          : 'bg-charcoal-850/90 hover:bg-charcoal-800 border-charcoal-700/60 hover:border-emerald-500/40 hover:shadow-lg hover:shadow-black/50'
+          ? 'bg-midnight-800 border-indigo-500/70 shadow-lg shadow-indigo-950/40 ring-1 ring-indigo-500/40'
+          : 'bg-midnight-850 hover:bg-midnight-750 border-midnight-700/80 hover:border-midnight-600 hover:shadow-md'
       }`}
     >
-      {/* Background subtle Islamic pattern */}
-      <div className="absolute inset-0 rounded-2xl opacity-5 bg-islamic-pattern pointer-events-none" />
-
       {/* Top Row: Medallion (Number) + Revelation Badge & Audio Wave + Play/Pause Button */}
       <div className="relative z-10 flex items-center justify-between gap-2">
         <SurahMedallion
@@ -60,12 +57,12 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
 
         {/* Center Status: Revelation tag & Playing Wave Badge (NEVER overlapping the button) */}
         <div className="flex items-center space-x-1.5">
-          <span className="text-[11px] font-medium text-gold-400/90 bg-gold-950/40 border border-gold-500/30 px-2.5 py-0.5 rounded-full">
+          <span className="text-[10px] font-semibold text-slate-300 bg-midnight-800 border border-midnight-700 px-2.5 py-0.5 rounded-full">
             {isMeccan ? 'مكية' : 'مدنية'}
           </span>
 
           {isCurrentAndPlaying && (
-            <div className="flex items-center space-x-0.5 px-2 py-0.5 rounded-full bg-emerald-950/70 border border-emerald-500/30">
+            <div className="flex items-center space-x-0.5 px-2 py-0.5 rounded-full bg-indigo-950/70 border border-indigo-500/40">
               <span className="playing-bar" />
               <span className="playing-bar" />
               <span className="playing-bar" />
@@ -91,7 +88,7 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
         <Link
           to={`/surah/${surahId}`}
           onClick={(e) => e.stopPropagation()}
-          className="group-hover:text-emerald-300 transition-colors inline-block w-full"
+          className="group-hover:text-indigo-300 transition-colors inline-block w-full"
         >
           <h3 className="font-arabic text-2xl sm:text-3xl font-bold text-slate-100 tracking-wide leading-normal">
             {sura?.name_arabic}
@@ -100,7 +97,7 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
       </div>
 
       {/* Divider */}
-      <div className="relative z-10 my-2 h-px bg-gradient-to-r from-transparent via-charcoal-700 to-transparent" />
+      <div className="relative z-10 my-2 h-px bg-gradient-to-r from-transparent via-midnight-700 to-transparent" />
 
       {/* Bottom Details: English Name + Translation + Verse Count */}
       <div className="relative z-10 flex items-end justify-between pt-1">
@@ -120,7 +117,7 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
         </div>
 
         <div className="shrink-0">
-          <span className="text-[11px] font-medium text-emerald-400 bg-emerald-950/60 border border-emerald-500/20 px-2 py-0.5 rounded-full whitespace-nowrap">
+          <span className="text-[11px] font-medium text-indigo-300 bg-indigo-950/50 border border-indigo-500/25 px-2 py-0.5 rounded-full whitespace-nowrap">
             {sura?.verses_count || sura?.verses?.length || '—'} verses
           </span>
         </div>

@@ -21,7 +21,6 @@ const QuranPlayer = () => {
   const {
     activeSura,
     currentSura,
-    currentIndex,
     isActive,
     isPlaying,
     currentReciter,
@@ -44,7 +43,6 @@ const QuranPlayer = () => {
     if (!currentSura || currentSura.length === 0) return;
 
     if (repeatMode === 'one') {
-      // Repeat current track: reset to 0 and ensure play
       setSeekTime(0);
       setAppTime(0);
       dispatch(playPause(true));
@@ -62,7 +60,6 @@ const QuranPlayer = () => {
   const handlePrevSong = useCallback(() => {
     if (!currentSura || currentSura.length === 0) return;
 
-    // If more than 3 seconds in, restart current track
     if (appTime > 3) {
       setSeekTime(0);
       setAppTime(0);
@@ -117,7 +114,7 @@ const QuranPlayer = () => {
     <>
       {/* Persistent Bottom Bar Player (Takes from page height, in flex flow) */}
       <footer
-        className="w-full shrink-0 h-24 sm:h-28 bg-charcoal-900/98 backdrop-blur-xl border-t border-charcoal-700/80 px-4 sm:px-8 flex items-center justify-between z-30 shadow-2xl transition-all"
+        className="w-full shrink-0 h-24 sm:h-28 bg-midnight-900 border-t border-midnight-700/80 px-4 sm:px-8 flex items-center justify-between z-30 shadow-2xl transition-all"
         role="region"
         aria-label="Audio Player"
       >

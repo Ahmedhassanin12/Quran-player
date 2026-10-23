@@ -4,32 +4,35 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        charcoal: {
-          950: '#070A0D',
-          900: '#0B0F14',
-          850: '#10161D',
-          800: '#151D27',
-          700: '#1E293B',
-          600: '#2E3E52',
-          500: '#475569',
+        midnight: {
+          950: '#090B10', // Canvas background
+          900: '#0D0F17', // Player & deep surfaces
+          850: '#10131B', // Surface / Card base
+          800: '#171B26', // Elevated / Active cards
+          750: '#1F2433', // Hover state
+          700: '#212638', // Border default
+          600: '#333C54',
+          500: '#4D5875',
         },
-        emerald: {
-          400: '#34D399',
-          500: '#10B981',
-          600: '#059669',
-          700: '#047857',
-          800: '#065F46',
-          900: '#064E3B',
-          950: '#022C22',
+        indigo: {
+          300: '#A5B4FC',
+          400: '#818CF8', // Hover accent
+          500: '#6366F1', // Primary accent
+          600: '#4F46E5',
+          700: '#4338CA', // Active border
+          800: '#3730A3',
+          900: '#312E81',
+          950: '#1E1B4B',
         },
-        gold: {
-          300: '#FDE047',
-          400: '#FACC15',
-          500: '#EAB308',
-          600: '#CA8A04',
-          700: '#A16207',
+        slate: {
+          100: '#F1F5F9', // Primary text
+          200: '#E2E8F0',
+          300: '#CBD5E1',
+          400: '#94A3B8', // Secondary text
+          500: '#64748B', // Muted text
+          600: '#475569',
         },
-        black: '#070A0D',
+        black: '#090B10',
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
@@ -43,7 +46,6 @@ module.exports = {
         slideright: 'slideright 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
         wave: 'wave 1.2s ease-in-out infinite',
         slowfade: 'slowfade 0.4s ease-out',
-        pulseGlow: 'pulseGlow 2.5s ease-in-out infinite',
       },
       keyframes: {
         slowfade: {
@@ -51,28 +53,24 @@ module.exports = {
           to: { opacity: 1 },
         },
         slideup: {
-          from: { opacity: 0, transform: 'translateY(20px)' },
+          from: { opacity: 0, transform: 'translateY(16px)' },
           to: { opacity: 1, transform: 'none' },
         },
         slidedown: {
-          from: { opacity: 0, transform: 'translateY(-20px)' },
+          from: { opacity: 0, transform: 'translateY(-16px)' },
           to: { opacity: 1, transform: 'none' },
         },
         slideleft: {
-          from: { opacity: 0, transform: 'translateX(-20px)' },
+          from: { opacity: 0, transform: 'translateX(-16px)' },
           to: { opacity: 1, transform: 'translateX(0)' },
         },
         slideright: {
-          from: { opacity: 0, transform: 'translateX(20px)' },
+          from: { opacity: 0, transform: 'translateX(16px)' },
           to: { opacity: 1, transform: 'translateX(0)' },
         },
         wave: {
           '0%, 100%': { height: '6px' },
-          '50%': { height: '22px' },
-        },
-        pulseGlow: {
-          '0%, 100%': { boxShadow: '0 0 15px rgba(16, 185, 129, 0.15)' },
-          '50%': { boxShadow: '0 0 25px rgba(16, 185, 129, 0.35)' },
+          '50%': { height: '20px' },
         },
       },
     },

@@ -125,26 +125,26 @@ const ArtistDetails = () => {
       />
 
       {/* Reciter Action Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-charcoal-850/80 border border-charcoal-700/80">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl bg-midnight-850/80 border border-midnight-700/80">
         <div className="flex items-center space-x-3">
           <button
             type="button"
             onClick={handleSetAsActiveReciter}
-            className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-charcoal-950 font-semibold text-sm shadow-lg shadow-emerald-500/25 transition-transform transform active:scale-95"
+            className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white font-semibold text-sm shadow-lg shadow-indigo-950/60 transition-transform transform active:scale-95"
           >
             <BsFillPlayFill size={20} />
             <span>Play Full Quran</span>
           </button>
 
           {isCurrentReciter ? (
-            <span className="text-xs font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-3 py-1.5 rounded-xl">
+            <span className="text-xs font-semibold text-indigo-300 bg-indigo-950/60 border border-indigo-500/30 px-3 py-1.5 rounded-xl">
               ✓ Active Reciter
             </span>
           ) : (
             <button
               type="button"
               onClick={() => dispatch(setReciter(verifiedReciter))}
-              className="text-xs font-medium text-slate-300 hover:text-white px-3 py-1.5 rounded-xl bg-charcoal-700 hover:bg-charcoal-600 transition-colors"
+              className="text-xs font-medium text-slate-300 hover:text-white px-3 py-1.5 rounded-xl bg-midnight-750 hover:bg-midnight-700 transition-colors"
             >
               Set as Default
             </button>
