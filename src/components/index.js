@@ -8,6 +8,8 @@ import QuranPlayer from './QuranPlayer';
 import Loader from './Loader';
 import Error from './Error';
 import PlayPause from './PlayPause';
+import CuratedCollections from './CuratedCollections';
+import ContinueListeningBanner from './ContinueListeningBanner';
 import {
   RubElHizbIcon,
   SurahMedallion,
@@ -25,6 +27,8 @@ export {
   Loader,
   Error,
   PlayPause,
+  CuratedCollections,
+  ContinueListeningBanner,
   RubElHizbIcon,
   SurahMedallion,
   ReciterAvatar,

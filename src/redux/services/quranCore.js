@@ -18,11 +18,21 @@ export const quranCoreApi = createApi({
     getSuraAyat: builder.query({
       query: (chapterId) => `quran/verses/uthmani?chapter_number=${chapterId}`,
     }),
+    getChapterVersesWithTranslation: builder.query({
+      query: ({ chapterId, translationId = 20 }) => (
+        `verses/by_chapter/${chapterId}?translations=${translationId}&fields=text_uthmani&per_page=300`
+      ),
+    }),
     getAllRecitations: builder.query({
       query: () => 'resources/recitations?language=en',
     }),
     getAllSurahAudio: builder.query({
       query: (reader = 7) => `chapter_recitations/${reader}?language=en`,
+    }),
+    getChapterAudioWithSegments: builder.query({
+      query: ({ reader = 7, chapterId = 1 }) => (
+        `chapter_recitations/${reader}/${chapterId}?segments=true`
+      ),
     }),
   }),
 });
@@ -32,6 +42,8 @@ export const {
   useGetChapterIdQuery,
   useGetChapterInfoQuery,
   useGetSuraAyatQuery,
+  useGetChapterVersesWithTranslationQuery,
   useGetAllRecitationsQuery,
   useGetAllSurahAudioQuery,
+  useGetChapterAudioWithSegmentsQuery,
 } = quranCoreApi;

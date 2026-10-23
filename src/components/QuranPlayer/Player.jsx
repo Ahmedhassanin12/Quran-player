@@ -5,6 +5,7 @@ const Player = ({
   activeSura,
   isPlaying,
   volume,
+  playbackSpeed = 1.0,
   seekTime,
   repeat,
   onEnded,
@@ -40,6 +41,14 @@ const Player = ({
     }
   }, [volume]);
 
+  // Manage playback speed with pitch preservation
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.preservesPitch = true;
+      ref.current.playbackRate = Math.max(0.75, Math.min(1.25, playbackSpeed));
+    }
+  }, [playbackSpeed]);
+
   // Manage seeking
   useEffect(() => {
     if (ref.current && typeof seekTime === 'number') {
@@ -47,13 +56,26 @@ const Player = ({
     }
   }, [seekTime]);
 
+  const handleInternalTimeUpdate = (e) => {
+    if (onTimeUpdate) {
+      onTimeUpdate(e);
+    }
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('quran-audio-time', {
+          detail: { currentTime: e.target.currentTime },
+        }),
+      );
+    }
+  };
+
   return (
     <audio
       ref={ref}
       src={activeSura?.audio_url}
       loop={repeat}
       onEnded={onEnded}
-      onTimeUpdate={onTimeUpdate}
+      onTimeUpdate={handleInternalTimeUpdate}
       onLoadedData={onLoadedData}
       onError={onError}
       preload="auto"

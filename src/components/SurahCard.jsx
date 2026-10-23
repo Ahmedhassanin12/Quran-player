@@ -1,19 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PlayPause from './PlayPause';
-import { playPause, setActiveSura } from '../redux/features/playerSlice';
+import {
+  playPause,
+  setActiveSura,
+  toggleFavoriteSurah,
+} from '../redux/features/playerSlice';
 import { SurahMedallion } from './IslamicArtwork';
 
 const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentReciter }) => {
   const dispatch = useDispatch();
+  const favorites = useSelector((state) => state.player.favorites) || [];
+
+  const surahId = Number(sura?.chapter_id || sura?.id || i + 1);
+  const isFavorite = favorites.includes(surahId);
 
   const isCurrent =
     activeSura &&
     sura &&
     ((activeSura.chapter_id &&
-      (sura.chapter_id || sura.id) === activeSura.chapter_id) ||
-      activeSura.id === sura.id);
+      Number(sura.chapter_id || sura.id) === Number(activeSura.chapter_id)) ||
+      Number(activeSura.id) === Number(sura.id));
 
   const isCurrentAndPlaying = isPlaying && isCurrent;
 
@@ -34,7 +42,11 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
     dispatch(playPause(true));
   };
 
-  const surahId = sura?.chapter_id || sura?.id || i + 1;
+  const handleFavoriteClick = (e) => {
+    e.stopPropagation();
+    dispatch(toggleFavoriteSurah(surahId));
+  };
+
   const revelationPlace = sura?.revelation_place || 'makkah';
   const isMeccan = revelationPlace.toLowerCase() === 'makkah';
 
@@ -47,7 +59,7 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
           : 'bg-midnight-850 hover:bg-midnight-750 border-midnight-700/80 hover:border-midnight-600 hover:shadow-md'
       }`}
     >
-      {/* Top Row: Medallion (Number) + Revelation Badge & Audio Wave + Play/Pause Button */}
+      {/* Top Row: Medallion (Number) + Revelation & Favorite + Play/Pause Button */}
       <div className="relative z-10 flex items-center justify-between gap-2">
         <SurahMedallion
           number={surahId}
@@ -55,13 +67,37 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
           isPlaying={isCurrentAndPlaying}
         />
 
-        {/* Center Status: Revelation tag & Playing Wave Badge (NEVER overlapping the button) */}
+        {/* Center Status: Revelation tag & Favorite Bookmark */}
         <div className="flex items-center space-x-1.5">
           <span className="text-[10px] font-semibold text-slate-300 bg-midnight-800 border border-midnight-700 px-2.5 py-0.5 rounded-full">
             {isMeccan ? 'مكية' : 'مدنية'}
           </span>
 
-          
+          <button
+            type="button"
+            onClick={handleFavoriteClick}
+            aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            title={isFavorite ? 'Saved to Favorites' : 'Add to Favorites'}
+            className={`p-1.5 rounded-full transition-colors ${
+              isFavorite
+                ? 'text-rose-400 bg-rose-500/15 border border-rose-500/30'
+                : 'text-slate-500 hover:text-slate-300 hover:bg-midnight-700/60'
+            }`}
+          >
+            <svg
+              className="w-3.5 h-3.5"
+              fill={isFavorite ? 'currentColor' : 'none'}
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+          </button>
         </div>
 
         {/* Play / Pause Action Button (Isolated & Accessible) */}
@@ -89,12 +125,12 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
           </h3>
         </Link>
         {isCurrentAndPlaying && (
-            <div className="flex items-center justify-center m-auto space-x-0.5 px-2 py-0.5 rounded-full bg-indigo-950/70 border border-indigo-500/40 w-[fit-content]">
-              <span className="playing-bar" />
-              <span className="playing-bar" />
-              <span className="playing-bar" />
-            </div>
-          )}
+          <div className="flex items-center justify-center m-auto space-x-0.5 px-2 py-0.5 rounded-full bg-indigo-950/70 border border-indigo-500/40 w-[fit-content]">
+            <span className="playing-bar" />
+            <span className="playing-bar" />
+            <span className="playing-bar" />
+          </div>
+        )}
       </div>
 
       {/* Divider */}
@@ -108,7 +144,7 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
             onClick={(e) => e.stopPropagation()}
             className="hover:underline block"
           >
-            <h4 className="font-semibold text-sm text-slate-200 truncate">
+            <h4 className="font-semibold text-sm text-slate-200 leading-tight">
               {sura?.name_simple || `Surah ${surahId}`}
             </h4>
           </Link>

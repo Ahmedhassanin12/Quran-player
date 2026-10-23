@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { FiGrid, FiList, FiMic } from 'react-icons/fi';
 import {
@@ -7,18 +7,30 @@ import {
   Loader,
   SurahCard,
   Searchbar,
+  CuratedCollections,
+  ContinueListeningBanner,
 } from '../components';
 import {
   useGetAllChaptersQuery,
   useGetAllSurahAudioQuery,
 } from '../redux/services/quranCore';
+import { CURATED_COLLECTIONS } from '../assets/collectionsData';
+import { setActiveSura, playPause } from '../redux/features/playerSlice';
 
 const Discover = () => {
-  const { activeSura, isPlaying, currentReciter } = useSelector((state) => state.player);
+  const dispatch = useDispatch();
+  const {
+    activeSura,
+    isPlaying,
+    currentReciter,
+    favorites = [],
+    recents = [],
+  } = useSelector((state) => state.player);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'makkah' | 'madinah'
+  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'makkah' | 'madinah' | 'favorites' | 'history'
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+  const [selectedCollectionId, setSelectedCollectionId] = useState(null);
 
   const reciterId = currentReciter?.id || 7;
   const { data: surahData, isFetching: isFetchingSurahs, error: surahError } = useGetAllChaptersQuery();
@@ -53,16 +65,28 @@ const Discover = () => {
     });
   }, [surahData, audioMap, reciterId]);
 
-  // Filtered by search and revelation place
+  // Filtered by tab, collection, and search
   const filteredSurahs = useMemo(() => {
     let list = allSurahsWithAudio;
 
+    // 1. Tab filter
     if (activeTab === 'makkah') {
       list = list.filter((s) => s.revelation_place?.toLowerCase() === 'makkah');
     } else if (activeTab === 'madinah') {
       list = list.filter((s) => s.revelation_place?.toLowerCase() === 'madinah');
+    } else if (activeTab === 'favorites') {
+      list = list.filter((s) => favorites.includes(Number(s.id)));
     }
 
+    // 2. Curated collection filter
+    if (selectedCollectionId) {
+      const col = CURATED_COLLECTIONS.find((c) => c.id === selectedCollectionId);
+      if (col) {
+        list = list.filter((s) => col.surahIds.includes(Number(s.id)));
+      }
+    }
+
+    // 3. Search query filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter(
@@ -75,7 +99,23 @@ const Discover = () => {
     }
 
     return list;
-  }, [allSurahsWithAudio, activeTab, searchQuery]);
+  }, [allSurahsWithAudio, activeTab, selectedCollectionId, searchQuery, favorites]);
+
+  const handlePlayRecent = (recent) => {
+    const matchedSura = allSurahsWithAudio.find((s) => s.id === recent.surahId);
+    if (!matchedSura) return;
+
+    dispatch(
+      setActiveSura({
+        sura: matchedSura,
+        i: matchedSura.id - 1,
+        data: allSurahsWithAudio,
+        audioData: audioData?.audio_files,
+        reciter: currentReciter,
+      }),
+    );
+    dispatch(playPause(true));
+  };
 
   if (isFetchingSurahs || (isFetchingAudio && allSurahsWithAudio.length === 0)) {
     return <Loader title="Loading Holy Quran Surahs..." />;
@@ -86,13 +126,19 @@ const Discover = () => {
   }
 
   return (
-    <div className="flex flex-col space-y-3">
+    <div className="flex flex-col space-y-4">
+      {/* Continue Listening Persistent Session */}
+      <ContinueListeningBanner
+        allSurahs={allSurahsWithAudio}
+        audioFiles={audioData?.audio_files}
+      />
+
       {/* Header Banner */}
-      <div className="relative rounded-xl p-1 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
+      <div className="relative rounded-xl p-4 sm:p-5 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 pr-5 md:pr-0">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center space-x-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1.5">
+            <div className="flex items-center space-x-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
               <span>Holy Quran Library</span>
               <span>•</span>
               <span>114 Surahs</span>
@@ -108,7 +154,7 @@ const Discover = () => {
           {/* Active Reciter Pill */}
           <Link
             to="/top-reciters"
-            className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-midnight-800/80 hover:bg-midnight-800 border border-indigo-500/30 text-left transition-all hover:border-indigo-500/60 group shadow-md"
+            className="flex items-center space-x-3 px-4 py-2.5 rounded-xl bg-midnight-800/80 hover:bg-midnight-800 border border-indigo-500/30 text-left transition-all hover:border-indigo-500/60 group shadow-md"
           >
             <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
               <FiMic size={16} />
@@ -125,8 +171,17 @@ const Discover = () => {
         </div>
       </div>
 
+      {/* Sunnah & Thematic Collections Shelf */}
+      <CuratedCollections
+        onSelectCollection={setSelectedCollectionId}
+        selectedCollectionId={selectedCollectionId}
+        allSurahs={allSurahsWithAudio}
+        audioFiles={audioData?.audio_files}
+        currentReciter={currentReciter}
+      />
+
       {/* Search & Filter Toolbar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
         {/* Search Input */}
         <Searchbar
           value={searchQuery}
@@ -135,14 +190,17 @@ const Discover = () => {
         />
 
         {/* Tab Filters & View Mode */}
-        <div className="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-end">
+        <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-end overflow-x-auto pb-1 sm:pb-0">
           {/* Tabs */}
-          <div className="flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80 text-xs">
+          <div className="flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80 text-xs shrink-0">
             <button
               type="button"
-              onClick={() => setActiveTab('all')}
+              onClick={() => {
+                setActiveTab('all');
+                setSelectedCollectionId(null);
+              }}
               className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
-                activeTab === 'all'
+                activeTab === 'all' && !selectedCollectionId
                   ? 'bg-indigo-500 text-white font-semibold shadow'
                   : 'text-slate-400 hover:text-white'
               }`}
@@ -170,6 +228,30 @@ const Discover = () => {
               }`}
             >
               Medinan
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('favorites')}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1 ${
+                activeTab === 'favorites'
+                  ? 'bg-indigo-500 text-white font-semibold shadow'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <span>⭐</span>
+              <span>Favorites ({favorites.length})</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('history')}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1 ${
+                activeTab === 'history'
+                  ? 'bg-indigo-500 text-white font-semibold shadow'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <span>🕒</span>
+              <span>History</span>
             </button>
           </div>
 
@@ -203,37 +285,105 @@ const Discover = () => {
         </div>
       </div>
 
-      {/* Surahs Library Grid / List */}
-      {filteredSurahs.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl bg-midnight-850 border border-midnight-700/60">
-          <p className="text-base text-slate-300 font-semibold">
-            No Surahs found matching &ldquo;{searchQuery}&rdquo;
-          </p>
-          <p className="text-xs text-slate-400 mt-1">
-            Try searching with an English transliteration (e.g., &ldquo;Baqarah&rdquo;) or Arabic name.
-          </p>
+      {/* History Tab View */}
+      {activeTab === 'history' ? (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-slate-200">Recently Played Recitations</h3>
+            <span className="text-xs text-slate-400">Last {recents.length} played</span>
+          </div>
+
+          {recents.length === 0 ? (
+            <div className="p-12 text-center rounded-2xl bg-midnight-850 border border-midnight-700/60">
+              <span className="text-3xl block mb-2">🕒</span>
+              <p className="text-sm text-slate-300 font-semibold">No listening history yet</p>
+              <p className="text-xs text-slate-400 mt-1">
+                Your played recitations will automatically appear here as you listen.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {recents.map((item, idx) => (
+                <div
+                  key={`${item.surahId}-${item.reciterId}-${idx}`}
+                  onClick={() => handlePlayRecent(item)}
+                  className="p-4 rounded-xl bg-midnight-850 hover:bg-midnight-800 border border-midnight-700/70 hover:border-indigo-500/50 transition cursor-pointer flex items-center justify-between group shadow-sm"
+                >
+                  <div>
+                    <div className="text-xs font-bold text-indigo-400 uppercase tracking-wider">
+                      Surah {item.surahId}
+                    </div>
+                    <div className="text-sm font-semibold text-slate-100 group-hover:text-indigo-300 transition-colors">
+                      {item.surahName} {item.arabicName && <span className="font-arabic font-normal text-slate-300">({item.arabicName})</span>}
+                    </div>
+                    <div className="text-xs text-slate-400 mt-0.5">
+                      {item.reciterName}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="w-9 h-9 rounded-full bg-indigo-500/20 group-hover:bg-indigo-500 text-indigo-300 group-hover:text-white flex items-center justify-center transition shadow"
+                    aria-label={`Play Surah ${item.surahName}`}
+                  >
+                    <svg className="w-4 h-4 fill-current pl-0.5" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
-        <div
-          className={
-            viewMode === 'grid'
-              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2 sm:gap-3'
-              : 'flex flex-col space-y-2'
-          }
-        >
-          {filteredSurahs.map((sura, i) => (
-            <SurahCard
-              key={sura.id}
-              sura={sura}
-              i={i}
-              data={filteredSurahs}
-              audioData={audioData?.audio_files}
-              isPlaying={isPlaying}
-              activeSura={activeSura}
-              currentReciter={currentReciter}
-            />
-          ))}
-        </div>
+        /* Regular Surahs Library Grid / List */
+        <>
+          {filteredSurahs.length === 0 ? (
+            <div className="p-12 text-center rounded-2xl bg-midnight-850 border border-midnight-700/60">
+              {activeTab === 'favorites' ? (
+                <>
+                  <span className="text-3xl block mb-2">⭐</span>
+                  <p className="text-base text-slate-300 font-semibold">
+                    No favorite Surahs saved yet
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                    Click the small heart icon on any Surah card to pin your favorite chapters here for quick access.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-base text-slate-300 font-semibold">
+                    No Surahs found matching &ldquo;{searchQuery}&rdquo;
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Try searching with an English transliteration (e.g., &ldquo;Baqarah&rdquo;) or Arabic name.
+                  </p>
+                </>
+              )}
+            </div>
+          ) : (
+            <div
+              className={
+                viewMode === 'grid'
+                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-3'
+                  : 'flex flex-col space-y-2'
+              }
+            >
+              {filteredSurahs.map((sura, i) => (
+                <SurahCard
+                  key={sura.id}
+                  sura={sura}
+                  i={i}
+                  data={filteredSurahs}
+                  audioData={audioData?.audio_files}
+                  isPlaying={isPlaying}
+                  activeSura={activeSura}
+                  currentReciter={currentReciter}
+                />
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

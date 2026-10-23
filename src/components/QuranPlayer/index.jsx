@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { FiMaximize2 } from 'react-icons/fi';
 
 import {
   nextSura,
@@ -8,6 +9,10 @@ import {
   cycleRepeatMode,
   toggleShuffle,
   setVolume as setReduxVolume,
+  setIsExpanded,
+  decrementSleepTimer,
+  triggerSurahSleepStop,
+  savePlaybackProgress,
 } from '../../redux/features/playerSlice';
 import Controls from './Controls';
 import Player from './Player';
@@ -15,6 +20,9 @@ import Seekbar from './Seekbar';
 import Track from './Track';
 import VolumeBar from './VolumeBar';
 import ExpandedPlayer from './ExpandedPlayer';
+import SleepTimerModal from './SleepTimerModal';
+import SpeedSelectorModal from './SpeedSelectorModal';
+import { useMediaSession } from '../../hooks/useMediaSession';
 
 const QuranPlayer = () => {
   const dispatch = useDispatch();
@@ -27,16 +35,21 @@ const QuranPlayer = () => {
     repeatMode,
     shuffle,
     volume: storedVolume,
+    playbackSpeed,
+    sleepTimer,
   } = useSelector((state) => state.player);
 
   const [duration, setDuration] = useState(0);
   const [seekTime, setSeekTime] = useState(null);
   const [appTime, setAppTime] = useState(0);
   const [localVolume, setLocalVolume] = useState(storedVolume || 0.8);
+  const [isSleepModalOpen, setIsSleepModalOpen] = useState(false);
+  const [isSpeedModalOpen, setIsSpeedModalOpen] = useState(false);
 
-  const handlePlayPause = useCallback(() => {
+  const handlePlayPause = useCallback((forcedState) => {
     if (!isActive) return;
-    dispatch(playPause(!isPlaying));
+    const nextState = typeof forcedState === 'boolean' ? forcedState : !isPlaying;
+    dispatch(playPause(nextState));
   }, [isActive, isPlaying, dispatch]);
 
   const handleNextSong = useCallback(() => {
@@ -93,7 +106,64 @@ const QuranPlayer = () => {
     dispatch(setReduxVolume(newVal));
   };
 
-  // Keyboard media keys / shortcuts
+  const handleTrackEnded = useCallback(() => {
+    if (sleepTimer?.active && sleepTimer.mode === 'surah') {
+      dispatch(triggerSurahSleepStop());
+      return;
+    }
+    handleNextSong();
+  }, [sleepTimer, dispatch, handleNextSong]);
+
+  // Hook into MediaSession API (Lockscreen, Car, Bluetooth, AirPods)
+  useMediaSession({
+    activeSura,
+    currentReciter,
+    isPlaying,
+    duration,
+    appTime,
+    playbackSpeed,
+    handlePlayPause,
+    handlePrevSong,
+    handleNextSong,
+    handleSeekRelative,
+    setSeekTime,
+  });
+
+  // Sleep timer interval countdown
+  useEffect(() => {
+    if (!sleepTimer?.active || sleepTimer.mode === 'surah') return;
+
+    const interval = setInterval(() => {
+      dispatch(decrementSleepTimer());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [sleepTimer?.active, sleepTimer?.mode, dispatch]);
+
+  // Sleep timer 30s smooth volume fadeout
+  useEffect(() => {
+    if (!sleepTimer?.active || sleepTimer.mode === 'surah') return;
+
+    if (sleepTimer.isFadingOut && sleepTimer.remainingSeconds <= 30) {
+      const factor = Math.max(0, sleepTimer.remainingSeconds / 30);
+      setLocalVolume(storedVolume * factor);
+    } else if (!sleepTimer.isFadingOut && localVolume !== storedVolume) {
+      setLocalVolume(storedVolume);
+    }
+  }, [sleepTimer?.active, sleepTimer?.isFadingOut, sleepTimer?.remainingSeconds, storedVolume]);
+
+  // Periodically throttle saving playback position for "Continue Listening"
+  useEffect(() => {
+    if (!isPlaying || !activeSura || appTime <= 0) return;
+
+    const timer = setTimeout(() => {
+      dispatch(savePlaybackProgress(appTime));
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, [isPlaying, activeSura, appTime, dispatch]);
+
+  // Global Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -101,14 +171,27 @@ const QuranPlayer = () => {
       if (e.code === 'Space') {
         e.preventDefault();
         handlePlayPause();
+      } else if (e.code === 'ArrowRight' && e.altKey) {
+        e.preventDefault();
+        handleSeekRelative(10);
+      } else if (e.code === 'ArrowLeft' && e.altKey) {
+        e.preventDefault();
+        handleSeekRelative(-10);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handlePlayPause]);
+  }, [handlePlayPause, handleSeekRelative]);
 
   if (!isActive || !activeSura) return null;
+
+  const formatTimerBadge = () => {
+    if (!sleepTimer.active) return null;
+    if (sleepTimer.mode === 'surah') return 'Surah';
+    const mins = Math.ceil(sleepTimer.remainingSeconds / 60);
+    return `${mins}m`;
+  };
 
   return (
     <>
@@ -118,7 +201,7 @@ const QuranPlayer = () => {
         role="region"
         aria-label="Audio Player"
       >
-        {/* Active Surah Track Information */}
+        {/* Left: Active Surah Track Information */}
         <Track
           isPlaying={isPlaying}
           isActive={isActive}
@@ -126,7 +209,7 @@ const QuranPlayer = () => {
           currentReciter={currentReciter}
         />
 
-        {/* Center Controls & Progress Timeline */}
+        {/* Center: Controls & Progress Timeline */}
         <div className="flex-1 max-w-xl mx-4 flex flex-col items-center justify-center space-y-1">
           <Controls
             isPlaying={isPlaying}
@@ -135,7 +218,7 @@ const QuranPlayer = () => {
             cycleRepeatMode={() => dispatch(cycleRepeatMode())}
             shuffle={shuffle}
             toggleShuffle={() => dispatch(toggleShuffle())}
-            handlePlayPause={handlePlayPause}
+            handlePlayPause={() => handlePlayPause()}
             handlePrevSong={handlePrevSong}
             handleNextSong={handleNextSong}
             handleSeekRelative={handleSeekRelative}
@@ -151,21 +234,78 @@ const QuranPlayer = () => {
           <Player
             activeSura={activeSura}
             volume={localVolume}
+            playbackSpeed={playbackSpeed}
             isPlaying={isPlaying}
             seekTime={seekTime}
             repeat={repeatMode === 'one'}
-            onEnded={handleNextSong}
+            onEnded={handleTrackEnded}
             onTimeUpdate={(e) => setAppTime(e.target.currentTime)}
             onLoadedData={(e) => setDuration(e.target.duration)}
           />
         </div>
 
-        {/* Right Volume Bar */}
-        <VolumeBar
-          value={localVolume}
-          onChange={(e) => handleVolumeChange(Number(e.target.value))}
-          setVolume={handleVolumeChange}
-        />
+        {/* Right: Audio Tools (Speed, Sleep Sanctuary, Volume, Expand) */}
+        <div className="flex items-center space-x-2 sm:space-x-3 select-none justify-end min-w-[160px] sm:min-w-[220px]">
+          {/* Recitation Pace Button */}
+          <button
+            type="button"
+            onClick={() => setIsSpeedModalOpen(true)}
+            aria-label={`Playback speed: ${playbackSpeed.toFixed(2)}x`}
+            title={`Recitation Speed (${playbackSpeed.toFixed(2)}x)`}
+            className={`px-2 py-1 rounded-lg text-xs font-semibold transition border ${
+              playbackSpeed !== 1.0
+                ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
+                : 'bg-midnight-800 text-slate-400 border-midnight-700 hover:text-slate-200'
+            }`}
+          >
+            {playbackSpeed.toFixed(2)}x
+          </button>
+
+          {/* Sleep Sanctuary Timer Button */}
+          <button
+            type="button"
+            onClick={() => setIsSleepModalOpen(true)}
+            aria-label="Sleep Sanctuary Timer"
+            title={sleepTimer.active ? `Sleep Timer: ${formatTimerBadge()}` : 'Sleep Sanctuary Timer'}
+            className={`relative p-2 rounded-lg text-xs font-medium transition flex items-center gap-1 border ${
+              sleepTimer.active
+                ? 'bg-indigo-600/25 text-indigo-300 border-indigo-500/50'
+                : 'bg-midnight-800 text-slate-400 border-midnight-700 hover:text-slate-200'
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              />
+            </svg>
+            {sleepTimer.active && (
+              <span className="text-[10px] font-bold text-indigo-300">
+                {formatTimerBadge()}
+              </span>
+            )}
+          </button>
+
+          {/* Volume Slider Bar */}
+          <VolumeBar
+            value={localVolume}
+            onChange={(e) => handleVolumeChange(Number(e.target.value))}
+            setVolume={handleVolumeChange}
+          />
+
+          {/* Expand Fullscreen Player */}
+          <button
+            type="button"
+            onClick={() => dispatch(setIsExpanded(true))}
+            aria-label="Expand Player"
+            title="Expand Player (Fullscreen)"
+            className="hidden sm:flex p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-midnight-800 transition"
+          >
+            <FiMaximize2 size={16} />
+          </button>
+        </div>
       </footer>
 
       {/* Expanded Player Overlay Modal */}
@@ -178,6 +318,18 @@ const QuranPlayer = () => {
         handleNextSong={handleNextSong}
         handlePrevSong={handlePrevSong}
         handleSeekRelative={handleSeekRelative}
+      />
+
+      {/* Sleep Sanctuary Modal */}
+      <SleepTimerModal
+        isOpen={isSleepModalOpen}
+        onClose={() => setIsSleepModalOpen(false)}
+      />
+
+      {/* Speed Selector Modal */}
+      <SpeedSelectorModal
+        isOpen={isSpeedModalOpen}
+        onClose={() => setIsSpeedModalOpen(false)}
       />
     </>
   );
