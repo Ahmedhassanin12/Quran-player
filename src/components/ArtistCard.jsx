@@ -49,7 +49,7 @@ const ArtistCard = ({ reader }) => {
   return (
     <div
       onClick={handleCardClick}
-      className={`group relative flex flex-col justify-between p-5 rounded-2xl transition-all duration-200 cursor-pointer border ${
+      className={`group relative flex flex-col justify-between p-5 rounded-xl transition-all duration-200 cursor-pointer border ${
         isSelected
           ? 'bg-midnight-800 border-indigo-500/70 shadow-lg shadow-indigo-950/40 ring-1 ring-indigo-500/40'
           : 'bg-midnight-850 hover:bg-midnight-750 border-midnight-700/80 hover:border-midnight-600 hover:shadow-md'

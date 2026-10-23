@@ -61,13 +61,7 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
             {isMeccan ? 'مكية' : 'مدنية'}
           </span>
 
-          {isCurrentAndPlaying && (
-            <div className="flex items-center space-x-0.5 px-2 py-0.5 rounded-full bg-indigo-950/70 border border-indigo-500/40">
-              <span className="playing-bar" />
-              <span className="playing-bar" />
-              <span className="playing-bar" />
-            </div>
-          )}
+          
         </div>
 
         {/* Play / Pause Action Button (Isolated & Accessible) */}
@@ -84,7 +78,7 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
       </div>
 
       {/* Middle Row: Full-width Arabic Calligraphy Title (NO truncation, fully visible) */}
-      <div className="relative z-10 my-3 text-center">
+      <div className="relative z-10 my-1 text-center">
         <Link
           to={`/surah/${surahId}`}
           onClick={(e) => e.stopPropagation()}
@@ -94,6 +88,13 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
             {sura?.name_arabic}
           </h3>
         </Link>
+        {isCurrentAndPlaying && (
+            <div className="flex items-center justify-center m-auto space-x-0.5 px-2 py-0.5 rounded-full bg-indigo-950/70 border border-indigo-500/40 w-[fit-content]">
+              <span className="playing-bar" />
+              <span className="playing-bar" />
+              <span className="playing-bar" />
+            </div>
+          )}
       </div>
 
       {/* Divider */}

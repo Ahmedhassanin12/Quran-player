@@ -21,7 +21,7 @@ const TopSurah = () => {
       <h2 className="font-bold text-white text-3xl mt-4 mb-4">
         Discover Top Sura
       </h2>
-      <div className="flex flex-wrap sm:justify-start justify-center gap-8">
+      <div className="flex flex-wrap sm:justify-start justify-center gap-4">
         {allSura?.chapters?.map((sura, i) => (
           <SurahCard
             key={sura.id}

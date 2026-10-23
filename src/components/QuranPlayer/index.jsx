@@ -114,7 +114,7 @@ const QuranPlayer = () => {
     <>
       {/* Persistent Bottom Bar Player (Takes from page height, in flex flow) */}
       <footer
-        className="w-full shrink-0 h-24 sm:h-28 bg-midnight-900 border-t border-midnight-700/80 px-4 sm:px-8 flex items-center justify-between z-30 shadow-2xl transition-all"
+        className="w-full shrink-0 h-20 sm:h-24 bg-midnight-900 border-t border-midnight-700/80 px-4 sm:px-8 flex items-center justify-between z-30 shadow-2xl transition-all"
         role="region"
         aria-label="Audio Player"
       >
