@@ -16,7 +16,7 @@ const NavLinks = ({ handleClick }) => (
         end={item.to === '/'}
         onClick={() => handleClick && handleClick()}
         className={({ isActive }) =>
-          `flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+          `flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
             isActive
               ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 shadow-sm'
               : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-800/60'
@@ -41,7 +41,7 @@ const Sidebar = () => {
         <div>
           {/* Logo & Brand Header */}
           <Link to="/" className="flex items-center space-x-3 px-2 py-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white shadow-md shadow-indigo-950/60 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white shadow-md shadow-indigo-950/60 group-hover:scale-105 transition-transform">
               <RubElHizbIcon className="w-6 h-6 text-indigo-200" />
             </div>
             <div>
@@ -63,7 +63,7 @@ const Sidebar = () => {
           <InstallPwaButton />
 
           {currentReciter && (
-            <div className="p-3.5 rounded-xl bg-midnight-800 border border-midnight-700/80">
+            <div className="p-3.5 rounded-lg bg-midnight-800 border border-midnight-700/80">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400">
                   Current Reciter
@@ -102,7 +102,7 @@ const Sidebar = () => {
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle navigation menu"
-          className="p-2.5 rounded-xl bg-midnight-800 border border-midnight-700 text-slate-200 hover:text-indigo-400 shadow-lg focus:outline-none"
+          className="p-2.5 rounded-lg bg-midnight-800 border border-midnight-700 text-slate-200 hover:text-indigo-400 shadow-lg focus:outline-none"
         >
           {mobileMenuOpen ? (
             <RiCloseLine className="w-6 h-6" />
@@ -132,7 +132,7 @@ const Sidebar = () => {
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center space-x-3 px-1 py-2"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white shadow-md">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white shadow-md">
               <RubElHizbIcon className="w-6 h-6 text-indigo-200" />
             </div>
             <div>
@@ -152,7 +152,7 @@ const Sidebar = () => {
           <InstallPwaButton />
 
           {currentReciter && (
-            <div className="p-3 rounded-xl bg-midnight-800 border border-midnight-700">
+            <div className="p-3 rounded-lg bg-midnight-800 border border-midnight-700">
               <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 block mb-1">
                 Active Reciter
               </span>

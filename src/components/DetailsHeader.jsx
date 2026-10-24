@@ -13,7 +13,7 @@ const DetailsHeader = ({
   const isReciter = Boolean(readerId || readerName);
 
   return (
-    <div className="relative w-full rounded-xl overflow-hidden bg-gradient-to-br from-midnight-850 via-midnight-900 to-midnight-950 border border-midnight-700/80 p-6 md:p-8 mb-4 shadow-xl">
+    <div className="relative w-full rounded-lg overflow-hidden bg-gradient-to-br from-midnight-850 via-midnight-900 to-midnight-950 border border-midnight-700/80 p-2 md:p-4 mb-2 shadow-xl">
       {/* Decorative Nocturnal Glow */}
       <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-600/10 blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-indigo-950/20 blur-3xl pointer-events-none" />
@@ -24,14 +24,14 @@ const DetailsHeader = ({
             photoUrl={readerPhoto}
             name={readerName}
             arabicName={readerArabicName}
-            size="xl"
+            size="lg"
             className="shadow-2xl shadow-black/80"
           />
         ) : (
           <SurahMedallion
             number={chapterData?.id}
             nameArabic={chapterData?.name_arabic}
-            size="xl"
+            size="lg"
             className="shadow-2xl shadow-black/80"
           />
         )}
@@ -53,10 +53,10 @@ const DetailsHeader = ({
 
           {/* Titles */}
           <div className="flex flex-col md:flex-row md:items-baseline md:space-x-4">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-100 tracking-tight">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-100 tracking-tight">
               {isReciter ? readerName : chapterData?.name_simple}
             </h1>
-            <span className="font-arabic font-bold text-2xl sm:text-3xl text-indigo-300 mt-1 md:mt-0">
+            <span className="font-arabic font-bold text-xl sm:text-2xl text-indigo-300 mt-1 md:mt-0">
               {isReciter ? readerArabicName : chapterData?.name_arabic}
             </span>
           </div>

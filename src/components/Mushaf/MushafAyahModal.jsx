@@ -33,7 +33,7 @@ const MushafAyahModal = ({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-xl bg-midnight-900 border border-midnight-700/80 rounded-t-3xl sm:rounded-2xl p-6 shadow-2xl overflow-hidden text-right"
+        className="relative w-full max-w-xl bg-midnight-900 border border-midnight-700/80 rounded-t-3xl sm:rounded-xl p-6 shadow-2xl overflow-hidden text-right"
         onClick={(e) => e.stopPropagation()}
         dir="rtl"
       >
@@ -67,7 +67,7 @@ const MushafAyahModal = ({
 
         {/* English Translation */}
         {translationText && (
-          <div dir="ltr" className="my-4 p-4 rounded-xl bg-midnight-850/80 border border-midnight-750 text-left">
+          <div dir="ltr" className="my-4 p-4 rounded-lg bg-midnight-850/80 border border-midnight-750 text-left">
             <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 block mb-1">
               Saheeh International
             </span>
@@ -86,7 +86,7 @@ const MushafAyahModal = ({
               onPlayAyah(verse.verse_key);
               onClose();
             }}
-            className="flex items-center space-x-1.5 space-x-reverse px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-950/60 transition"
+            className="flex items-center space-x-1.5 space-x-reverse px-4 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-950/60 transition"
           >
             <BsFillPlayFill size={16} />
             <span>استماع إلى هذه الآية</span>
@@ -96,7 +96,7 @@ const MushafAyahModal = ({
           <button
             type="button"
             onClick={() => onToggleBookmark(verse)}
-            className={`flex items-center space-x-1.5 space-x-reverse px-3.5 py-2.5 rounded-xl text-xs font-semibold border transition ${
+            className={`flex items-center space-x-1.5 space-x-reverse px-3.5 py-2.5 rounded-lg text-xs font-semibold border transition ${
               isBookmarked
                 ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
                 : 'bg-midnight-800 hover:bg-midnight-750 border-midnight-700 text-slate-300'
@@ -110,7 +110,7 @@ const MushafAyahModal = ({
           <button
             type="button"
             onClick={handleCopy}
-            className="flex items-center space-x-1.5 space-x-reverse px-3.5 py-2.5 rounded-xl bg-midnight-800 hover:bg-midnight-750 border border-midnight-700 text-slate-300 text-xs font-semibold transition"
+            className="flex items-center space-x-1.5 space-x-reverse px-3.5 py-2.5 rounded-lg bg-midnight-800 hover:bg-midnight-750 border border-midnight-700 text-slate-300 text-xs font-semibold transition"
           >
             {copied ? <BsCheck2 size={15} className="text-emerald-400" /> : <FiCopy size={14} />}
             <span>{copied ? 'تم النسخ!' : 'نسخ الآية'}</span>

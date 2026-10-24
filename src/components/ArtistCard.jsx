@@ -49,7 +49,7 @@ const ArtistCard = ({ reader }) => {
   return (
     <div
       onClick={handleCardClick}
-      className={`group relative flex flex-col justify-between p-5 rounded-xl transition-all duration-200 cursor-pointer border ${
+      className={`group relative flex flex-col justify-between p-5 rounded-lg transition-all duration-200 cursor-pointer border ${
         isSelected
           ? 'bg-midnight-800 border-indigo-500/70 shadow-lg shadow-indigo-950/40 ring-1 ring-indigo-500/40'
           : 'bg-midnight-850 hover:bg-midnight-750 border-midnight-700/80 hover:border-midnight-600 hover:shadow-md'
@@ -101,7 +101,7 @@ const ArtistCard = ({ reader }) => {
         <button
           type="button"
           onClick={handleSelectReciter}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             isSelected
               ? 'bg-indigo-500 text-white shadow-md shadow-indigo-950/50'
               : 'bg-midnight-750 hover:bg-indigo-600 hover:text-white text-slate-200'

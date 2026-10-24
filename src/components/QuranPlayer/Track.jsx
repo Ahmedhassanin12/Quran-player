@@ -29,7 +29,7 @@ const Track = ({ isPlaying, isActive, activeSura, currentReciter }) => {
           size="sm"
           isPlaying={isPlaying && isActive}
         />
-        <div className="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white">
+        <div className="absolute inset-0 bg-black/40 rounded-lg opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white">
           <FiMaximize2 size={13} />
         </div>
       </div>

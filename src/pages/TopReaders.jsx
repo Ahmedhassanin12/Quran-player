@@ -31,7 +31,7 @@ const TopReaders = () => {
   return (
     <div className="flex flex-col space-y-6">
       {/* Header Banner */}
-      <div className="relative rounded-xl p-2 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
+      <div className="relative rounded-lg p-2 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
         <div className="relative z-10 pr-10 md:pr-0">
           <div className="flex items-center space-x-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1.5">
@@ -57,7 +57,7 @@ const TopReaders = () => {
         />
 
         {/* Style Tabs */}
-        <div className="w-full flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80 text-xs">
+        <div className="w-full flex p-1 rounded-lg bg-midnight-850 border border-midnight-700/80 text-xs">
           <button
             type="button"
             onClick={() => setSelectedStyle('all')}
@@ -107,7 +107,7 @@ const TopReaders = () => {
 
       {/* Reciters Grid */}
       {filteredReciters.length === 0 ? (
-        <div className="p-12 text-center rounded-xl bg-midnight-850 border border-midnight-700/60">
+        <div className="p-12 text-center rounded-lg bg-midnight-850 border border-midnight-700/60">
           <p className="text-base text-slate-300 font-semibold">
             No reciters found matching &ldquo;{searchQuery}&rdquo;
           </p>

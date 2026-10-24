@@ -334,7 +334,7 @@ const SuraDetails = () => {
   const showBismillah = numSurahId !== 1 && numSurahId !== 9;
 
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="flex flex-col space-y-2">
       {/* Surah Header Hero */}
       <DetailsHeader
         chapterData={chapterData?.chapter}
@@ -346,13 +346,13 @@ const SuraDetails = () => {
       />
 
       {/* Primary Reading & Memorization Toolbar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-midnight-850/80 border border-midnight-700/80 shadow-lg">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 p-3 rounded-lg bg-midnight-850/80 border border-midnight-700/80 shadow-lg">
         {/* Left: Mode Tabs (Verses vs Commentary vs Hifz) */}
         <div className="flex items-center space-x-2">
           <button
             type="button"
             onClick={() => setActiveTab('verses')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
               activeTab === 'verses'
                 ? 'bg-indigo-600 text-white shadow-md shadow-indigo-950/60'
                 : 'bg-midnight-800 text-slate-300 hover:text-white border border-midnight-700'
@@ -365,7 +365,7 @@ const SuraDetails = () => {
           <button
             type="button"
             onClick={() => setActiveTab('info')}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 ${
+            className={`px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
               activeTab === 'info'
                 ? 'bg-indigo-600 text-white shadow-md shadow-indigo-950/60'
                 : 'bg-midnight-800 text-slate-300 hover:text-white border border-midnight-700'
@@ -379,7 +379,7 @@ const SuraDetails = () => {
           <button
             type="button"
             onClick={() => setIsHifzOpen(!isHifzOpen)}
-            className={`px-3 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 border ${
+            className={`px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
               isHifzActive
                 ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 animate-pulse'
                 : 'bg-midnight-800 text-slate-300 hover:text-white border-midnight-700'
@@ -399,7 +399,7 @@ const SuraDetails = () => {
         {activeTab === 'verses' && (
           <div className="flex flex-wrap items-center gap-2 text-xs">
             {/* Reading Modes: Madinah Mushaf (604 Pages) | Ayah Cards | Continuous Flow */}
-            <div className="flex items-center p-1 rounded-xl bg-midnight-900 border border-midnight-700 text-xs">
+            <div className="flex items-center p-1 rounded-lg bg-midnight-900 border border-midnight-700 text-xs">
               <button
                 type="button"
                 onClick={() => setViewStyle('mushaf')}
@@ -459,7 +459,7 @@ const SuraDetails = () => {
 
             {/* Font Size Adjusters (for Cards & Continuous mode) */}
             {viewStyle !== 'mushaf' && (
-              <div className="flex items-center space-x-1 bg-midnight-900 border border-midnight-700 rounded-xl p-0.5 text-xs text-slate-400">
+              <div className="flex items-center space-x-1 bg-midnight-900 border border-midnight-700 rounded-lg p-0.5 text-xs text-slate-400">
                 <button
                   type="button"
                   onClick={() => setFontSize('text-xl')}
@@ -489,7 +489,7 @@ const SuraDetails = () => {
 
       {/* Hifz Memorization Panel */}
       {isHifzOpen && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-midnight-900 border border-midnight-700/80 shadow-xl space-y-3 animate-slidedown">
+        <div className="p-4 sm:p-5 rounded-xl bg-midnight-900 border border-midnight-700/80 shadow-xl space-y-3 animate-slidedown">
           <div className="flex items-center justify-between pb-2 border-b border-midnight-800">
             <div className="flex items-center space-x-2">
               <FiRepeat className="text-emerald-400" size={16} />
@@ -607,7 +607,7 @@ const SuraDetails = () => {
             <>
               {/* Bismillah Banner */}
               {showBismillah && (
-                <div className="text-center py-4 bg-midnight-850/40 border border-midnight-700/50 rounded-2xl">
+                <div className="text-center py-4 bg-midnight-850/40 border border-midnight-700/50 rounded-xl">
                   <p className="font-quran text-3xl sm:text-4xl text-indigo-300 tracking-wide select-none">
                     بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
                   </p>
@@ -624,7 +624,7 @@ const SuraDetails = () => {
                       key={verse.id}
                       ref={isPlayingThisVerse ? activeVerseRef : null}
                       onClick={() => handleJumpToVerse(verse.verse_key)}
-                      className={`p-5 sm:p-6 rounded-2xl border transition-all duration-200 cursor-pointer text-right relative group ${
+                      className={`p-5 sm:p-6 rounded-xl border transition-all duration-200 cursor-pointer text-right relative group ${
                         isPlayingThisVerse
                           ? 'bg-indigo-950/35 border-indigo-500/80 shadow-xl shadow-indigo-950/60 ring-1 ring-indigo-500/50'
                           : 'bg-midnight-850/60 hover:bg-midnight-800/80 border-midnight-700/60 hover:border-midnight-600'
@@ -693,14 +693,14 @@ const SuraDetails = () => {
             <>
               {/* Bismillah Banner */}
               {showBismillah && (
-                <div className="text-center py-4 bg-midnight-850/40 border border-midnight-700/50 rounded-2xl">
+                <div className="text-center py-4 bg-midnight-850/40 border border-midnight-700/50 rounded-xl">
                   <p className="font-quran text-3xl sm:text-4xl text-indigo-300 tracking-wide select-none">
                     بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
                   </p>
                 </div>
               )}
 
-              <div className="p-6 sm:p-10 rounded-2xl bg-midnight-850/60 border border-midnight-700/60 shadow-xl">
+              <div className="p-6 sm:p-10 rounded-xl bg-midnight-850/60 border border-midnight-700/60 shadow-xl">
                 <div
                   dir="rtl"
                   className="leading-[2.8] text-right font-quran text-slate-100 selection:bg-indigo-500/30"
@@ -733,12 +733,12 @@ const SuraDetails = () => {
 
       {/* Info Tab Content */}
       {activeTab === 'info' && (
-        <div className="p-6 sm:p-8 rounded-2xl bg-midnight-850/60 border border-midnight-700/60 leading-relaxed text-slate-300 space-y-4">
+        <div className="p-6 sm:p-8 rounded-xl bg-midnight-850/60 border border-midnight-700/60 leading-relaxed text-slate-300 space-y-4">
           <h3 className="text-lg font-bold text-slate-100">
             Historical Context & Revelation
           </h3>
           {infoData?.chapter_info?.short_text && (
-            <p className="text-indigo-300/90 font-medium bg-indigo-950/40 border border-indigo-500/20 p-4 rounded-xl">
+            <p className="text-indigo-300/90 font-medium bg-indigo-950/40 border border-indigo-500/20 p-4 rounded-lg">
               {infoData.chapter_info.short_text}
             </p>
           )}

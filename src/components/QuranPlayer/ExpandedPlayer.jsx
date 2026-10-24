@@ -100,7 +100,7 @@ const ExpandedPlayer = ({
         <button
           type="button"
           onClick={() => dispatch(setIsExpanded(false))}
-          className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors p-2 -ml-2 rounded-xl hover:bg-midnight-800"
+          className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors p-2 -ml-2 rounded-lg hover:bg-midnight-800"
         >
           <FiChevronDown size={24} />
           <span className="text-xs font-semibold uppercase tracking-wider hidden sm:inline">
@@ -120,7 +120,7 @@ const ExpandedPlayer = ({
         <button
           type="button"
           onClick={() => setShowQueue(!showQueue)}
-          className={`flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-xl transition-all ${
+          className={`flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-lg transition-all ${
             showQueue
               ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
               : 'text-slate-400 hover:text-white hover:bg-midnight-800'
@@ -160,7 +160,7 @@ const ExpandedPlayer = ({
 
           {/* Reciter Badge */}
           {currentReciter && (
-            <div className="flex items-center space-x-3.5 px-4 py-2.5 rounded-xl bg-midnight-850/80 border border-midnight-700/80">
+            <div className="flex items-center space-x-3.5 px-4 py-2.5 rounded-lg bg-midnight-850/80 border border-midnight-700/80">
               <ReciterAvatar
                 photoUrl={currentReciter.photo_url}
                 name={currentReciter.reciter_name}
@@ -181,7 +181,7 @@ const ExpandedPlayer = ({
 
         {/* Right: Queue Drawer */}
         {showQueue && (
-          <div className="w-full lg:w-80 h-72 lg:h-96 rounded-xl bg-midnight-850 border border-midnight-700 p-4 flex flex-col shadow-2xl">
+          <div className="w-full lg:w-80 h-72 lg:h-96 rounded-lg bg-midnight-850 border border-midnight-700 p-4 flex flex-col shadow-2xl">
             <div className="flex items-center justify-between pb-3 mb-2 border-b border-midnight-700">
               <h4 className="text-xs uppercase font-bold tracking-wider text-slate-300">
                 Surah Queue ({currentSura?.length || 0})
@@ -212,7 +212,7 @@ const ExpandedPlayer = ({
                       );
                       dispatch(playPause(true));
                     }}
-                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-all ${
+                    className={`w-full flex items-center justify-between p-2.5 rounded-lg text-left transition-all ${
                       isItemCurrent
                         ? 'bg-midnight-800 text-indigo-300 border border-indigo-500/50 shadow-sm'
                         : 'hover:bg-midnight-800 text-slate-300'
@@ -276,7 +276,7 @@ const ExpandedPlayer = ({
             type="button"
             onClick={() => dispatch(toggleShuffle())}
             aria-label="Toggle shuffle"
-            className={`p-2.5 rounded-xl transition-colors ${
+            className={`p-2.5 rounded-lg transition-colors ${
               shuffle
                 ? 'text-indigo-400 bg-indigo-950/70'
                 : 'text-slate-400 hover:text-slate-200'
@@ -343,7 +343,7 @@ const ExpandedPlayer = ({
             type="button"
             onClick={() => dispatch(cycleRepeatMode())}
             aria-label="Cycle repeat mode"
-            className={`relative p-2.5 rounded-xl transition-colors ${
+            className={`relative p-2.5 rounded-lg transition-colors ${
               repeatMode !== 'off'
                 ? 'text-indigo-400 bg-indigo-950/70'
                 : 'text-slate-400 hover:text-slate-200'

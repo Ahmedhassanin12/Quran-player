@@ -113,7 +113,7 @@ const ArtistDetails = () => {
   }
 
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="flex flex-col space-y-3">
       {/* Profile Header */}
       <DetailsHeader
         readerId={readerId}
@@ -125,26 +125,26 @@ const ArtistDetails = () => {
       />
 
       {/* Reciter Action Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-xl bg-midnight-850/80 border border-midnight-700/80">
-        <div className="flex items-center space-x-3">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 p-2 md:p-5 rounded-lg bg-midnight-850/80 border border-midnight-700/80">
+        <div className="flex items-center space-x-3 w-full">
           <button
             type="button"
             onClick={handleSetAsActiveReciter}
-            className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white font-semibold text-sm shadow-lg shadow-indigo-950/60 transition-transform transform active:scale-95"
+            className="flex items-center space-x-2 px-2.5 md:px-5 py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white font-semibold text-sm shadow-lg shadow-indigo-950/60 transition-transform transform active:scale-95"
           >
             <BsFillPlayFill size={20} />
             <span>Play Full Quran</span>
           </button>
 
           {isCurrentReciter ? (
-            <span className="text-xs font-semibold text-indigo-300 bg-indigo-950/60 border border-indigo-500/30 px-3 py-1.5 rounded-xl">
+            <span className="text-xs font-semibold text-indigo-300 bg-indigo-950/60 border border-indigo-500/30 px-3 py-1.5 rounded-lg">
               ✓ Active Reciter
             </span>
           ) : (
             <button
               type="button"
               onClick={() => dispatch(setReciter(verifiedReciter))}
-              className="text-xs font-medium text-slate-300 hover:text-white px-3 py-1.5 rounded-xl bg-midnight-750 hover:bg-midnight-700 transition-colors"
+              className="text-xs font-medium text-slate-300 hover:text-white px-3 py-1.5 rounded-lg bg-midnight-750 hover:bg-midnight-700 transition-colors"
             >
               Set as Default
             </button>
@@ -159,7 +159,7 @@ const ArtistDetails = () => {
       </div>
 
       {/* Surahs Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-2 sm:gap-3">
         {filteredSurahs.map((sura, i) => (
           <SurahCard
             key={sura.id}

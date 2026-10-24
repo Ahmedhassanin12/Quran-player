@@ -53,7 +53,7 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
   return (
     <div
       onClick={handlePlayClick}
-      className={`group relative flex flex-col justify-between p-4 sm:p-5 rounded-xl transition-all duration-200 cursor-pointer border ${
+      className={`group relative flex flex-col justify-between p-4 sm:p-5 rounded-lg transition-all duration-200 cursor-pointer border ${
         isCurrent
           ? 'bg-midnight-800 border-indigo-500/70 shadow-lg shadow-indigo-950/40 ring-1 ring-indigo-500/40'
           : 'bg-midnight-850 hover:bg-midnight-750 border-midnight-700/80 hover:border-midnight-600 hover:shadow-md'

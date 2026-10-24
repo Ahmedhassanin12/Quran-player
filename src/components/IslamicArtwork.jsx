@@ -33,7 +33,7 @@ export const SurahMedallion = ({
 
   return (
     <div
-      className={`relative flex items-center justify-center shrink-0 rounded-xl overflow-hidden border transition-all ${
+      className={`relative flex items-center justify-center shrink-0 rounded-lg overflow-hidden border transition-all ${
         isPlaying
           ? 'bg-midnight-800 border-indigo-500/70 ring-1 ring-indigo-500/40 shadow-sm'
           : 'bg-midnight-850 border-midnight-700/80'
@@ -95,7 +95,7 @@ export const ReciterAvatar = ({
 
   return (
     <div
-      className={`relative flex items-center justify-center shrink-0 rounded-2xl overflow-hidden border transition-all ${
+      className={`relative flex items-center justify-center shrink-0 rounded-xl overflow-hidden border transition-all ${
         isPlaying
           ? 'bg-midnight-800 border-indigo-500 ring-2 ring-indigo-500/30'
           : 'bg-midnight-850 border-midnight-700/80'

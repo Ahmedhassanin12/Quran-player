@@ -44,11 +44,11 @@ const MushafNavigation = ({
   };
 
   return (
-    <div className="w-full  bg-midnight-900/90 border border-midnight-700/80 rounded-2xl p-3 sm:p-4 mb-4 shadow-xl select-none">
+    <div className="w-full  bg-midnight-900/90 border border-midnight-700/80 rounded-xl p-3 sm:p-4 mb-4 shadow-xl select-none">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         {/* Left: Page & Juz Indicators */}
         <div className="flex items-center space-x-2 sm:space-x-3 text-right">
-          <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-midnight-800 border border-midnight-700">
+          <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-midnight-800 border border-midnight-700">
             <span className="text-xs font-bold text-indigo-400 font-arabic">
               {pageInfo?.surahNameArabic || 'القرآن الكريم'}
             </span>
@@ -58,7 +58,7 @@ const MushafNavigation = ({
             </span>
           </div>
 
-          <div className="px-3 py-1.5 rounded-xl bg-midnight-800/80 border border-midnight-700 text-xs font-mono font-semibold text-slate-200">
+          <div className="px-3 py-1.5 rounded-lg bg-midnight-800/80 border border-midnight-700 text-xs font-mono font-semibold text-slate-200">
             {currentPage} / {TOTAL_MUSHAF_PAGES}
           </div>
         </div>
@@ -71,7 +71,7 @@ const MushafNavigation = ({
             onClick={handlePrev}
             disabled={currentPage <= 1}
             aria-label="Previous Page"
-            className="flex items-center space-x-1 px-3 py-2 rounded-xl bg-midnight-800 hover:bg-midnight-750 border border-midnight-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-medium text-slate-200 transition"
+            className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-midnight-800 hover:bg-midnight-750 border border-midnight-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-medium text-slate-200 transition"
           >
             <FiChevronLeft size={16} />
             <span className="hidden xs:inline">السابقة</span>
@@ -108,7 +108,7 @@ const MushafNavigation = ({
             <button
               type="button"
               onClick={() => setIsJumpOpen(true)}
-              className="px-3 py-2 rounded-xl bg-midnight-800 hover:bg-midnight-750 border border-midnight-700 text-xs font-semibold text-indigo-300 transition"
+              className="px-3 py-2 rounded-lg bg-midnight-800 hover:bg-midnight-750 border border-midnight-700 text-xs font-semibold text-indigo-300 transition"
             >
               صفحة {currentPage}
             </button>
@@ -120,7 +120,7 @@ const MushafNavigation = ({
             onClick={handleNext}
             disabled={currentPage >= TOTAL_MUSHAF_PAGES}
             aria-label="Next Page"
-            className="flex items-center space-x-1 px-3 py-2 rounded-xl bg-midnight-800 hover:bg-midnight-750 border border-midnight-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-medium text-slate-200 transition"
+            className="flex items-center space-x-1 px-3 py-2 rounded-lg bg-midnight-800 hover:bg-midnight-750 border border-midnight-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-medium text-slate-200 transition"
           >
             <span className="hidden xs:inline">التالية</span>
             <FiChevronRight size={16} />
@@ -130,7 +130,7 @@ const MushafNavigation = ({
         {/* Right: Engine Switch (Calligraphy Plate vs 15-Line Typography) + Bookmarks */}
         <div className="flex items-center space-x-2">
           {/* Engine Selector */}
-          <div className="flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80 text-xs">
+          <div className="flex p-1 rounded-lg bg-midnight-850 border border-midnight-700/80 text-xs">
             <button
               type="button"
               onClick={() => onViewEngineChange('plate')}
@@ -167,7 +167,7 @@ const MushafNavigation = ({
               onClick={onOpenBookmarks}
               aria-label="View Saved Bookmarks"
               title={`${bookmarks.length} إشارات مرجعية محفوظة`}
-              className="relative p-2.5 rounded-xl bg-midnight-800 hover:bg-midnight-750 border border-midnight-700 text-slate-300 hover:text-indigo-300 transition"
+              className="relative p-2.5 rounded-lg bg-midnight-800 hover:bg-midnight-750 border border-midnight-700 text-slate-300 hover:text-indigo-300 transition"
             >
               <FiBookmark size={15} />
               {bookmarks.length > 0 && (

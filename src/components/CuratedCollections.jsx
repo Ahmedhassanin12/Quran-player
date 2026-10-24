@@ -95,7 +95,7 @@ const CuratedCollections = ({ onSelectCollection, selectedCollectionId, allSurah
             <div
               key={col.id}
               onClick={() => onSelectCollection(isSelected ? null : col.id)}
-              className={`w-64 sm:w-72 shrink-0 p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between group shadow-md ${
+              className={`w-64 sm:w-72 shrink-0 p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col justify-between group shadow-md ${
                 isSelected
                   ? 'bg-indigo-950/50 border-indigo-500/80 shadow-indigo-950/60 ring-1 ring-indigo-500/40'
                   : 'bg-midnight-850 hover:bg-midnight-800 border-midnight-700/70 hover:border-midnight-600'
@@ -138,7 +138,7 @@ const CuratedCollections = ({ onSelectCollection, selectedCollectionId, allSurah
                   type="button"
                   onClick={(e) => handlePlayCollection(e, col)}
                   aria-label={`Play ${col.title}`}
-                  className="px-3 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm shadow-indigo-950/50"
+                  className="px-3 py-1.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm shadow-indigo-950/50"
                 >
                   <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />

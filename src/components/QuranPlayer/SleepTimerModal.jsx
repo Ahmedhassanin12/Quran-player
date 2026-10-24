@@ -38,7 +38,7 @@ const SleepTimerModal = ({ isOpen, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm rounded-2xl bg-midnight-900 border border-midnight-700 p-6 shadow-2xl relative text-left"
+        className="w-full max-w-sm rounded-xl bg-midnight-900 border border-midnight-700 p-6 shadow-2xl relative text-left"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -46,7 +46,7 @@ const SleepTimerModal = ({ isOpen, onClose }) => {
       >
         <div className="flex items-center justify-between pb-4 border-b border-midnight-700/60">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+            <div className="w-10 h-10 rounded-lg bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
@@ -73,7 +73,7 @@ const SleepTimerModal = ({ isOpen, onClose }) => {
 
         {/* Current Timer Status */}
         {sleepTimer.active && (
-          <div className="mt-4 p-3 rounded-xl bg-indigo-950/40 border border-indigo-500/30 flex items-center justify-between">
+          <div className="mt-4 p-3 rounded-lg bg-indigo-950/40 border border-indigo-500/30 flex items-center justify-between">
             <div className="text-xs text-indigo-300">
               <span className="font-semibold block text-slate-200">Active Timer:</span>
               {sleepTimer.mode === 'surah' ? 'End of Surah' : `${formatRemaining(sleepTimer.remainingSeconds)} remaining`}
@@ -97,7 +97,7 @@ const SleepTimerModal = ({ isOpen, onClose }) => {
                 key={opt.mode}
                 type="button"
                 onClick={() => handleSelect(opt)}
-                className={`w-full text-left p-3 rounded-xl transition flex items-center justify-between border ${
+                className={`w-full text-left p-3 rounded-lg transition flex items-center justify-between border ${
                   isSelected
                     ? 'bg-indigo-600/20 border-indigo-500/60 text-slate-100'
                     : 'bg-midnight-850/60 border-midnight-700/50 hover:bg-midnight-800 text-slate-300'
@@ -124,7 +124,7 @@ const SleepTimerModal = ({ isOpen, onClose }) => {
           <button
             type="button"
             onClick={handleClear}
-            className="w-full mt-4 py-2.5 text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-midnight-800 rounded-xl transition border border-midnight-700/60"
+            className="w-full mt-4 py-2.5 text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-midnight-800 rounded-lg transition border border-midnight-700/60"
           >
             Cancel Timer
           </button>

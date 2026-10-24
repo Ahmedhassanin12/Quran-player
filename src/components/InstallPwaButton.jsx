@@ -57,7 +57,7 @@ const InstallPwaButton = ({ className = '' }) => {
     <button
       type="button"
       onClick={handleInstallClick}
-      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-slate-100 text-xs font-semibold shadow-md transition-all group ${className}`}
+      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-slate-100 text-xs font-semibold shadow-md transition-all group ${className}`}
       title="Install Quran Kareem on your device"
     >
       <div className="w-7 h-7 rounded-lg bg-indigo-500/30 flex items-center justify-center text-indigo-300 group-hover:scale-110 transition-transform shrink-0">

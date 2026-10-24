@@ -10,7 +10,7 @@ const Searchbar = ({ value, onChange, placeholder = 'Search Surah by name, numbe
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full pl-10 pr-9 py-2.5 bg-midnight-850 hover:bg-midnight-800 text-sm text-slate-100 placeholder-slate-500 rounded-xl border border-midnight-700/80 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-sm"
+        className="w-full pl-10 pr-9 py-2.5 bg-midnight-850 hover:bg-midnight-800 text-sm text-slate-100 placeholder-slate-500 rounded-lg border border-midnight-700/80 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-sm"
       />
       {value && (
         <button

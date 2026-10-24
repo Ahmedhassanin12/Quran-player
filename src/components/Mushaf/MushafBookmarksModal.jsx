@@ -18,7 +18,7 @@ const MushafBookmarksModal = ({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-md bg-midnight-900 border border-midnight-700/80 rounded-2xl p-5 sm:p-6 shadow-2xl text-right overflow-hidden flex flex-col max-h-[80vh]"
+        className="relative w-full max-w-md bg-midnight-900 border border-midnight-700/80 rounded-xl p-5 sm:p-6 shadow-2xl text-right overflow-hidden flex flex-col max-h-[80vh]"
         onClick={(e) => e.stopPropagation()}
         dir="rtl"
       >
@@ -56,7 +56,7 @@ const MushafBookmarksModal = ({
                   onSelectBookmark(b);
                   onClose();
                 }}
-                className="p-3.5 rounded-xl bg-midnight-850 hover:bg-midnight-800 border border-midnight-750 hover:border-indigo-500/50 cursor-pointer transition flex items-center justify-between group shadow-sm"
+                className="p-3.5 rounded-lg bg-midnight-850 hover:bg-midnight-800 border border-midnight-750 hover:border-indigo-500/50 cursor-pointer transition flex items-center justify-between group shadow-sm"
               >
                 <div className="text-right">
                   <div className="flex items-center space-x-2 space-x-reverse">

@@ -45,7 +45,7 @@ const ContinueListeningBanner = ({ allSurahs, audioFiles }) => {
   };
 
   return (
-    <div className="relative rounded-xl p-4 bg-gradient-to-r from-indigo-950/60 via-midnight-850 to-midnight-850 border border-indigo-500/40 shadow-xl overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="relative rounded-lg p-4 bg-gradient-to-r from-indigo-950/60 via-midnight-850 to-midnight-850 border border-indigo-500/40 shadow-xl overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div className="flex items-center space-x-3.5">
         <SurahMedallion number={surahId} size="md" isPlaying={false} />
 
@@ -76,7 +76,7 @@ const ContinueListeningBanner = ({ allSurahs, audioFiles }) => {
         <button
           type="button"
           onClick={handleResume}
-          className="px-4 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white font-semibold text-xs transition-all shadow-md shadow-indigo-950/50 flex items-center gap-1.5"
+          className="px-4 py-2 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white font-semibold text-xs transition-all shadow-md shadow-indigo-950/50 flex items-center gap-1.5"
         >
           <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />

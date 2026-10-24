@@ -70,7 +70,7 @@ const TopPlay = () => {
   return (
     <div className="flex flex-col space-y-3 select-none w-full">
       {/* Featured Reciters Quick Switch Banner */}
-      <div className="p-4 sm:p-5 rounded-xl bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
+      <div className="p-4 sm:p-5 rounded-lg bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
             Featured Reciters
@@ -91,7 +91,7 @@ const TopPlay = () => {
                 type="button"
                 key={reciter.id}
                 onClick={() => dispatch(setReciter(reciter))}
-                className={`flex items-center space-x-2 p-2 rounded-xl text-left transition-all ${
+                className={`flex items-center space-x-2 p-2 rounded-lg text-left transition-all ${
                   isSelected
                     ? 'bg-midnight-800 border border-indigo-500/50 shadow-sm'
                     : 'bg-midnight-800/60 hover:bg-midnight-800 border border-midnight-700/50 text-slate-300'
@@ -118,7 +118,7 @@ const TopPlay = () => {
       </div>
 
       {/* Recommended Surahs Card List */}
-      <div className="p-4 sm:p-5 rounded-xl bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
+      <div className="p-4 sm:p-5 rounded-lg bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
         <div className="flex items-center justify-between mb-3.5">
           <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
             Recommended Surahs
@@ -137,7 +137,7 @@ const TopPlay = () => {
               <div
                 key={sura.id}
                 onClick={() => handlePlayClick(sura, idx)}
-                className={`flex items-center justify-between p-2 rounded-xl transition-all cursor-pointer border ${
+                className={`flex items-center justify-between p-2 rounded-lg transition-all cursor-pointer border ${
                   isCurrent
                     ? 'bg-midnight-800 border-indigo-500/50 shadow-sm'
                     : 'bg-midnight-800/40 hover:bg-midnight-800 border-midnight-700/40'

@@ -103,7 +103,7 @@ const MushafPageRenderer = ({
   return (
     <div className="w-full flex flex-col items-center select-none animate-slowfade">
       {/* Outer Luxury Mushaf Folio Container */}
-      <div className="w-full max-w-lg md:max-w-xl bg-[#090B10] rounded-2xl sm:rounded-3xl border border-midnight-700/80 shadow-2xl overflow-hidden p-2 sm:p-5">
+      <div className="w-full max-w-lg md:max-w-xl bg-[#090B10] rounded-xl sm:rounded-3xl border border-midnight-700/80 shadow-2xl overflow-hidden p-2 sm:p-5">
         {/* Authentic Page Top Header (Juz on Left, Surah Name on Right) */}
         <div className="w-full flex items-center justify-between px-3 sm:px-6 py-2 border-b border-midnight-800 text-[11px] sm:text-xs font-arabic text-slate-400 select-none">
           <div className="flex items-center space-x-2 text-indigo-300">
@@ -130,7 +130,7 @@ const MushafPageRenderer = ({
         {/* ============================================================ */}
         {viewEngine === 'plate' ? (
           <div
-            className={`relative w-full aspect-[1260/2038] flex items-center justify-center overflow-hidden my-2 sm:my-3 rounded-xl border border-midnight-800 transition-colors duration-300 ${
+            className={`relative w-full aspect-[1260/2038] flex items-center justify-center overflow-hidden my-2 sm:my-3 rounded-lg border border-midnight-800 transition-colors duration-300 ${
               plateTheme === 'parchment' ? 'bg-[#FAF7EE]' : 'bg-[#0E111A]'
             }`}
           >
@@ -177,7 +177,7 @@ const MushafPageRenderer = ({
           /* ============================================================ */
           /* ENGINE 2: 15-LINE STRUCTURED DIGITAL TYPOGRAPHY MUSHAF       */
           /* ============================================================ */
-          <div className="relative w-full aspect-[1260/2038] bg-[#0c0f17] flex flex-col justify-between p-3 sm:p-6 my-2 sm:my-3 rounded-xl border border-midnight-800 overflow-hidden">
+          <div className="relative w-full aspect-[1260/2038] bg-[#0c0f17] flex flex-col justify-between p-3 sm:p-6 my-2 sm:my-3 rounded-lg border border-midnight-800 overflow-hidden">
             {/* Subtle background ornamentation pattern */}
             <div className="absolute inset-0 opacity-5 bg-islamic-pattern pointer-events-none" />
 
@@ -207,7 +207,7 @@ const MushafPageRenderer = ({
                   return (
                     <div
                       key={`header-${lineNum}`}
-                      className="w-full my-0.5 py-1 px-4 rounded-xl bg-gradient-to-r from-indigo-950/80 via-midnight-800 to-indigo-950/80 border border-indigo-500/40 flex items-center justify-between text-indigo-300 font-arabic text-xs sm:text-sm font-bold shadow-md"
+                      className="w-full my-0.5 py-1 px-4 rounded-lg bg-gradient-to-r from-indigo-950/80 via-midnight-800 to-indigo-950/80 border border-indigo-500/40 flex items-center justify-between text-indigo-300 font-arabic text-xs sm:text-sm font-bold shadow-md"
                     >
                       <span>۞ سورة {pageInfo?.surahNameArabic}</span>
                       <span className="text-[10px] text-slate-400 font-sans">

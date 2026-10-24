@@ -134,7 +134,7 @@ const Discover = () => {
       />
 
       {/* Header Banner */}
-      <div className="relative rounded-xl p-2 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
+      <div className="relative rounded-lg p-2 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -154,9 +154,9 @@ const Discover = () => {
           {/* Active Reciter Pill */}
           <Link
             to="/top-reciters"
-            className="flex items-center space-x-3 px-4 py-2.5 rounded-xl bg-midnight-800/80 hover:bg-midnight-800 border border-indigo-500/30 text-left transition-all hover:border-indigo-500/60 group shadow-md"
+            className="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-midnight-800/80 hover:bg-midnight-800 border border-indigo-500/30 text-left transition-all hover:border-indigo-500/60 group shadow-md"
           >
-            <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
               <FiMic size={16} />
             </div>
             <div>
@@ -192,7 +192,7 @@ const Discover = () => {
       {/* Tier 2: Dedicated Filter Tabs & View Mode Row (100% Visible - Zero Clipping) */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
         {/* All Tabs: All (114), Meccan, Medinan, Favorites, History */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-midnight-850 border border-midnight-700/80 text-xs shadow-sm">
+        <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-lg bg-midnight-850 border border-midnight-700/80 text-xs shadow-sm">
           <button
             type="button"
             onClick={() => {
@@ -261,7 +261,7 @@ const Discover = () => {
             {filteredSurahs.length} {filteredSurahs.length === 1 ? 'Surah' : 'Surahs'}
           </span>
 
-          <div className="flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80">
+          <div className="flex p-1 rounded-lg bg-midnight-850 border border-midnight-700/80">
             <button
               type="button"
               onClick={() => setViewMode('grid')}
@@ -299,7 +299,7 @@ const Discover = () => {
           </div>
 
           {recents.length === 0 ? (
-            <div className="p-12 text-center rounded-2xl bg-midnight-850 border border-midnight-700/60">
+            <div className="p-12 text-center rounded-xl bg-midnight-850 border border-midnight-700/60">
               <span className="text-3xl block mb-2">🕒</span>
               <p className="text-sm text-slate-300 font-semibold">No listening history yet</p>
               <p className="text-xs text-slate-400 mt-1">
@@ -312,7 +312,7 @@ const Discover = () => {
                 <div
                   key={`${item.surahId}-${item.reciterId}-${idx}`}
                   onClick={() => handlePlayRecent(item)}
-                  className="p-4 rounded-xl bg-midnight-850 hover:bg-midnight-800 border border-midnight-700/70 hover:border-indigo-500/50 transition cursor-pointer flex items-center justify-between group shadow-sm"
+                  className="p-4 rounded-lg bg-midnight-850 hover:bg-midnight-800 border border-midnight-700/70 hover:border-indigo-500/50 transition cursor-pointer flex items-center justify-between group shadow-sm"
                 >
                   <div>
                     <div className="text-xs font-bold text-indigo-400 uppercase tracking-wider">
@@ -344,7 +344,7 @@ const Discover = () => {
         /* Regular Surahs Library Grid / List */
         <>
           {filteredSurahs.length === 0 ? (
-            <div className="p-12 text-center rounded-2xl bg-midnight-850 border border-midnight-700/60">
+            <div className="p-12 text-center rounded-xl bg-midnight-850 border border-midnight-700/60">
               {activeTab === 'favorites' ? (
                 <>
                   <span className="text-3xl block mb-2">⭐</span>

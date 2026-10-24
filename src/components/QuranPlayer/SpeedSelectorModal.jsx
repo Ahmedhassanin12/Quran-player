@@ -29,7 +29,7 @@ const SpeedSelectorModal = ({ isOpen, onClose }) => {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm rounded-2xl bg-midnight-900 border border-midnight-700 p-6 shadow-2xl relative text-left"
+        className="w-full max-w-sm rounded-xl bg-midnight-900 border border-midnight-700 p-6 shadow-2xl relative text-left"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -37,7 +37,7 @@ const SpeedSelectorModal = ({ isOpen, onClose }) => {
       >
         <div className="flex items-center justify-between pb-4 border-b border-midnight-700/60">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold text-xs">
+            <div className="w-10 h-10 rounded-lg bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold text-xs">
               {currentSpeed.toFixed(2)}x
             </div>
             <div>
@@ -63,7 +63,7 @@ const SpeedSelectorModal = ({ isOpen, onClose }) => {
                 key={opt.value}
                 type="button"
                 onClick={() => handleSelect(opt.value)}
-                className={`w-full text-left p-3 rounded-xl transition flex items-center justify-between border ${
+                className={`w-full text-left p-3 rounded-lg transition flex items-center justify-between border ${
                   isSelected
                     ? 'bg-indigo-600/20 border-indigo-500/60 text-slate-100'
                     : 'bg-midnight-850/60 border-midnight-700/50 hover:bg-midnight-800 text-slate-300'
