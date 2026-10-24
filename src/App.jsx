@@ -38,7 +38,7 @@ const App = () => {
 
       {/* Main Content Viewport */}
       <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden relative">
-        <main className="flex-1 min-w-0 overflow-y-auto px-2 sm:px-3 lg:px-4 py-3 pb-6 focus:outline-none">
+        <main className="flex-1 min-w-0 overflow-y-auto px-2 sm:px-3 lg:px-4 py-3 pb-6 lg:pb-32 focus:outline-none">
           <div className="max-w-7xl mx-auto flex flex-col xl:flex-row gap-4 items-start w-full">
             {/* Primary Router Outlet */}
             <div className="flex-1 min-w-0 w-full">

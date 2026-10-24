@@ -211,128 +211,130 @@ const QuranPlayer = () => {
 
   return (
     <>
-      {/* Persistent Bottom Bar Player */}
-      <footer
-        className="w-full shrink-0 relative bg-midnight-900/98 backdrop-blur-xl border-t border-midnight-700/80 px-2.5 sm:px-6 lg:px-8 py-2 sm:py-0 min-h-[4.75rem] sm:h-24 flex items-center justify-between z-30 shadow-2xl transition-all pb-[env(safe-area-inset-bottom,0px)]"
-        role="region"
-        aria-label="Audio Player"
-      >
-        {/* Interactive Top-Edge "Tape" Timeline Scrubber */}
-        <TopScrubber
-          appTime={appTime}
-          duration={duration}
-          onSeek={handleSeekDirect}
-        />
-
-        {/* Left: Active Surah Track Information */}
-        <Track
-          isPlaying={isPlaying}
-          isActive={isActive}
-          activeSura={activeSura}
-          currentReciter={currentReciter}
-        />
-
-        {/* Center: Controls & Progress Timeline */}
-        <div className="flex-1 max-w-xl mx-1 sm:mx-4 flex flex-col items-center justify-center space-y-0.5 sm:space-y-1">
-          <Controls
-            isPlaying={isPlaying}
-            isActive={isActive}
-            repeatMode={repeatMode}
-            cycleRepeatMode={() => dispatch(cycleRepeatMode())}
-            shuffle={shuffle}
-            toggleShuffle={() => dispatch(toggleShuffle())}
-            handlePlayPause={() => handlePlayPause()}
-            handlePrevSong={handlePrevSong}
-            handleNextSong={handleNextSong}
-            handleSeekRelative={handleSeekRelative}
+      {/* Audio Player Container: Docked on Mobile/Tablet (<lg), Floating Island on Large Screens (lg+) */}
+      <div className="w-full shrink-0 relative lg:absolute lg:bottom-0 lg:left-0 lg:right-0 lg:z-30 lg:flex lg:justify-center lg:px-6 lg:pb-5 lg:pointer-events-none animate-slideup">
+        <footer
+          className="w-full lg:max-w-5xl lg:pointer-events-auto relative bg-midnight-900/98 lg:bg-midnight-900/90 backdrop-blur-xl lg:backdrop-blur-2xl border-t border-midnight-700/80 lg:border lg:rounded-3xl lg:shadow-[0_14px_45px_rgba(0,0,0,0.75)] lg:ring-1 lg:ring-white/10 px-2.5 sm:px-6 lg:px-8 py-2 sm:py-0 min-h-[4.75rem] sm:h-24 lg:h-[5.25rem] flex items-center justify-between transition-all duration-300 pb-[env(safe-area-inset-bottom,0px)] lg:pb-0 lg:hover:border-indigo-500/40 lg:hover:shadow-[0_18px_55px_rgba(0,0,0,0.85)]"
+          role="region"
+          aria-label="Audio Player"
+        >
+          {/* Interactive Top-Edge "Tape" Timeline Scrubber */}
+          <TopScrubber
+            appTime={appTime}
+            duration={duration}
+            onSeek={handleSeekDirect}
           />
 
-          <div className="w-full hidden sm:block">
-            <Seekbar
-              appTime={appTime}
-              min={0}
-              max={duration}
-              onInput={handleSeekInput}
+          {/* Left: Active Surah Track Information */}
+          <Track
+            isPlaying={isPlaying}
+            isActive={isActive}
+            activeSura={activeSura}
+            currentReciter={currentReciter}
+          />
+
+          {/* Center: Controls & Progress Timeline */}
+          <div className="flex-1 max-w-xl mx-1 sm:mx-4 flex flex-col items-center justify-center space-y-0.5 sm:space-y-1">
+            <Controls
+              isPlaying={isPlaying}
+              isActive={isActive}
+              repeatMode={repeatMode}
+              cycleRepeatMode={() => dispatch(cycleRepeatMode())}
+              shuffle={shuffle}
+              toggleShuffle={() => dispatch(toggleShuffle())}
+              handlePlayPause={() => handlePlayPause()}
+              handlePrevSong={handlePrevSong}
+              handleNextSong={handleNextSong}
+              handleSeekRelative={handleSeekRelative}
+            />
+
+            <div className="w-full hidden sm:block">
+              <Seekbar
+                appTime={appTime}
+                min={0}
+                max={duration}
+                onInput={handleSeekInput}
+              />
+            </div>
+
+            <Player
+              activeSura={activeSura}
+              volume={localVolume}
+              playbackSpeed={playbackSpeed}
+              isPlaying={isPlaying}
+              seekTime={seekTime}
+              seekCount={seekCount}
+              repeat={repeatMode === 'one'}
+              onEnded={handleTrackEnded}
+              onTimeUpdate={(e) => setAppTime(e.target.currentTime)}
+              onLoadedData={(e) => setDuration(e.target.duration)}
             />
           </div>
 
-          <Player
-            activeSura={activeSura}
-            volume={localVolume}
-            playbackSpeed={playbackSpeed}
-            isPlaying={isPlaying}
-            seekTime={seekTime}
-            seekCount={seekCount}
-            repeat={repeatMode === 'one'}
-            onEnded={handleTrackEnded}
-            onTimeUpdate={(e) => setAppTime(e.target.currentTime)}
-            onLoadedData={(e) => setDuration(e.target.duration)}
-          />
-        </div>
+          {/* Right: Audio Tools (Speed, Sleep Sanctuary, Volume, Expand) */}
+          <div className="flex items-center space-x-1 sm:space-x-2.5 select-none justify-end shrink-0 sm:min-w-[160px] lg:min-w-[220px]">
+            {/* Recitation Pace Button */}
+            <button
+              type="button"
+              onClick={() => setIsSpeedModalOpen(true)}
+              aria-label={`Playback speed: ${playbackSpeed.toFixed(2)}x`}
+              title={`Recitation Speed (${playbackSpeed.toFixed(2)}x)`}
+              className={`px-1.5 sm:px-2 py-1 rounded-lg text-[11px] sm:text-xs font-semibold transition border ${
+                playbackSpeed !== 1.0
+                  ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
+                  : 'bg-midnight-800 text-slate-400 border-midnight-700 hover:text-slate-200'
+              }`}
+            >
+              {playbackSpeed.toFixed(2)}x
+            </button>
 
-        {/* Right: Audio Tools (Speed, Sleep Sanctuary, Volume, Expand) */}
-        <div className="flex items-center space-x-1 sm:space-x-2.5 select-none justify-end shrink-0 sm:min-w-[160px] lg:min-w-[220px]">
-          {/* Recitation Pace Button */}
-          <button
-            type="button"
-            onClick={() => setIsSpeedModalOpen(true)}
-            aria-label={`Playback speed: ${playbackSpeed.toFixed(2)}x`}
-            title={`Recitation Speed (${playbackSpeed.toFixed(2)}x)`}
-            className={`px-1.5 sm:px-2 py-1 rounded-lg text-[11px] sm:text-xs font-semibold transition border ${
-              playbackSpeed !== 1.0
-                ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
-                : 'bg-midnight-800 text-slate-400 border-midnight-700 hover:text-slate-200'
-            }`}
-          >
-            {playbackSpeed.toFixed(2)}x
-          </button>
+            {/* Sleep Sanctuary Timer Button */}
+            <button
+              type="button"
+              onClick={() => setIsSleepModalOpen(true)}
+              aria-label="Sleep Sanctuary Timer"
+              title={sleepTimer.active ? `Sleep Timer: ${formatTimerBadge()}` : 'Sleep Sanctuary Timer'}
+              className={`relative p-1.5 sm:p-2 rounded-lg text-xs font-medium transition flex items-center gap-1 border ${
+                sleepTimer.active
+                  ? 'bg-indigo-600/25 text-indigo-300 border-indigo-500/50'
+                  : 'bg-midnight-800 text-slate-400 border-midnight-700 hover:text-slate-200'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                />
+              </svg>
+              {sleepTimer.active && (
+                <span className="text-[10px] font-bold text-indigo-300">
+                  {formatTimerBadge()}
+                </span>
+              )}
+            </button>
 
-          {/* Sleep Sanctuary Timer Button */}
-          <button
-            type="button"
-            onClick={() => setIsSleepModalOpen(true)}
-            aria-label="Sleep Sanctuary Timer"
-            title={sleepTimer.active ? `Sleep Timer: ${formatTimerBadge()}` : 'Sleep Sanctuary Timer'}
-            className={`relative p-1.5 sm:p-2 rounded-lg text-xs font-medium transition flex items-center gap-1 border ${
-              sleepTimer.active
-                ? 'bg-indigo-600/25 text-indigo-300 border-indigo-500/50'
-                : 'bg-midnight-800 text-slate-400 border-midnight-700 hover:text-slate-200'
-            }`}
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-              />
-            </svg>
-            {sleepTimer.active && (
-              <span className="text-[10px] font-bold text-indigo-300">
-                {formatTimerBadge()}
-              </span>
-            )}
-          </button>
+            {/* Volume Slider Bar (Desktop) */}
+            <VolumeBar
+              value={localVolume}
+              onChange={(e) => handleVolumeChange(Number(e.target.value))}
+              setVolume={handleVolumeChange}
+            />
 
-          {/* Volume Slider Bar (Desktop) */}
-          <VolumeBar
-            value={localVolume}
-            onChange={(e) => handleVolumeChange(Number(e.target.value))}
-            setVolume={handleVolumeChange}
-          />
-
-          {/* Expand Fullscreen Player */}
-          <button
-            type="button"
-            onClick={() => dispatch(setIsExpanded(true))}
-            aria-label="Expand Player"
-            title="Expand Player (Fullscreen)"
-            className="p-1.5 sm:p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-midnight-800 transition"
-          >
-            <FiMaximize2 size={16} />
-          </button>
-        </div>
-      </footer>
+            {/* Expand Fullscreen Player */}
+            <button
+              type="button"
+              onClick={() => dispatch(setIsExpanded(true))}
+              aria-label="Expand Player"
+              title="Expand Player (Fullscreen)"
+              className="p-1.5 sm:p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-midnight-800 transition"
+            >
+              <FiMaximize2 size={16} />
+            </button>
+          </div>
+        </footer>
+      </div>
 
       {/* Expanded Player Overlay Modal */}
       <ExpandedPlayer
