@@ -52,7 +52,7 @@ const DetailsHeader = ({
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-100 tracking-tight">
               {isReciter ? readerName : chapterData?.name_simple}
             </h1>
-            <span className="font-arabic font-bold text-2xl sm:text-3xl text-indigo-300 mt-1 md:mt-0">
+            <span className="font-arabic font-bold text-2xl sm:text-3xl text-slate-200 mt-1 md:mt-0">
               {isReciter ? readerArabicName : chapterData?.name_arabic}
             </span>
           </div>

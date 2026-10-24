@@ -33,7 +33,7 @@ const Controls = ({
       title={`Shuffle: ${shuffle ? 'On' : 'Off'}`}
       className={`hidden sm:flex items-center justify-center p-1.5 rounded-lg transition-colors ${
         shuffle
-          ? 'text-indigo-400 bg-indigo-950/70'
+          ? 'text-indigo-400 bg-midnight-800 border border-indigo-500/30'
           : 'text-slate-400 hover:text-slate-200'
       }`}
     >
@@ -110,7 +110,7 @@ const Controls = ({
       title={`Repeat: ${repeatMode}`}
       className={`relative hidden sm:flex items-center justify-center p-1.5 rounded-lg transition-colors ${
         repeatMode !== 'off'
-          ? 'text-indigo-400 bg-indigo-950/70'
+          ? 'text-indigo-400 bg-midnight-800 border border-indigo-500/30'
           : 'text-slate-400 hover:text-slate-200'
       }`}
     >

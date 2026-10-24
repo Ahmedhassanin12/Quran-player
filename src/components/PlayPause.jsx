@@ -54,7 +54,7 @@ const PlayPause = ({
         e.stopPropagation();
         handlePlay();
       }}
-      className={`${btnDimension} flex items-center justify-center rounded-full bg-midnight-800 hover:bg-indigo-500 text-slate-200 hover:text-white border border-midnight-700 hover:border-indigo-400 shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-400/50 pl-0.5`}
+      className={`${btnDimension} flex items-center justify-center rounded-full bg-midnight-800 hover:bg-midnight-750 text-slate-200 hover:text-white border border-midnight-700/80 hover:border-midnight-600 shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 pl-0.5`}
     >
       <BsFillPlayFill size={iconSize} />
     </button>

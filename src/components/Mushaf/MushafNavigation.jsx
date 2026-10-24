@@ -136,7 +136,7 @@ const MushafNavigation = ({
               onClick={() => onViewEngineChange('plate')}
               className={`flex items-center space-x-1 px-2.5 py-1.5 rounded-lg font-medium transition ${
                 viewEngine === 'plate'
-                  ? 'bg-indigo-600 text-white shadow-sm'
+                  ? 'bg-midnight-750 text-white shadow-sm'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
               title="لوحة المصحف المطبوع (المطبعة الشريفة)"
@@ -150,7 +150,7 @@ const MushafNavigation = ({
               onClick={() => onViewEngineChange('digital')}
               className={`flex items-center space-x-1 px-2.5 py-1.5 rounded-lg font-medium transition ${
                 viewEngine === 'digital'
-                  ? 'bg-indigo-600 text-white shadow-sm'
+                  ? 'bg-midnight-750 text-white shadow-sm'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
               title="المصحف الرقمي المسطر (١٥ سطراً مطابقاً)"

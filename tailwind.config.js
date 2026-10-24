@@ -5,34 +5,35 @@ module.exports = {
     extend: {
       colors: {
         midnight: {
-          950: '#090B10', // Canvas background
-          900: '#0D0F17', // Player & deep surfaces
-          850: '#10131B', // Surface / Card base
-          800: '#171B26', // Elevated / Active cards
-          750: '#1F2433', // Hover state
-          700: '#212638', // Border default
-          600: '#333C54',
-          500: '#4D5875',
+          950: '#08090B', // Main application background (Linear canvas)
+          900: '#0D0F12', // Sidebar & bottom player background
+          850: '#111318', // Primary surface (cards, base containers)
+          800: '#171A21', // Elevated surface (modals, active cards)
+          750: '#1C2029', // Hover surface
+          700: '#242833', // Subtle borders default
+          600: '#313645', // Borders hover / elevated border
+          500: '#454B5E', // Muted borders
+          400: '#5C637A',
         },
         indigo: {
-          300: '#A5B4FC',
-          400: '#818CF8', // Hover accent
-          500: '#6366F1', // Primary accent
-          600: '#4F46E5',
-          700: '#4338CA', // Active border
-          800: '#3730A3',
-          900: '#312E81',
-          950: '#1E1B4B',
+          300: '#A5A6FF', // Light accent text
+          400: '#8889FF', // Accent hover
+          500: '#7778F6', // Primary accent (Linear indigo)
+          600: '#6869E8', // Accent active / pressed
+          700: '#5556D4',
+          800: '#3E40A8',
+          900: '#27286E',
+          950: '#141538',
         },
         slate: {
-          100: '#F1F5F9', // Primary text
-          200: '#E2E8F0',
-          300: '#CBD5E1',
-          400: '#94A3B8', // Secondary text
-          500: '#64748B', // Muted text
-          600: '#475569',
+          100: '#F0F1F5', // Primary text (high contrast)
+          200: '#D8DAE2',
+          300: '#BCBFC9',
+          400: '#A0A5B2', // Secondary text
+          500: '#737988', // Muted text
+          600: '#525866', // Subtle / disabled text
         },
-        black: '#090B10',
+        black: '#08090B',
       },
       fontFamily: {
         sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],

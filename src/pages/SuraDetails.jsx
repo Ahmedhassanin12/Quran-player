@@ -357,8 +357,8 @@ const SuraDetails = () => {
             onClick={() => setActiveTab('verses')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
               activeTab === 'verses'
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'bg-midnight-800/70 text-slate-300 hover:text-white border border-midnight-700/60'
+                ? 'bg-midnight-750 text-white border border-midnight-600 shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-midnight-800/60'
             }`}
           >
             <FiBookOpen size={13} />
@@ -370,8 +370,8 @@ const SuraDetails = () => {
             onClick={() => setActiveTab('info')}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
               activeTab === 'info'
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'bg-midnight-800/70 text-slate-300 hover:text-white border border-midnight-700/60'
+                ? 'bg-midnight-750 text-white border border-midnight-600 shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-midnight-800/60'
             }`}
           >
             <FiInfo size={13} />
@@ -408,7 +408,7 @@ const SuraDetails = () => {
                 onClick={() => setViewStyle('mushaf')}
                 className={`px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 ${
                   viewStyle === 'mushaf'
-                    ? 'bg-indigo-600 text-white font-semibold shadow-sm'
+                    ? 'bg-midnight-750 text-white font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
                 title="المصحف الشريف (طبعة مجمع الملك فهد ٦٠٤ صفحة)"
@@ -422,7 +422,7 @@ const SuraDetails = () => {
                 onClick={() => setViewStyle('cards')}
                 className={`px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 ${
                   viewStyle === 'cards'
-                    ? 'bg-indigo-600 text-white font-semibold shadow-sm'
+                    ? 'bg-midnight-750 text-white font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
                 title="بطاقات الآيات مع الترجمة والاستماع"
@@ -436,7 +436,7 @@ const SuraDetails = () => {
                 onClick={() => setViewStyle('continuous')}
                 className={`px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 ${
                   viewStyle === 'continuous'
-                    ? 'bg-indigo-600 text-white font-semibold shadow-sm'
+                    ? 'bg-midnight-750 text-white font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
                 title="القراءة المتصلة للآيات"

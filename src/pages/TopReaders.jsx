@@ -29,40 +29,44 @@ const TopReaders = () => {
   }, [searchQuery, selectedStyle]);
 
   return (
-    <div className="flex flex-col space-y-2">
-      {/* Header Banner */}
-      <div className="relative rounded-xl p-4 sm:p-5 bg-midnight-850/60 border border-midnight-700/60 shadow-sm overflow-hidden">
-        <div className="relative z-10 pr-10 md:pr-0">
-          <div className="flex items-center space-x-2 text-indigo-400/90 text-xs font-semibold uppercase tracking-wider mb-1.5">
+    <div className="flex flex-col space-y-3.5">
+      {/* Editorial Header */}
+      <div className="pt-1 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-midnight-800/80">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-1">
             <span>Verified Qari Roster</span>
-            <span className="text-slate-600">•</span>
+            <span className="text-slate-600">·</span>
             <span>12 Global Masters</span>
+            <span className="text-slate-600">·</span>
+            <span>رواية حفص عن عاصم</span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
-            Quran Reciters (القراء)
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight flex items-baseline gap-3">
+            <span>Quran Reciters</span>
+            <span className="font-arabic font-normal text-xl sm:text-2xl text-slate-400">
+              قراء القرآن الكريم
+            </span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 font-arabic mt-1">
-            نخبة من كبار قراء العالم الإسلامي برواية حفص عن عاصم بمختلف المقامات
-          </p>
         </div>
       </div>
 
       {/* Search & Style Filter Toolbar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <Searchbar
-          value={searchQuery}
-          onChange={setSearchQuery}
-          placeholder="Search reciter by English or Arabic name..."
-        />
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
+        <div className="w-full sm:w-80 shrink-0">
+          <Searchbar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Search reciter by English or Arabic name..."
+          />
+        </div>
 
         {/* Style Tabs */}
-        <div className="w-full flex  p-1 rounded-lg bg-midnight-850 border border-midnight-700/80 text-xs">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-midnight-850/80 border border-midnight-700/60 text-xs overflow-x-auto max-w-full">
           <button
             type="button"
             onClick={() => setSelectedStyle('all')}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 ${
               selectedStyle === 'all'
-                ? 'bg-indigo-500 text-white font-semibold shadow'
+                ? 'bg-midnight-750 text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -71,9 +75,9 @@ const TopReaders = () => {
           <button
             type="button"
             onClick={() => setSelectedStyle('Murattal')}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 ${
               selectedStyle === 'Murattal'
-                ? 'bg-indigo-500 text-white font-semibold shadow'
+                ? 'bg-midnight-750 text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -82,9 +86,9 @@ const TopReaders = () => {
           <button
             type="button"
             onClick={() => setSelectedStyle('Mujawwad')}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 ${
               selectedStyle === 'Mujawwad'
-                ? 'bg-indigo-500 text-white font-semibold shadow'
+                ? 'bg-midnight-750 text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -93,9 +97,9 @@ const TopReaders = () => {
           <button
             type="button"
             onClick={() => setSelectedStyle('Muallim')}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-lg font-medium transition-colors shrink-0 ${
               selectedStyle === 'Muallim'
-                ? 'bg-indigo-500 text-white font-semibold shadow'
+                ? 'bg-midnight-750 text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >

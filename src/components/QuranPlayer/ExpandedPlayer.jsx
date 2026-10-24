@@ -294,7 +294,7 @@ const ExpandedPlayer = ({
             aria-label="Toggle shuffle"
             className={`p-2.5 rounded-lg transition-colors ${
               shuffle
-                ? 'text-indigo-400 bg-indigo-950/70'
+                ? 'text-indigo-400 bg-midnight-800 border border-indigo-500/30'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -361,7 +361,7 @@ const ExpandedPlayer = ({
             aria-label="Cycle repeat mode"
             className={`relative p-2.5 rounded-lg transition-colors ${
               repeatMode !== 'off'
-                ? 'text-indigo-400 bg-indigo-950/70'
+                ? 'text-indigo-400 bg-midnight-800 border border-indigo-500/30'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >

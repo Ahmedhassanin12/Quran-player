@@ -130,14 +130,14 @@ const ArtistDetails = () => {
           <button
             type="button"
             onClick={handleSetAsActiveReciter}
-            className="flex items-center space-x-2 px-2.5 md:px-5 py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white font-semibold text-sm shadow-lg shadow-indigo-950/60 transition-transform transform active:scale-95"
+            className="flex items-center space-x-2 px-2.5 md:px-5 py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white font-semibold text-sm shadow-md shadow-indigo-950/40 transition-transform transform active:scale-95"
           >
             <BsFillPlayFill size={20} />
             <span>Play Full Quran</span>
           </button>
 
           {isCurrentReciter ? (
-            <span className="text-xs font-semibold text-indigo-300 bg-indigo-950/60 border border-indigo-500/30 px-3 py-1.5 rounded-lg">
+            <span className="text-xs font-semibold text-indigo-300 bg-midnight-800 border border-indigo-500/30 px-3 py-1.5 rounded-lg">
               ✓ Active Reciter
             </span>
           ) : (

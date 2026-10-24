@@ -101,8 +101,8 @@ const ArtistCard = ({ reader }) => {
           onClick={handleSelectReciter}
           className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             isSelected
-              ? 'bg-indigo-500 text-white shadow-md shadow-indigo-950/50'
-              : 'bg-midnight-800 hover:bg-indigo-600 hover:text-white text-slate-300 border border-midnight-700/80'
+              ? 'bg-indigo-500 text-white shadow-sm'
+              : 'bg-midnight-800 hover:bg-midnight-750 text-slate-300 hover:text-white border border-midnight-700/80'
           }`}
         >
           <BsFillPlayFill size={14} />

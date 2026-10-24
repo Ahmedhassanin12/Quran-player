@@ -24,7 +24,7 @@ const NavLinks = ({ handleClick }) => (
         }
       >
         <div className="flex items-center gap-3">
-          <item.icon className="h-4.5 w-4.5 shrink-0 text-slate-400" />
+          <item.icon className="h-4.5 w-4.5 shrink-0" />
           <span>{item.name}</span>
         </div>
         {item.arabicName && (
@@ -43,16 +43,16 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col justify-between w-64 lg:w-72 h-screen shrink-0 bg-midnight-850 border-r border-midnight-700/80 p-5 select-none">
+      {/* Desktop Sidebar (Linear charcoal surface #0D0F12) */}
+      <aside className="hidden md:flex flex-col justify-between w-64 lg:w-72 h-screen shrink-0 bg-midnight-900 border-r border-midnight-700/60 p-5 select-none">
         <div>
           {/* Logo & Brand Header */}
           <Link to="/" className="flex items-center space-x-3 px-2 py-3 group">
-            <div className="w-10 h-10 rounded-lg bg-midnight-800 border border-midnight-700/80 flex items-center justify-center text-indigo-300 shadow-sm group-hover:border-indigo-500/50 transition-colors">
-              <RubElHizbIcon className="w-5 h-5 text-indigo-300" />
+            <div className="w-10 h-10 rounded-lg bg-midnight-850 border border-midnight-700/80 flex items-center justify-center text-indigo-400 shadow-sm group-hover:border-indigo-500/50 transition-colors">
+              <RubElHizbIcon className="w-5 h-5 text-indigo-400" />
             </div>
             <div>
-              <h1 className="font-arabic font-bold text-xl text-slate-100 tracking-wide leading-none group-hover:text-indigo-300 transition-colors">
+              <h1 className="font-arabic font-bold text-xl text-slate-100 tracking-wide leading-none group-hover:text-indigo-400 transition-colors">
                 القرآن الكريم
               </h1>
               <p className="text-[11px] text-slate-400 font-medium tracking-wider uppercase mt-1">
@@ -70,14 +70,14 @@ const Sidebar = () => {
           <InstallPwaButton />
 
           {currentReciter && (
-            <div className="p-3.5 rounded-lg bg-midnight-800 border border-midnight-700/80">
+            <div className="p-3.5 rounded-lg bg-midnight-850 border border-midnight-700/60">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
                   Current Reciter
                 </span>
                 <Link
                   to="/top-reciters"
-                  className="text-[11px] text-slate-400 hover:underline hover:text-indigo-300"
+                  className="text-[11px] text-indigo-400 hover:text-indigo-300 transition-colors"
                 >
                   Change
                 </Link>
@@ -93,7 +93,7 @@ const Sidebar = () => {
                   <p className="text-xs font-semibold text-slate-200 truncate">
                     {currentReciter.reciter_name}
                   </p>
-                  <p className="text-[11px] text-indigo-300/90 font-arabic truncate mt-0.5">
+                  <p className="text-[11px] text-slate-400 font-arabic truncate mt-0.5">
                     {currentReciter.arabic_name || currentReciter.style}
                   </p>
                 </div>
