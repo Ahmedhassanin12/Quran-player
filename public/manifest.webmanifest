@@ -1,0 +1,71 @@
+{
+  "name": "القرآن الكريم — Quran Kareem Player",
+  "short_name": "Quran Player",
+  "description": "استمع إلى آيات الذكر الحكيم بأعذب الأصوات وأجمل التلاوات — Holy Quran Recitations & Player",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#090B10",
+  "theme_color": "#090B10",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": [
+    "Quran",
+    "education",
+    "books",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Discover Surahs",
+      "short_name": "Surahs",
+      "description": "Listen to the 114 Surahs of the Holy Quran",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Top Reciters",
+      "short_name": "Reciters",
+      "description": "Explore verified Quran reciters",
+      "url": "/top-reciters",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

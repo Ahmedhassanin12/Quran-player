@@ -10,6 +10,7 @@ import Error from './Error';
 import PlayPause from './PlayPause';
 import CuratedCollections from './CuratedCollections';
 import ContinueListeningBanner from './ContinueListeningBanner';
+import InstallPwaButton from './InstallPwaButton';
 import {
   RubElHizbIcon,
   SurahMedallion,
@@ -29,6 +30,7 @@ export {
   PlayPause,
   CuratedCollections,
   ContinueListeningBanner,
+  InstallPwaButton,
   RubElHizbIcon,
   SurahMedallion,
   ReciterAvatar,

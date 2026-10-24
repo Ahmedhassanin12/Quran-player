@@ -5,6 +5,7 @@ import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
 import { links } from '../assets/constants';
 import { RubElHizbIcon, ReciterAvatar } from './IslamicArtwork';
+import InstallPwaButton from './InstallPwaButton';
 
 const NavLinks = ({ handleClick }) => (
   <nav className="flex flex-col space-y-1.5 mt-6">
@@ -57,38 +58,42 @@ const Sidebar = () => {
           <NavLinks />
         </div>
 
-        {/* Selected Reciter Card in Sidebar Footer */}
-        {currentReciter && (
-          <div className="p-3.5 rounded-xl bg-midnight-800 border border-midnight-700/80">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400">
-                Current Reciter
-              </span>
-              <Link
-                to="/top-reciters"
-                className="text-[11px] text-slate-400 hover:underline hover:text-indigo-300"
-              >
-                Change
-              </Link>
-            </div>
-            <div className="flex items-center space-x-3">
-              <ReciterAvatar
-                photoUrl={currentReciter.photo_url}
-                name={currentReciter.reciter_name}
-                arabicName={currentReciter.arabic_name}
-                size="sm"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold text-slate-200 truncate">
-                  {currentReciter.reciter_name}
-                </p>
-                <p className="text-[11px] text-indigo-300/90 font-arabic truncate mt-0.5">
-                  {currentReciter.arabic_name || currentReciter.style}
-                </p>
+        {/* Bottom Actions: PWA Install + Active Reciter Card */}
+        <div className="space-y-3">
+          <InstallPwaButton />
+
+          {currentReciter && (
+            <div className="p-3.5 rounded-xl bg-midnight-800 border border-midnight-700/80">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400">
+                  Current Reciter
+                </span>
+                <Link
+                  to="/top-reciters"
+                  className="text-[11px] text-slate-400 hover:underline hover:text-indigo-300"
+                >
+                  Change
+                </Link>
+              </div>
+              <div className="flex items-center space-x-3">
+                <ReciterAvatar
+                  photoUrl={currentReciter.photo_url}
+                  name={currentReciter.reciter_name}
+                  arabicName={currentReciter.arabic_name}
+                  size="sm"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold text-slate-200 truncate">
+                    {currentReciter.reciter_name}
+                  </p>
+                  <p className="text-[11px] text-indigo-300/90 font-arabic truncate mt-0.5">
+                    {currentReciter.arabic_name || currentReciter.style}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </aside>
 
       {/* Mobile Menu Button */}
@@ -142,19 +147,24 @@ const Sidebar = () => {
           <NavLinks handleClick={() => setMobileMenuOpen(false)} />
         </div>
 
-        {currentReciter && (
-          <div className="p-3 rounded-xl bg-midnight-800 border border-midnight-700">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 block mb-1">
-              Active Reciter
-            </span>
-            <p className="text-xs font-semibold text-slate-200 truncate">
-              {currentReciter.reciter_name}
-            </p>
-            <p className="text-[11px] text-slate-400 mt-0.5">
-              {currentReciter.style}
-            </p>
-          </div>
-        )}
+        {/* Mobile Drawer Footer: PWA Install + Active Reciter */}
+        <div className="space-y-3">
+          <InstallPwaButton />
+
+          {currentReciter && (
+            <div className="p-3 rounded-xl bg-midnight-800 border border-midnight-700">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 block mb-1">
+                Active Reciter
+              </span>
+              <p className="text-xs font-semibold text-slate-200 truncate">
+                {currentReciter.reciter_name}
+              </p>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                {currentReciter.style}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
