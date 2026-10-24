@@ -206,9 +206,6 @@ const SuraDetails = () => {
   };
 
   const handleJumpToVerse = (verseKey) => {
-    const ts = timestampMap[verseKey];
-    if (!ts) return;
-
     // Start playing this surah if not already playing
     if (!isCurrentSurah) {
       const audioFile =
@@ -231,10 +228,15 @@ const SuraDetails = () => {
       );
     }
 
-    const seekSeconds = ts.timestamp_from / 1000;
-    dispatch(setSeekTime(seekSeconds));
     dispatch(playPause(true));
     setActiveVerseKey(verseKey);
+
+    // Jump to verse timestamp if available
+    const ts = timestampMap[verseKey];
+    if (ts && typeof ts.timestamp_from === 'number') {
+      const seekSeconds = ts.timestamp_from / 1000;
+      dispatch(setSeekTime(seekSeconds));
+    }
   };
 
   const handleStartHifz = () => {

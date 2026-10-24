@@ -7,6 +7,7 @@ const Player = ({
   volume,
   playbackSpeed = 1.0,
   seekTime,
+  seekCount = 0,
   repeat,
   onEnded,
   onTimeUpdate,
@@ -14,6 +15,7 @@ const Player = ({
   onError,
 }) => {
   const ref = useRef(null);
+  const pendingSeekRef = useRef(null);
 
   // Safely manage playback state
   useEffect(() => {
@@ -49,12 +51,53 @@ const Player = ({
     }
   }, [playbackSpeed]);
 
-  // Manage seeking
+  // Manage seeking (handles both immediate seeking and queued seeking for loading tracks)
   useEffect(() => {
-    if (ref.current && typeof seekTime === 'number') {
-      ref.current.currentTime = seekTime;
+    const audio = ref.current;
+    if (!audio || typeof seekTime !== 'number' || isNaN(seekTime)) return;
+
+    if (audio.readyState >= 1) {
+      try {
+        audio.currentTime = seekTime;
+        pendingSeekRef.current = null;
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(
+            new CustomEvent('quran-audio-time', {
+              detail: { currentTime: seekTime },
+            }),
+          );
+        }
+      } catch (_) {
+        pendingSeekRef.current = seekTime;
+      }
+    } else {
+      // Audio is still loading source, queue seekTime for when metadata loads
+      pendingSeekRef.current = seekTime;
     }
-  }, [seekTime]);
+  }, [seekTime, seekCount, activeSura?.audio_url]);
+
+  const handleLoadedData = (e) => {
+    const audio = e.target;
+
+    // Apply any queued seek position (e.g. from handleJumpToVerse when starting new surah)
+    if (pendingSeekRef.current !== null && typeof pendingSeekRef.current === 'number') {
+      try {
+        audio.currentTime = pendingSeekRef.current;
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(
+            new CustomEvent('quran-audio-time', {
+              detail: { currentTime: pendingSeekRef.current },
+            }),
+          );
+        }
+      } catch (_) {}
+      pendingSeekRef.current = null;
+    }
+
+    if (onLoadedData) {
+      onLoadedData(e);
+    }
+  };
 
   const handleInternalTimeUpdate = (e) => {
     if (onTimeUpdate) {
@@ -76,7 +119,8 @@ const Player = ({
       loop={repeat}
       onEnded={onEnded}
       onTimeUpdate={handleInternalTimeUpdate}
-      onLoadedData={onLoadedData}
+      onLoadedData={handleLoadedData}
+      onCanPlay={handleLoadedData}
       onError={onError}
       preload="auto"
     />

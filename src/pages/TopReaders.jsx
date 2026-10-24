@@ -57,7 +57,7 @@ const TopReaders = () => {
         />
 
         {/* Style Tabs */}
-        <div className="flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80 text-xs">
+        <div className="w-full flex p-1 rounded-xl bg-midnight-850 border border-midnight-700/80 text-xs">
           <button
             type="button"
             onClick={() => setSelectedStyle('all')}

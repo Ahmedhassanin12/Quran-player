@@ -38,6 +38,8 @@ const QuranPlayer = () => {
     volume: storedVolume,
     playbackSpeed,
     sleepTimer,
+    seekTime: reduxSeekTime,
+    seekCount = 0,
   } = useSelector((state) => state.player);
 
   const [duration, setDuration] = useState(0);
@@ -46,6 +48,14 @@ const QuranPlayer = () => {
   const [localVolume, setLocalVolume] = useState(storedVolume || 0.8);
   const [isSleepModalOpen, setIsSleepModalOpen] = useState(false);
   const [isSpeedModalOpen, setIsSpeedModalOpen] = useState(false);
+
+  // Synchronize seekTime triggered from outside (e.g. handleJumpToVerse, ContinueListening, Hifz loop)
+  useEffect(() => {
+    if (typeof reduxSeekTime === 'number' && !isNaN(reduxSeekTime)) {
+      setAppTime(reduxSeekTime);
+      setSeekTime(reduxSeekTime);
+    }
+  }, [reduxSeekTime, seekCount]);
 
   const handlePlayPause = useCallback((forcedState) => {
     if (!isActive) return;
@@ -252,6 +262,7 @@ const QuranPlayer = () => {
             playbackSpeed={playbackSpeed}
             isPlaying={isPlaying}
             seekTime={seekTime}
+            seekCount={seekCount}
             repeat={repeatMode === 'one'}
             onEnded={handleTrackEnded}
             onTimeUpdate={(e) => setAppTime(e.target.currentTime)}

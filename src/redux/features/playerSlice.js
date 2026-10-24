@@ -21,6 +21,7 @@ const initialState = {
   volume: typeof savedSettings?.volume === 'number' ? savedSettings.volume : 0.8,
   playbackSpeed: typeof savedSettings?.speed === 'number' ? savedSettings.speed : 1.0,
   seekTime: savedLastSession?.progressSeconds || 0,
+  seekCount: 0,
   genreListId: '',
   // Phase 2.5 Discover & Personalization state
   favorites: savedFavorites,
@@ -217,6 +218,7 @@ const playerSlice = createSlice({
 
     setSeekTime: (state, action) => {
       state.seekTime = action.payload;
+      state.seekCount = (state.seekCount || 0) + 1;
     },
 
     savePlaybackProgress: (state, action) => {
