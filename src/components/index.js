@@ -12,6 +12,12 @@ import CuratedCollections from './CuratedCollections';
 import ContinueListeningBanner from './ContinueListeningBanner';
 import InstallPwaButton from './InstallPwaButton';
 import {
+  MushafPageRenderer,
+  MushafNavigation,
+  MushafAyahModal,
+  MushafBookmarksModal,
+} from './Mushaf';
+import {
   RubElHizbIcon,
   SurahMedallion,
   ReciterAvatar,
@@ -31,6 +37,10 @@ export {
   CuratedCollections,
   ContinueListeningBanner,
   InstallPwaButton,
+  MushafPageRenderer,
+  MushafNavigation,
+  MushafAyahModal,
+  MushafBookmarksModal,
   RubElHizbIcon,
   SurahMedallion,
   ReciterAvatar,

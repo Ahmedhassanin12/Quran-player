@@ -34,6 +34,11 @@ export const quranCoreApi = createApi({
         `chapter_recitations/${reader}/${chapterId}?segments=true`
       ),
     }),
+    getVersesByPage: builder.query({
+      query: ({ pageNumber = 1, mushaf = 2 }) => (
+        `verses/by_page/${pageNumber}?words=true&word_fields=page_number,line_number,text_uthmani&mushaf=${mushaf}&per_page=50`
+      ),
+    }),
   }),
 });
 
@@ -46,4 +51,5 @@ export const {
   useGetAllRecitationsQuery,
   useGetAllSurahAudioQuery,
   useGetChapterAudioWithSegmentsQuery,
+  useGetVersesByPageQuery,
 } = quranCoreApi;

@@ -1,5 +1,5 @@
 /* Service Worker for Quran Kareem PWA */
-const CACHE_NAME = 'quran-kareem-v1';
+const CACHE_NAME = 'quran-kareem-v2';
 
 const STATIC_PRECACHE = [
   '/',
@@ -74,15 +74,17 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. Static assets (JS, CSS, SVGs, Fonts) — Cache First with Network update
+  // 3. Static assets & Authentic Madinah Mushaf Page Scans — Cache First with Network update
   if (
-    url.origin === self.location.origin &&
-    (url.pathname.startsWith('/assets/') ||
-      url.pathname.startsWith('/icons/') ||
-      request.destination === 'script' ||
-      request.destination === 'style' ||
-      request.destination === 'font' ||
-      request.destination === 'image')
+    url.hostname.includes('files.quran.app') ||
+    url.hostname.includes('android.quran.com') ||
+    (url.origin === self.location.origin &&
+      (url.pathname.startsWith('/assets/') ||
+        url.pathname.startsWith('/icons/') ||
+        request.destination === 'script' ||
+        request.destination === 'style' ||
+        request.destination === 'font' ||
+        request.destination === 'image'))
   ) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {

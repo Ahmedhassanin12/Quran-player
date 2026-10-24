@@ -6,6 +6,8 @@ const STORAGE_KEYS = {
   FAVORITE_RECITERS: 'quran_player_favorite_reciters',
   RECENTS: 'quran_player_recents',
   SETTINGS: 'quran_player_settings',
+  MUSHAF_PAGE: 'quran_player_last_mushaf_page',
+  MUSHAF_BOOKMARKS: 'quran_player_mushaf_bookmarks',
 };
 
 const safeGet = (key, fallback = null) => {
@@ -82,6 +84,32 @@ export const storageService = {
   // User playback settings (volume, speed)
   getSettings: () => safeGet(STORAGE_KEYS.SETTINGS, { volume: 0.8, speed: 1.0 }),
   saveSettings: (settings) => safeSet(STORAGE_KEYS.SETTINGS, settings),
+
+  // Authentic Madinah Mushaf position persistence
+  getLastMushafPage: () => Number(safeGet(STORAGE_KEYS.MUSHAF_PAGE, 1)) || 1,
+  saveLastMushafPage: (pageNumber) => safeSet(STORAGE_KEYS.MUSHAF_PAGE, Math.max(1, Math.min(604, Number(pageNumber) || 1))),
+
+  // Mushaf Ayah Bookmarks
+  getMushafBookmarks: () => safeGet(STORAGE_KEYS.MUSHAF_BOOKMARKS, []),
+  toggleMushafBookmark: (bookmarkItem) => {
+    const list = safeGet(STORAGE_KEYS.MUSHAF_BOOKMARKS, []);
+    const exists = list.some((b) => b.verseKey === bookmarkItem.verseKey);
+    const updated = exists
+      ? list.filter((b) => b.verseKey !== bookmarkItem.verseKey)
+      : [
+          {
+            ...bookmarkItem,
+            createdAt: new Date().toISOString(),
+          },
+          ...list,
+        ];
+    safeSet(STORAGE_KEYS.MUSHAF_BOOKMARKS, updated);
+    return updated;
+  },
+  isVerseBookmarked: (verseKey) => {
+    const list = safeGet(STORAGE_KEYS.MUSHAF_BOOKMARKS, []);
+    return list.some((b) => b.verseKey === verseKey);
+  },
 };
 
 export default storageService;
