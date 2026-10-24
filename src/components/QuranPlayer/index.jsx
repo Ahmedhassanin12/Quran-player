@@ -22,6 +22,7 @@ import VolumeBar from './VolumeBar';
 import ExpandedPlayer from './ExpandedPlayer';
 import SleepTimerModal from './SleepTimerModal';
 import SpeedSelectorModal from './SpeedSelectorModal';
+import TopScrubber from './TopScrubber';
 import { useMediaSession } from '../../hooks/useMediaSession';
 
 const QuranPlayer = () => {
@@ -95,10 +96,15 @@ const QuranPlayer = () => {
     });
   }, [duration]);
 
+  const handleSeekDirect = useCallback((newTime) => {
+    const clamped = Math.max(0, Math.min(duration || 0, newTime));
+    setAppTime(clamped);
+    setSeekTime(clamped);
+  }, [duration]);
+
   const handleSeekInput = (event) => {
     const newTime = Number(event.target.value);
-    setAppTime(newTime);
-    setSeekTime(newTime);
+    handleSeekDirect(newTime);
   };
 
   const handleVolumeChange = (newVal) => {
@@ -201,13 +207,12 @@ const QuranPlayer = () => {
         role="region"
         aria-label="Audio Player"
       >
-        {/* Sleek Top Edge Mini Progress Bar (Continuous visual feedback) */}
-        <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-midnight-800/80 overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-indigo-500 to-indigo-400 transition-[width] duration-150"
-            style={{ width: `${duration > 0 ? (appTime / duration) * 100 : 0}%` }}
-          />
-        </div>
+        {/* Interactive Top-Edge "Tape" Timeline Scrubber */}
+        <TopScrubber
+          appTime={appTime}
+          duration={duration}
+          onSeek={handleSeekDirect}
+        />
 
         {/* Left: Active Surah Track Information */}
         <Track
