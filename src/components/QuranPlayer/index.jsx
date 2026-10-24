@@ -212,9 +212,9 @@ const QuranPlayer = () => {
   return (
     <>
       {/* Audio Player Container: Docked on Mobile/Tablet (<lg), Floating Island on Large Screens (lg+) */}
-      <div className="w-full shrink-0 relative lg:absolute lg:bottom-0 lg:left-0 lg:right-0 lg:z-30 lg:flex lg:justify-center lg:px-6 lg:pb-5 lg:pointer-events-none animate-slideup">
+      <div className="w-full shrink-0 relative lg:absolute lg:bottom-0 lg:left-0 lg:right-0 lg:z-30 lg:flex lg:justify-center lg:px-6 lg:pb-4 lg:pointer-events-none animate-slideup">
         <footer
-          className="w-full lg:max-w-6xl lg:pointer-events-auto relative bg-midnight-900/98 lg:bg-midnight-900/90 backdrop-blur-xl lg:backdrop-blur-lg border-t border-midnight-700/80 lg:border lg:rounded-3xl lg:shadow-[0_14px_45px_rgba(0,0,0,0.75)] lg:ring-1 lg:ring-white/10 px-2.5 sm:px-6 lg:px-8 py-2 sm:py-0 min-h-[4.75rem] sm:h-24 lg:h-[5.25rem] flex items-center justify-between transition-all duration-300 pb-[env(safe-area-inset-bottom,0px)] lg:pb-0 lg:hover:border-indigo-500/40 lg:hover:shadow-[0_18px_55px_rgba(0,0,0,0.85)]"
+          className="w-full lg:max-w-6xl lg:pointer-events-auto relative bg-midnight-900/98 lg:bg-midnight-900/92 backdrop-blur-xl lg:backdrop-blur-lg border-t border-midnight-700/80 lg:border lg:rounded-2xl lg:shadow-[0_12px_40px_rgba(0,0,0,0.65)] lg:ring-1 lg:ring-white/[0.06] px-2.5 sm:px-6 lg:px-8 py-2 sm:py-0 min-h-[4.25rem] sm:h-20 lg:h-20 flex items-center justify-between transition-all duration-200 pb-[env(safe-area-inset-bottom,0px)] lg:pb-0 hover:border-midnight-600/80"
           role="region"
           aria-label="Audio Player"
         >
@@ -272,7 +272,7 @@ const QuranPlayer = () => {
           </div>
 
           {/* Right: Audio Tools (Speed, Sleep Sanctuary, Volume, Expand) */}
-          <div className="flex items-center space-x-1 sm:space-x-2.5 select-none justify-end shrink-0 sm:min-w-[160px] lg:min-w-[220px]">
+          <div className="flex items-center space-x-1 sm:space-x-2 select-none justify-end shrink-0 sm:min-w-[150px] lg:min-w-[200px]">
             {/* Recitation Pace Button */}
             <button
               type="button"
@@ -281,7 +281,7 @@ const QuranPlayer = () => {
               title={`Recitation Speed (${playbackSpeed.toFixed(2)}x)`}
               className={`px-1.5 sm:px-2 py-1 rounded-lg text-[11px] sm:text-xs font-semibold transition border ${
                 playbackSpeed !== 1.0
-                  ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
+                  ? 'bg-midnight-750 text-indigo-300 border-indigo-500/50'
                   : 'bg-midnight-800 text-slate-400 border-midnight-700 hover:text-slate-200'
               }`}
             >
@@ -296,7 +296,7 @@ const QuranPlayer = () => {
               title={sleepTimer.active ? `Sleep Timer: ${formatTimerBadge()}` : 'Sleep Sanctuary Timer'}
               className={`relative p-1.5 sm:p-2 rounded-lg text-xs font-medium transition flex items-center gap-1 border ${
                 sleepTimer.active
-                  ? 'bg-indigo-600/25 text-indigo-300 border-indigo-500/50'
+                  ? 'bg-midnight-750 text-indigo-300 border-indigo-500/50'
                   : 'bg-midnight-800 text-slate-400 border-midnight-700 hover:text-slate-200'
               }`}
             >

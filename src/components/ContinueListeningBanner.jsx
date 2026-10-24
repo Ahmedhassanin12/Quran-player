@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { BsFillPlayFill } from 'react-icons/bs';
 import { setActiveSura, playPause, setSeekTime } from '../redux/features/playerSlice';
-import { SurahMedallion } from './IslamicArtwork';
 
 const formatTime = (seconds = 0) => {
   const mins = Math.floor(seconds / 60);
@@ -25,7 +25,6 @@ const ContinueListeningBanner = ({ allSurahs, audioFiles }) => {
   const surahId = surah.chapter_id || surah.id;
 
   const handleResume = () => {
-    // Find matching surah from dataset if available for full playlist context
     const matchedSura = allSurahs?.find((s) => s.id === surahId) || surah;
 
     dispatch(
@@ -45,45 +44,32 @@ const ContinueListeningBanner = ({ allSurahs, audioFiles }) => {
   };
 
   return (
-    <div className="relative rounded-xl p-4 sm:p-5 bg-midnight-850/70 border border-indigo-500/30 shadow-lg overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div className="flex items-center space-x-3.5">
-        <SurahMedallion number={surahId} size="md" isPlaying={false} />
-
-        <div>
-          <div className="flex items-center space-x-2 mb-0.5">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 bg-indigo-500/15 border border-indigo-500/30 px-2.5 py-0.5 rounded-full">
-              Continue Listening
-            </span>
-            {progressSec > 0 && (
-              <span className="text-[11px] font-mono text-slate-400">
-                Paused at {formatTime(progressSec)}
-              </span>
-            )}
-          </div>
-
-          <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
-            <span>{surah.name_simple || `Surah ${surahId}`}</span>
-            <span className="font-arabic text-indigo-300 font-normal">{surah.name_arabic}</span>
-          </h3>
-
-          <p className="text-xs text-slate-400">
-            Recitation by <span className="text-slate-300 font-medium">{reciter?.reciter_name}</span>
-          </p>
-        </div>
+    <div className="rounded-xl px-4 py-2.5 bg-midnight-850/60 border border-midnight-700/60 flex items-center justify-between gap-3 text-xs shadow-sm">
+      <div className="flex items-center gap-3 min-w-0">
+        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+        <span className="text-slate-400">متابعة التلاوة:</span>
+        <span className="font-semibold text-slate-100 font-arabic truncate text-sm">
+          سورة {surah.name_arabic}
+        </span>
+        <span className="text-slate-400 text-xs hidden sm:inline">
+          ({surah.name_simple})
+        </span>
+        <span className="text-slate-500 hidden md:inline">· {reciter?.reciter_name}</span>
+        {progressSec > 0 && (
+          <span className="font-mono text-slate-400 text-[11px] hidden sm:inline">
+            عند {formatTime(progressSec)}
+          </span>
+        )}
       </div>
 
-      <div className="shrink-0 flex items-center space-x-2">
-        <button
-          type="button"
-          onClick={handleResume}
-          className="px-4 py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white font-semibold text-xs transition-all shadow-md shadow-indigo-950/50 flex items-center gap-1.5"
-        >
-          <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-          Resume Recitation
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={handleResume}
+        className="px-3 py-1.5 rounded-lg bg-midnight-750 hover:bg-midnight-700 border border-midnight-600 text-slate-100 font-medium text-xs transition flex items-center gap-1.5 shrink-0"
+      >
+        <BsFillPlayFill size={14} />
+        <span>استئناف</span>
+      </button>
     </div>
   );
 };
