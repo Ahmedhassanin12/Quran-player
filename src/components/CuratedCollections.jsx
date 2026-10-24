@@ -40,7 +40,7 @@ const CuratedCollections = ({ onSelectCollection, selectedCollectionId, allSurah
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 mt-2">
       {/* Shelf Header with Title & Scroll Controls */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2.5">

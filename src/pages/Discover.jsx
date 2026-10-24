@@ -126,7 +126,7 @@ const Discover = () => {
   }
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-2">
       {/* Continue Listening Persistent Session */}
       <ContinueListeningBanner
         allSurahs={allSurahsWithAudio}
@@ -134,7 +134,7 @@ const Discover = () => {
       />
 
       {/* Header Banner */}
-      <div className="relative rounded-lg p-2 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
+      <div className="relative rounded-lg p-2 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden ">
         <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -181,7 +181,7 @@ const Discover = () => {
       />
 
       {/* Tier 1: Search Input */}
-      <div className="w-full pt-1">
+      <div className="w-full pt-1 ">
         <Searchbar
           value={searchQuery}
           onChange={setSearchQuery}
@@ -190,7 +190,7 @@ const Discover = () => {
       </div>
 
       {/* Tier 2: Dedicated Filter Tabs & View Mode Row (100% Visible - Zero Clipping) */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-1  ">
         {/* All Tabs: All (114), Meccan, Medinan, Favorites, History */}
         <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-lg bg-midnight-850 border border-midnight-700/80 text-xs shadow-sm">
           <button

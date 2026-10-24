@@ -29,7 +29,7 @@ const TopReaders = () => {
   }, [searchQuery, selectedStyle]);
 
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="flex flex-col space-y-2">
       {/* Header Banner */}
       <div className="relative rounded-lg p-2 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
@@ -57,7 +57,7 @@ const TopReaders = () => {
         />
 
         {/* Style Tabs */}
-        <div className="w-full flex p-1 rounded-lg bg-midnight-850 border border-midnight-700/80 text-xs">
+        <div className="w-full flex  p-1 rounded-lg bg-midnight-850 border border-midnight-700/80 text-xs">
           <button
             type="button"
             onClick={() => setSelectedStyle('all')}
