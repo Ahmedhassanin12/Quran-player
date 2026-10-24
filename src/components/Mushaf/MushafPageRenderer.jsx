@@ -103,7 +103,7 @@ const MushafPageRenderer = ({
   return (
     <div className="w-full flex flex-col items-center select-none animate-slowfade">
       {/* Outer Luxury Mushaf Folio Container */}
-      <div className="w-full max-w-xl md:max-w-2xl bg-[#090B10] rounded-2xl sm:rounded-3xl border border-midnight-700/80 shadow-2xl overflow-hidden p-2 sm:p-5">
+      <div className="w-full max-w-lg md:max-w-xl bg-[#090B10] rounded-2xl sm:rounded-3xl border border-midnight-700/80 shadow-2xl overflow-hidden p-2 sm:p-5">
         {/* Authentic Page Top Header (Juz on Left, Surah Name on Right) */}
         <div className="w-full flex items-center justify-between px-3 sm:px-6 py-2 border-b border-midnight-800 text-[11px] sm:text-xs font-arabic text-slate-400 select-none">
           <div className="flex items-center space-x-2 text-indigo-300">

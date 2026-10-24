@@ -44,7 +44,7 @@ const MushafNavigation = ({
   };
 
   return (
-    <div className="w-full max-w-xl md:max-w-2xl bg-midnight-900/90 border border-midnight-700/80 rounded-2xl p-3 sm:p-4 mb-4 shadow-xl select-none">
+    <div className="w-full  bg-midnight-900/90 border border-midnight-700/80 rounded-2xl p-3 sm:p-4 mb-4 shadow-xl select-none">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         {/* Left: Page & Juz Indicators */}
         <div className="flex items-center space-x-2 sm:space-x-3 text-right">
