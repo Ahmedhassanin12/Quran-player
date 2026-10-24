@@ -195,12 +195,20 @@ const QuranPlayer = () => {
 
   return (
     <>
-      {/* Persistent Bottom Bar Player (Takes from page height, in flex flow) */}
+      {/* Persistent Bottom Bar Player */}
       <footer
-        className="w-full shrink-0 h-20 sm:h-24 bg-midnight-900 border-t border-midnight-700/80 px-4 sm:px-8 flex items-center justify-between z-30 shadow-2xl transition-all"
+        className="w-full shrink-0 relative bg-midnight-900/98 backdrop-blur-xl border-t border-midnight-700/80 px-2.5 sm:px-6 lg:px-8 py-2 sm:py-0 min-h-[4.75rem] sm:h-24 flex items-center justify-between z-30 shadow-2xl transition-all pb-[env(safe-area-inset-bottom,0px)]"
         role="region"
         aria-label="Audio Player"
       >
+        {/* Sleek Top Edge Mini Progress Bar (Continuous visual feedback) */}
+        <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-midnight-800/80 overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-indigo-500 to-indigo-400 transition-[width] duration-150"
+            style={{ width: `${duration > 0 ? (appTime / duration) * 100 : 0}%` }}
+          />
+        </div>
+
         {/* Left: Active Surah Track Information */}
         <Track
           isPlaying={isPlaying}
@@ -210,7 +218,7 @@ const QuranPlayer = () => {
         />
 
         {/* Center: Controls & Progress Timeline */}
-        <div className="flex-1 max-w-xl mx-4 flex flex-col items-center justify-center space-y-1">
+        <div className="flex-1 max-w-xl mx-1 sm:mx-4 flex flex-col items-center justify-center space-y-0.5 sm:space-y-1">
           <Controls
             isPlaying={isPlaying}
             isActive={isActive}
@@ -224,12 +232,14 @@ const QuranPlayer = () => {
             handleSeekRelative={handleSeekRelative}
           />
 
-          <Seekbar
-            appTime={appTime}
-            min={0}
-            max={duration}
-            onInput={handleSeekInput}
-          />
+          <div className="w-full hidden sm:block">
+            <Seekbar
+              appTime={appTime}
+              min={0}
+              max={duration}
+              onInput={handleSeekInput}
+            />
+          </div>
 
           <Player
             activeSura={activeSura}
@@ -245,14 +255,14 @@ const QuranPlayer = () => {
         </div>
 
         {/* Right: Audio Tools (Speed, Sleep Sanctuary, Volume, Expand) */}
-        <div className="flex items-center space-x-2 sm:space-x-3 select-none justify-end min-w-[160px] sm:min-w-[220px]">
+        <div className="flex items-center space-x-1 sm:space-x-2.5 select-none justify-end shrink-0 sm:min-w-[160px] lg:min-w-[220px]">
           {/* Recitation Pace Button */}
           <button
             type="button"
             onClick={() => setIsSpeedModalOpen(true)}
             aria-label={`Playback speed: ${playbackSpeed.toFixed(2)}x`}
             title={`Recitation Speed (${playbackSpeed.toFixed(2)}x)`}
-            className={`px-2 py-1 rounded-lg text-xs font-semibold transition border ${
+            className={`px-1.5 sm:px-2 py-1 rounded-lg text-[11px] sm:text-xs font-semibold transition border ${
               playbackSpeed !== 1.0
                 ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
                 : 'bg-midnight-800 text-slate-400 border-midnight-700 hover:text-slate-200'
@@ -267,7 +277,7 @@ const QuranPlayer = () => {
             onClick={() => setIsSleepModalOpen(true)}
             aria-label="Sleep Sanctuary Timer"
             title={sleepTimer.active ? `Sleep Timer: ${formatTimerBadge()}` : 'Sleep Sanctuary Timer'}
-            className={`relative p-2 rounded-lg text-xs font-medium transition flex items-center gap-1 border ${
+            className={`relative p-1.5 sm:p-2 rounded-lg text-xs font-medium transition flex items-center gap-1 border ${
               sleepTimer.active
                 ? 'bg-indigo-600/25 text-indigo-300 border-indigo-500/50'
                 : 'bg-midnight-800 text-slate-400 border-midnight-700 hover:text-slate-200'
@@ -288,7 +298,7 @@ const QuranPlayer = () => {
             )}
           </button>
 
-          {/* Volume Slider Bar */}
+          {/* Volume Slider Bar (Desktop) */}
           <VolumeBar
             value={localVolume}
             onChange={(e) => handleVolumeChange(Number(e.target.value))}
@@ -301,7 +311,7 @@ const QuranPlayer = () => {
             onClick={() => dispatch(setIsExpanded(true))}
             aria-label="Expand Player"
             title="Expand Player (Fullscreen)"
-            className="hidden sm:flex p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-midnight-800 transition"
+            className="p-1.5 sm:p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-midnight-800 transition"
           >
             <FiMaximize2 size={16} />
           </button>

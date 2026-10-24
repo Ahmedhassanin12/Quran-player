@@ -24,7 +24,7 @@ const Controls = ({
   handleNextSong,
   handleSeekRelative,
 }) => (
-  <div className="flex items-center space-x-3 sm:space-x-5 select-none">
+  <div className="flex items-center space-x-1.5 sm:space-x-4 select-none shrink-0">
     {/* Shuffle Button */}
     <button
       type="button"
@@ -48,7 +48,7 @@ const Controls = ({
       title="Previous Surah"
       className="text-slate-300 hover:text-white transition-colors p-1"
     >
-      <MdSkipPrevious size={26} />
+      <MdSkipPrevious size={24} />
     </button>
 
     {/* Rewind 10s */}
@@ -69,12 +69,12 @@ const Controls = ({
       type="button"
       onClick={handlePlayPause}
       aria-label={isPlaying ? 'Pause recitation' : 'Play recitation'}
-      className="w-11 h-11 flex items-center justify-center rounded-full bg-indigo-500 hover:bg-indigo-400 text-white shadow-lg shadow-indigo-950/60 transition-transform duration-150 transform hover:scale-105 active:scale-95 focus:outline-none"
+      className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-indigo-500 hover:bg-indigo-400 text-white shadow-lg shadow-indigo-950/60 transition-transform duration-150 transform hover:scale-105 active:scale-95 focus:outline-none shrink-0"
     >
       {isPlaying && isActive ? (
-        <BsFillPauseFill size={26} />
+        <BsFillPauseFill size={24} />
       ) : (
-        <BsFillPlayFill size={26} className="pl-0.5" />
+        <BsFillPlayFill size={24} className="pl-0.5" />
       )}
     </button>
 
