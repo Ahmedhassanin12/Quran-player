@@ -23,7 +23,7 @@ const Track = ({ isPlaying, isActive, activeSura, currentReciter }) => {
       title="Tap to open full player"
     >
       {/* Clickable Medallion Artwork with Expand indicator */}
-      <div className="relative shrink-0">
+      <div className="hidden sm:block relative shrink-0">
         <SurahMedallion
           number={activeSura ? surahId : '۞'}
           size="sm"

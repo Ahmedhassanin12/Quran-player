@@ -24,7 +24,7 @@ const Controls = ({
   handleNextSong,
   handleSeekRelative,
 }) => (
-  <div className="flex items-center space-x-1.5 sm:space-x-4 select-none shrink-0">
+  <div className="flex w-full  items-center sm:justify-center space-x-1.5 sm:space-x-4 select-none shrink-0">
     {/* Shuffle Button */}
     <button
       type="button"
