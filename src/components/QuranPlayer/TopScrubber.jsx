@@ -120,7 +120,7 @@ const TopScrubber = ({ appTime = 0, duration = 0, onSeek }) => {
       aria-valuemin={0}
       aria-valuemax={duration || 100}
       aria-valuenow={Math.round(activeTime)}
-      className="group absolute -top-3.5 left-0 right-0 h-7 cursor-pointer select-none z-40 touch-none flex flex-col justify-end outline-none"
+      className="group absolute -top-3.5 left-0 right-0 h-7 cursor-pointer select-none z-40 touch-none flex sm:hidden flex-col justify-end outline-none"
     >
       {/* Background track bar */}
       <div
