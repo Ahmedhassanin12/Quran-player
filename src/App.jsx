@@ -52,9 +52,9 @@ const App = () => {
               </Routes>
             </div>
 
-            {/* Right Column: Quick Reciter & Recommended Surahs */}
+            {/* Right Column: Quick Reciter & Recommended Surahs (Ultra-wide screens only) */}
             {!isSurahReadingPage && (
-              <aside className="hidden xl:block xl:w-80 2xl:w-96 shrink-0 sticky top-0">
+              <aside className="hidden 2xl:block 2xl:w-80 shrink-0 sticky top-0">
                 <TopPlay />
               </aside>
             )}

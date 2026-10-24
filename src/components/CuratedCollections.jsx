@@ -1,8 +1,24 @@
 import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import {
+  FiChevronLeft,
+  FiChevronRight,
+  FiSun,
+  FiMoon,
+  FiShield,
+  FiHeart,
+  FiBookOpen,
+} from 'react-icons/fi';
 import { CURATED_COLLECTIONS } from '../assets/collectionsData';
 import { setActiveSura, playPause } from '../redux/features/playerSlice';
+
+const COLLECTION_ICONS = {
+  sun: FiSun,
+  moon: FiMoon,
+  shield: FiShield,
+  heart: FiHeart,
+  'book-open': FiBookOpen,
+};
 
 const CuratedCollections = ({ onSelectCollection, selectedCollectionId, allSurahs, audioFiles, currentReciter }) => {
   const dispatch = useDispatch();
@@ -91,6 +107,8 @@ const CuratedCollections = ({ onSelectCollection, selectedCollectionId, allSurah
       >
         {CURATED_COLLECTIONS.map((col) => {
           const isSelected = selectedCollectionId === col.id;
+          const IconComponent = COLLECTION_ICONS[col.icon] || FiBookOpen;
+
           return (
             <div
               key={col.id}
@@ -103,9 +121,11 @@ const CuratedCollections = ({ onSelectCollection, selectedCollectionId, allSurah
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-lg">{col.icon}</span>
-                    <span className="text-[10px] font-semibold text-slate-300 bg-midnight-800 border border-midnight-700 px-2 py-0.5 rounded-full">
+                  <div className="flex items-center space-x-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-midnight-800 border border-midnight-700/80 flex items-center justify-center text-indigo-400 shrink-0">
+                      <IconComponent size={15} />
+                    </div>
+                    <span className="text-[10px] font-semibold text-slate-300 bg-midnight-800 border border-midnight-700 px-2.5 py-0.5 rounded-full">
                       {col.badge}
                     </span>
                   </div>

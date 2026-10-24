@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { FiMoon, FiBookOpen } from 'react-icons/fi';
 import { RubElHizbIcon } from '../IslamicArtwork';
 import {
   getMushafPageInfo,
@@ -112,10 +113,20 @@ const MushafPageRenderer = ({
               <button
                 type="button"
                 onClick={() => setPlateTheme((prev) => (prev === 'dark' ? 'parchment' : 'dark'))}
-                className="px-2 py-0.5 rounded-md bg-midnight-800 hover:bg-midnight-750 text-slate-300 text-[10px] font-sans border border-midnight-700/80 transition"
+                className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-midnight-800 hover:bg-midnight-750 text-slate-300 text-[10px] font-sans border border-midnight-700/80 transition"
                 title="تبديل مظهر المصحف (ليلي بخط أبيض / ورقي عاجي)"
               >
-                {plateTheme === 'dark' ? '🌙 خط أبيض ناصع' : '📜 نمط ورقي كلاسيكي'}
+                {plateTheme === 'dark' ? (
+                  <>
+                    <FiMoon size={11} className="text-indigo-400" />
+                    <span>خط أبيض ناصع</span>
+                  </>
+                ) : (
+                  <>
+                    <FiBookOpen size={11} className="text-amber-400" />
+                    <span>نمط ورقي كلاسيكي</span>
+                  </>
+                )}
               </button>
             )}
           </div>
@@ -178,8 +189,6 @@ const MushafPageRenderer = ({
           /* ENGINE 2: 15-LINE STRUCTURED DIGITAL TYPOGRAPHY MUSHAF       */
           /* ============================================================ */
           <div className="relative w-full aspect-[1260/2038] bg-[#0c0f17] flex flex-col justify-between p-3 sm:p-6 my-2 sm:my-3 rounded-lg border border-midnight-800 overflow-hidden">
-            {/* Subtle background ornamentation pattern */}
-            <div className="absolute inset-0 opacity-5 bg-islamic-pattern pointer-events-none" />
 
             {/* 15 Physical Lines (Strictly preserved, 0 line reflow) */}
             <div className="relative z-10 w-full h-full flex flex-col justify-between select-none">

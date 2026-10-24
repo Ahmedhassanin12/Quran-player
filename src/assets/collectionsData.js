@@ -9,7 +9,7 @@ export const CURATED_COLLECTIONS = [
     citation: 'Sahih Al-Jami (6470)',
     surahIds: [18],
     accent: 'indigo',
-    icon: '✨',
+    icon: 'sun',
   },
   {
     id: 'night-protection',
@@ -20,7 +20,7 @@ export const CURATED_COLLECTIONS = [
     citation: 'Jami` at-Tirmidhi (2892)',
     surahIds: [67, 32],
     accent: 'indigo',
-    icon: '🌙',
+    icon: 'moon',
   },
   {
     id: 'fortress-muawwidhat',
@@ -31,7 +31,7 @@ export const CURATED_COLLECTIONS = [
     citation: 'Sunan Abi Dawud (5082)',
     surahIds: [112, 113, 114],
     accent: 'indigo',
-    icon: '🛡️',
+    icon: 'shield',
   },
   {
     id: 'heart-softeners',
@@ -42,7 +42,7 @@ export const CURATED_COLLECTIONS = [
     citation: 'Contemplative Recitations',
     surahIds: [55, 56, 19, 20, 50],
     accent: 'indigo',
-    icon: '🤍',
+    icon: 'heart',
   },
   {
     id: 'juz-amma',
@@ -53,7 +53,7 @@ export const CURATED_COLLECTIONS = [
     citation: 'Chapters 78 through 114',
     surahIds: Array.from({ length: 37 }, (_, i) => 78 + i),
     accent: 'indigo',
-    icon: '📖',
+    icon: 'book-open',
   },
 ];
 

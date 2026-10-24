@@ -8,7 +8,7 @@ import { RubElHizbIcon, ReciterAvatar } from './IslamicArtwork';
 import InstallPwaButton from './InstallPwaButton';
 
 const NavLinks = ({ handleClick }) => (
-  <nav className="flex flex-col space-y-1.5 mt-6">
+  <nav className="flex flex-col space-y-1 mt-6">
     {links.map((item) => (
       <NavLink
         to={item.to}
@@ -16,15 +16,22 @@ const NavLinks = ({ handleClick }) => (
         end={item.to === '/'}
         onClick={() => handleClick && handleClick()}
         className={({ isActive }) =>
-          `flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+          `flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
             isActive
-              ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 shadow-sm'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-800/60'
+              ? 'bg-midnight-800 text-slate-100 border border-midnight-700/80 shadow-sm'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-800/40'
           }`
         }
       >
-        <item.icon className="h-5 w-5 mr-3 shrink-0" />
-        <span>{item.name}</span>
+        <div className="flex items-center gap-3">
+          <item.icon className="h-4.5 w-4.5 shrink-0 text-slate-400" />
+          <span>{item.name}</span>
+        </div>
+        {item.arabicName && (
+          <span className="font-arabic text-xs text-slate-400">
+            {item.arabicName}
+          </span>
+        )}
       </NavLink>
     ))}
   </nav>
@@ -41,15 +48,15 @@ const Sidebar = () => {
         <div>
           {/* Logo & Brand Header */}
           <Link to="/" className="flex items-center space-x-3 px-2 py-3 group">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white shadow-md shadow-indigo-950/60 group-hover:scale-105 transition-transform">
-              <RubElHizbIcon className="w-6 h-6 text-indigo-200" />
+            <div className="w-10 h-10 rounded-lg bg-midnight-800 border border-midnight-700/80 flex items-center justify-center text-indigo-300 shadow-sm group-hover:border-indigo-500/50 transition-colors">
+              <RubElHizbIcon className="w-5 h-5 text-indigo-300" />
             </div>
             <div>
-              <h1 className="font-arabic font-bold text-xl text-slate-100 tracking-wide leading-none group-hover:text-indigo-400 transition-colors">
+              <h1 className="font-arabic font-bold text-xl text-slate-100 tracking-wide leading-none group-hover:text-indigo-300 transition-colors">
                 القرآن الكريم
               </h1>
               <p className="text-[11px] text-slate-400 font-medium tracking-wider uppercase mt-1">
-                Quran Kareem Player
+                Quran Kareem
               </p>
             </div>
           </Link>
@@ -132,15 +139,15 @@ const Sidebar = () => {
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center space-x-3 px-1 py-2"
           >
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white shadow-md">
-              <RubElHizbIcon className="w-6 h-6 text-indigo-200" />
+            <div className="w-10 h-10 rounded-lg bg-midnight-800 border border-midnight-700/80 flex items-center justify-center text-indigo-300 shadow-sm">
+              <RubElHizbIcon className="w-5 h-5 text-indigo-300" />
             </div>
             <div>
               <h2 className="font-arabic font-bold text-xl text-slate-100">
                 القرآن الكريم
               </h2>
               <p className="text-[11px] text-slate-400 uppercase tracking-wider">
-                Quran Player
+                Quran Kareem
               </p>
             </div>
           </Link>

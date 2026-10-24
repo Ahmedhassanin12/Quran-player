@@ -36,13 +36,6 @@
   min-height: 100dvh;
 }
 
-/* Subtle Nocturnal Dot Pattern */
-.bg-islamic-pattern {
-  background-image: radial-gradient(rgba(99, 102, 241, 0.07) 1px, transparent 1px),
-    radial-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px);
-  background-size: 32px 32px;
-  background-position: 0 0, 16px 16px;
-}
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {

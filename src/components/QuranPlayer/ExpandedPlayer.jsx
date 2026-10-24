@@ -99,8 +99,6 @@ const ExpandedPlayer = ({
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-between bg-midnight-950/98 backdrop-blur-2xl text-slate-100 p-6 md:p-10 animate-slideup select-none overflow-y-auto">
-      {/* Background Subtle Nocturnal Pattern */}
-      <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
 
       {/* Top Header Bar */}
       <div className="relative z-10 flex items-center justify-between pb-4 border-b border-midnight-700/80">

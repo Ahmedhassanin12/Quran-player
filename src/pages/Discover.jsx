@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FiGrid, FiList, FiMic } from 'react-icons/fi';
+import { FiGrid, FiList, FiMic, FiBookmark, FiClock } from 'react-icons/fi';
 import {
   Error,
   Loader,
@@ -134,13 +134,12 @@ const Discover = () => {
       />
 
       {/* Header Banner */}
-      <div className="relative rounded-lg p-2 sm:p-3 bg-gradient-to-r from-midnight-850 via-midnight-900 to-midnight-850 border border-midnight-700/80 shadow-xl overflow-hidden ">
-        <div className="absolute inset-0 opacity-10 bg-islamic-pattern pointer-events-none" />
+      <div className="relative rounded-xl p-4 sm:p-5 bg-midnight-850/60 border border-midnight-700/60 shadow-sm overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center space-x-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <div className="flex items-center space-x-2 text-indigo-400/90 text-xs font-semibold uppercase tracking-wider mb-1">
               <span>Holy Quran Library</span>
-              <span>•</span>
+              <span className="text-slate-600">•</span>
               <span>114 Surahs</span>
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
@@ -154,10 +153,10 @@ const Discover = () => {
           {/* Active Reciter Pill */}
           <Link
             to="/top-reciters"
-            className="flex items-center space-x-3 px-4 py-2.5 rounded-lg bg-midnight-800/80 hover:bg-midnight-800 border border-indigo-500/30 text-left transition-all hover:border-indigo-500/60 group shadow-md"
+            className="flex items-center space-x-3 px-3.5 py-2 rounded-xl bg-midnight-800/70 hover:bg-midnight-800 border border-midnight-700/80 hover:border-indigo-500/40 text-left transition-all group shadow-sm shrink-0"
           >
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
-              <FiMic size={16} />
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/15 text-indigo-400 flex items-center justify-center shrink-0">
+              <FiMic size={15} />
             </div>
             <div>
               <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 group-hover:text-indigo-300">
@@ -238,7 +237,7 @@ const Discover = () => {
                 : 'text-slate-400 hover:text-white hover:bg-midnight-800'
             }`}
           >
-            <span>⭐</span>
+            <FiBookmark className="w-3.5 h-3.5" />
             <span>Favorites ({favorites.length})</span>
           </button>
           <button
@@ -250,7 +249,7 @@ const Discover = () => {
                 : 'text-slate-400 hover:text-white hover:bg-midnight-800'
             }`}
           >
-            <span>🕒</span>
+            <FiClock className="w-3.5 h-3.5" />
             <span>History ({recents.length})</span>
           </button>
         </div>
@@ -300,7 +299,9 @@ const Discover = () => {
 
           {recents.length === 0 ? (
             <div className="p-12 text-center rounded-xl bg-midnight-850 border border-midnight-700/60">
-              <span className="text-3xl block mb-2">🕒</span>
+              <div className="w-12 h-12 rounded-xl bg-midnight-800 border border-midnight-700/80 flex items-center justify-center text-slate-400 mb-3 mx-auto">
+                <FiClock size={22} />
+              </div>
               <p className="text-sm text-slate-300 font-semibold">No listening history yet</p>
               <p className="text-xs text-slate-400 mt-1">
                 Your played recitations will automatically appear here as you listen.
@@ -347,12 +348,14 @@ const Discover = () => {
             <div className="p-12 text-center rounded-xl bg-midnight-850 border border-midnight-700/60">
               {activeTab === 'favorites' ? (
                 <>
-                  <span className="text-3xl block mb-2">⭐</span>
+                  <div className="w-12 h-12 rounded-xl bg-midnight-800 border border-midnight-700/80 flex items-center justify-center text-indigo-400 mb-3 mx-auto">
+                    <FiBookmark size={22} />
+                  </div>
                   <p className="text-base text-slate-300 font-semibold">
                     No favorite Surahs saved yet
                   </p>
                   <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-                    Click the small heart icon on any Surah card to pin your favorite chapters here for quick access.
+                    Click the bookmark icon on any Surah card to pin your favorite chapters here for quick access.
                   </p>
                 </>
               ) : (

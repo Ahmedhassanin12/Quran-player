@@ -70,7 +70,7 @@ const TopPlay = () => {
   return (
     <div className="flex flex-col space-y-3 select-none w-full">
       {/* Featured Reciters Quick Switch Banner */}
-      <div className="p-4 sm:p-5 rounded-lg bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
+      <div className="p-4 sm:p-5 rounded-xl bg-midnight-850/60 border border-midnight-700/60 shadow-md">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
             Featured Reciters
@@ -94,7 +94,7 @@ const TopPlay = () => {
                 className={`flex items-center space-x-2 p-2 rounded-lg text-left transition-all ${
                   isSelected
                     ? 'bg-midnight-800 border border-indigo-500/50 shadow-sm'
-                    : 'bg-midnight-800/60 hover:bg-midnight-800 border border-midnight-700/50 text-slate-300'
+                    : 'bg-midnight-800/40 hover:bg-midnight-800 border border-midnight-700/40 text-slate-300'
                 }`}
               >
                 <ReciterAvatar
@@ -107,7 +107,7 @@ const TopPlay = () => {
                   <p className="text-xs font-semibold truncate text-slate-200">
                     {reciter.reciter_name.split(' ')[0]}
                   </p>
-                  <p className="text-[10px] text-indigo-300/90 font-arabic truncate">
+                  <p className="text-[10px] text-slate-400 font-arabic truncate">
                     {reciter.arabic_name ? reciter.arabic_name.split(' ').slice(0, 2).join(' ') : ''}
                   </p>
                 </div>
@@ -118,12 +118,12 @@ const TopPlay = () => {
       </div>
 
       {/* Recommended Surahs Card List */}
-      <div className="p-4 sm:p-5 rounded-lg bg-midnight-850/90 border border-midnight-700/80 shadow-lg">
+      <div className="p-4 sm:p-5 rounded-xl bg-midnight-850/60 border border-midnight-700/60 shadow-md">
         <div className="flex items-center justify-between mb-3.5">
           <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
             Recommended Surahs
           </h3>
-          <span className="text-[11px] text-indigo-300/80 font-medium">سُوَرٌ مُبَارَكَة</span>
+          <span className="text-[11px] text-slate-400 font-arabic font-medium">سُوَرٌ مُبَارَكَة</span>
         </div>
 
         <div className="flex flex-col space-y-2">

@@ -26,24 +26,27 @@ export const SurahMedallion = ({
     sm: 'w-9 h-9 text-xs',
     md: 'w-14 h-14 text-sm',
     lg: 'w-20 h-20 text-base',
-    xl: 'w-36 h-36 text-xl',
+    xl: 'w-32 h-32 text-xl',
   };
 
   const dimension = sizeMap[size] || sizeMap.md;
 
   return (
     <div
-      className={`relative flex items-center justify-center shrink-0 rounded-lg overflow-hidden border transition-all ${
+      className={`relative flex items-center justify-center shrink-0 rounded-full overflow-hidden border transition-all ${
         isPlaying
           ? 'bg-midnight-800 border-indigo-500/70 ring-1 ring-indigo-500/40 shadow-sm'
-          : 'bg-midnight-850 border-midnight-700/80'
+          : 'bg-midnight-850/90 border-midnight-700/70 hover:border-midnight-600'
       } ${dimension} ${className}`}
     >
+      {/* Subtle Inner Ring */}
+      <div className="absolute inset-0.5 rounded-full border border-white/[0.04] pointer-events-none" />
+
       {/* Center Surah Number / Badge */}
       <div className="relative z-10 flex flex-col items-center justify-center text-center p-1">
         {number && (
           <span
-            className={`font-semibold tracking-tighter ${
+            className={`font-semibold font-mono tracking-tight ${
               isPlaying ? 'text-indigo-300' : 'text-slate-300'
             }`}
           >
@@ -59,10 +62,10 @@ export const SurahMedallion = ({
 
       {/* Playing sound indicator glow */}
       {isPlaying && (
-        <div className="absolute bottom-0 flex items-center justify-center space-x-0.5 z-20">
-          <span className="w-1 h-1.5 bg-indigo-400 rounded-full animate-pulse" />
-          <span className="w-1 h-2.5 bg-indigo-300 rounded-full animate-pulse [animation-delay:0.2s]" />
-          <span className="w-1 h-1.5 bg-indigo-400 rounded-full animate-pulse [animation-delay:0.4s]" />
+        <div className="absolute bottom-1 flex items-center justify-center space-x-0.5 z-20">
+          <span className="w-0.5 h-1.5 bg-indigo-400 rounded-full animate-pulse" />
+          <span className="w-0.5 h-2 bg-indigo-300 rounded-full animate-pulse [animation-delay:0.2s]" />
+          <span className="w-0.5 h-1.5 bg-indigo-400 rounded-full animate-pulse [animation-delay:0.4s]" />
         </div>
       )}
     </div>
@@ -95,9 +98,9 @@ export const ReciterAvatar = ({
 
   return (
     <div
-      className={`relative flex items-center justify-center shrink-0 rounded-xl overflow-hidden border transition-all ${
+      className={`relative flex items-center justify-center shrink-0 rounded-full overflow-hidden border transition-all ${
         isPlaying
-          ? 'bg-midnight-800 border-indigo-500 ring-2 ring-indigo-500/30'
+          ? 'bg-midnight-800 border-indigo-500/80 ring-2 ring-indigo-500/30'
           : 'bg-midnight-850 border-midnight-700/80'
       } ${dimension} ${className}`}
     >
@@ -118,12 +121,12 @@ export const ReciterAvatar = ({
       {/* Graceful Calligraphic Nocturnal Seal Fallback */}
       <div
         style={{ display: photoUrl ? 'none' : 'flex' }}
-        className="w-full h-full flex flex-col items-center justify-center p-2 text-center bg-gradient-to-br from-midnight-850 via-midnight-800 to-indigo-950/40"
+        className="w-full h-full flex flex-col items-center justify-center p-2 text-center bg-gradient-to-br from-midnight-850 via-midnight-800 to-indigo-950/30"
       >
-        <span className="font-arabic text-indigo-300 font-bold text-lg select-none">
+        <span className="font-arabic text-indigo-300 font-bold text-base select-none">
           {arabicName ? arabicName.split(' ')[0] : initials}
         </span>
-        <span className="text-[10px] text-indigo-400/80 font-medium tracking-wide uppercase mt-0.5">
+        <span className="text-[9px] text-slate-400 font-medium tracking-wide uppercase mt-0.5">
           قارئ
         </span>
       </div>

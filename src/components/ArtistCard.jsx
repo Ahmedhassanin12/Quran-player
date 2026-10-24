@@ -49,19 +49,20 @@ const ArtistCard = ({ reader }) => {
   return (
     <div
       onClick={handleCardClick}
-      className={`group relative flex flex-col justify-between p-5 rounded-lg transition-all duration-200 cursor-pointer border ${
+      className={`group relative flex flex-col justify-between p-5 rounded-xl transition-all duration-200 cursor-pointer border ${
         isSelected
-          ? 'bg-midnight-800 border-indigo-500/70 shadow-lg shadow-indigo-950/40 ring-1 ring-indigo-500/40'
-          : 'bg-midnight-850 hover:bg-midnight-750 border-midnight-700/80 hover:border-midnight-600 hover:shadow-md'
+          ? 'bg-midnight-800/90 border-indigo-500/60 shadow-lg shadow-black/40 ring-1 ring-indigo-500/30'
+          : 'bg-midnight-850/60 hover:bg-midnight-800/80 border-midnight-700/60 hover:border-midnight-600 hover:shadow-md'
       }`}
     >
-      {/* Top Header: Style Badge */}
+      {/* Top Header: Style Badge & Active Indicator */}
       <div className="relative z-10 flex items-center justify-between mb-3">
-        <span className="text-[10px] uppercase tracking-wider font-bold text-indigo-300 bg-indigo-950/70 border border-indigo-500/30 px-2.5 py-0.5 rounded-full">
+        <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 bg-midnight-800 border border-midnight-700 px-2.5 py-0.5 rounded-full">
           {style}
         </span>
         {isSelected && (
-          <span className="text-[10px] font-semibold text-indigo-200 bg-indigo-500/20 border border-indigo-500/40 px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             Active
           </span>
         )}
@@ -78,23 +79,20 @@ const ArtistCard = ({ reader }) => {
           className="shadow-md shadow-black/60 mb-3"
         />
 
-        {/* Full Arabic Name (Full Width, No Ellipsis) */}
-        <h4 className="font-arabic text-xl font-bold text-indigo-300 leading-normal w-full">
+        {/* Full Arabic Name */}
+        <h4 className="font-arabic text-xl font-bold text-slate-100 group-hover:text-indigo-300 transition-colors leading-normal w-full">
           {arabicName}
         </h4>
 
-        {/* English Name (Full Width, Clean Wrap) */}
-        <h3 className="font-semibold text-sm sm:text-base text-slate-100 group-hover:text-indigo-300 transition-colors mt-0.5 leading-snug w-full">
+        {/* English Name */}
+        <h3 className="font-semibold text-sm text-slate-300 mt-0.5 leading-snug w-full">
           {englishName}
         </h3>
       </div>
 
-      {/* Divider */}
-      <div className="relative z-10 my-3 h-px bg-gradient-to-r from-transparent via-midnight-700 to-transparent" />
-
       {/* Bottom Bar: Surah Count & Select Button */}
-      <div className="relative z-10 flex items-center justify-between pt-1">
-        <span className="text-xs text-slate-400">
+      <div className="relative z-10 flex items-center justify-between pt-3 border-t border-midnight-700/40">
+        <span className="text-xs text-slate-400 font-mono">
           114 Surahs
         </span>
 
@@ -104,11 +102,11 @@ const ArtistCard = ({ reader }) => {
           className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             isSelected
               ? 'bg-indigo-500 text-white shadow-md shadow-indigo-950/50'
-              : 'bg-midnight-750 hover:bg-indigo-600 hover:text-white text-slate-200'
+              : 'bg-midnight-800 hover:bg-indigo-600 hover:text-white text-slate-300 border border-midnight-700/80'
           }`}
         >
           <BsFillPlayFill size={14} />
-          <span>{isSelected ? 'Active Reciter' : 'Select'}</span>
+          <span>{isSelected ? 'Selected' : 'Select'}</span>
         </button>
       </div>
     </div>

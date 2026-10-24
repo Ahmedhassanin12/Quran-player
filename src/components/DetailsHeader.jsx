@@ -13,40 +13,36 @@ const DetailsHeader = ({
   const isReciter = Boolean(readerId || readerName);
 
   return (
-    <div className="relative w-full rounded-lg overflow-hidden bg-gradient-to-br from-midnight-850 via-midnight-900 to-midnight-950 border border-midnight-700/80 p-2 md:p-4 mb-2 shadow-xl">
-      {/* Decorative Nocturnal Glow */}
-      <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-600/10 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-indigo-950/20 blur-3xl pointer-events-none" />
-
-      <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start space-y-5 md:space-y-0 md:space-x-6 text-center md:text-left">
+    <div className="relative w-full rounded-2xl overflow-hidden bg-midnight-850/60 border border-midnight-700/60 p-4 md:p-6 mb-4 shadow-sm">
+      <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 text-center md:text-left">
         {isReciter ? (
           <ReciterAvatar
             photoUrl={readerPhoto}
             name={readerName}
             arabicName={readerArabicName}
             size="lg"
-            className="shadow-2xl shadow-black/80"
+            className="shadow-xl shadow-black/60"
           />
         ) : (
           <SurahMedallion
             number={chapterData?.id}
             nameArabic={chapterData?.name_arabic}
             size="lg"
-            className="shadow-2xl shadow-black/80"
+            className="shadow-xl shadow-black/60"
           />
         )}
 
         <div className="flex-1 min-w-0">
-          {/* Top category / style pill */}
-          <div className="flex items-center justify-center md:justify-start space-x-2 mb-2">
-            <span className="text-[11px] uppercase tracking-wider font-bold text-indigo-300 bg-indigo-950/70 border border-indigo-500/30 px-3 py-1 rounded-full">
+          {/* Top category / style info */}
+          <div className="flex items-center justify-center md:justify-start space-x-2.5 mb-2 text-xs">
+            <span className="font-semibold text-indigo-300/90 bg-indigo-500/10 border border-indigo-500/25 px-2.5 py-0.5 rounded-full">
               {isReciter ? readerStyle || 'Murattal' : 'Holy Quran Chapter'}
             </span>
             {!isReciter && chapterData?.revelation_place && (
-              <span className="text-[11px] font-semibold text-slate-300 bg-midnight-800 border border-midnight-700 px-3 py-1 rounded-full">
+              <span className="font-medium text-slate-300 bg-midnight-800 border border-midnight-700 px-2.5 py-0.5 rounded-full">
                 {chapterData.revelation_place.toLowerCase() === 'makkah'
-                  ? 'مكية • Meccan'
-                  : 'مدنية • Medinan'}
+                  ? 'مكية · Meccan'
+                  : 'مدنية · Medinan'}
               </span>
             )}
           </div>
@@ -56,7 +52,7 @@ const DetailsHeader = ({
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-100 tracking-tight">
               {isReciter ? readerName : chapterData?.name_simple}
             </h1>
-            <span className="font-arabic font-bold text-xl sm:text-2xl text-indigo-300 mt-1 md:mt-0">
+            <span className="font-arabic font-bold text-2xl sm:text-3xl text-indigo-300 mt-1 md:mt-0">
               {isReciter ? readerArabicName : chapterData?.name_arabic}
             </span>
           </div>

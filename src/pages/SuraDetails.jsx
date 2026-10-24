@@ -37,6 +37,9 @@ import {
 } from '../assets/mushafMetadata';
 import { storageService } from '../services/storageService';
 
+const toArabicDigits = (num) =>
+  String(num).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
+
 const SuraDetails = () => {
   const { surahId } = useParams();
   const dispatch = useDispatch();
@@ -346,32 +349,32 @@ const SuraDetails = () => {
       />
 
       {/* Primary Reading & Memorization Toolbar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 p-3 rounded-lg bg-midnight-850/80 border border-midnight-700/80 shadow-lg">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-2.5 sm:p-3 rounded-xl bg-midnight-850/60 border border-midnight-700/60 shadow-sm">
         {/* Left: Mode Tabs (Verses vs Commentary vs Hifz) */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1.5">
           <button
             type="button"
             onClick={() => setActiveTab('verses')}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
               activeTab === 'verses'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-950/60'
-                : 'bg-midnight-800 text-slate-300 hover:text-white border border-midnight-700'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'bg-midnight-800/70 text-slate-300 hover:text-white border border-midnight-700/60'
             }`}
           >
-            <FiBookOpen size={14} />
+            <FiBookOpen size={13} />
             <span>Verses & Recitation</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('info')}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
               activeTab === 'info'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-950/60'
-                : 'bg-midnight-800 text-slate-300 hover:text-white border border-midnight-700'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'bg-midnight-800/70 text-slate-300 hover:text-white border border-midnight-700/60'
             }`}
           >
-            <FiInfo size={14} />
+            <FiInfo size={13} />
             <span>Surah Info</span>
           </button>
 
@@ -379,13 +382,13 @@ const SuraDetails = () => {
           <button
             type="button"
             onClick={() => setIsHifzOpen(!isHifzOpen)}
-            className={`px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border ${
               isHifzActive
-                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 animate-pulse'
-                : 'bg-midnight-800 text-slate-300 hover:text-white border-midnight-700'
+                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50'
+                : 'bg-midnight-800/70 text-slate-300 hover:text-white border-midnight-700/60'
             }`}
           >
-            <FiRepeat size={14} />
+            <FiRepeat size={13} />
             <span className="hidden sm:inline">Hifz Looper</span>
             {isHifzActive && (
               <span className="bg-emerald-500 text-black text-[10px] font-bold px-1.5 py-0.2 rounded-full">
@@ -399,13 +402,13 @@ const SuraDetails = () => {
         {activeTab === 'verses' && (
           <div className="flex flex-wrap items-center gap-2 text-xs">
             {/* Reading Modes: Madinah Mushaf (604 Pages) | Ayah Cards | Continuous Flow */}
-            <div className="flex items-center p-1 rounded-lg bg-midnight-900 border border-midnight-700 text-xs">
+            <div className="flex items-center p-1 rounded-lg bg-midnight-900 border border-midnight-700/80 text-xs">
               <button
                 type="button"
                 onClick={() => setViewStyle('mushaf')}
                 className={`px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 ${
                   viewStyle === 'mushaf'
-                    ? 'bg-indigo-600 text-white font-bold shadow-sm'
+                    ? 'bg-indigo-600 text-white font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
                 title="المصحف الشريف (طبعة مجمع الملك فهد ٦٠٤ صفحة)"
@@ -419,7 +422,7 @@ const SuraDetails = () => {
                 onClick={() => setViewStyle('cards')}
                 className={`px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 ${
                   viewStyle === 'cards'
-                    ? 'bg-indigo-600 text-white font-bold shadow-sm'
+                    ? 'bg-indigo-600 text-white font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
                 title="بطاقات الآيات مع الترجمة والاستماع"
@@ -433,7 +436,7 @@ const SuraDetails = () => {
                 onClick={() => setViewStyle('continuous')}
                 className={`px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 ${
                   viewStyle === 'continuous'
-                    ? 'bg-indigo-600 text-white font-bold shadow-sm'
+                    ? 'bg-indigo-600 text-white font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
                 title="القراءة المتصلة للآيات"
@@ -450,7 +453,7 @@ const SuraDetails = () => {
                 className={`px-2.5 py-1.5 rounded-lg border font-medium transition ${
                   showTranslation
                     ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300'
-                    : 'bg-midnight-850 border-midnight-700 text-slate-400 hover:text-slate-200'
+                    : 'bg-midnight-800/70 border-midnight-700/60 text-slate-400 hover:text-slate-200'
                 }`}
               >
                 Translation
@@ -459,25 +462,25 @@ const SuraDetails = () => {
 
             {/* Font Size Adjusters (for Cards & Continuous mode) */}
             {viewStyle !== 'mushaf' && (
-              <div className="flex items-center space-x-1 bg-midnight-900 border border-midnight-700 rounded-lg p-0.5 text-xs text-slate-400">
+              <div className="flex items-center space-x-1 bg-midnight-900 border border-midnight-700/80 rounded-lg p-0.5 text-xs text-slate-400">
                 <button
                   type="button"
                   onClick={() => setFontSize('text-xl')}
-                  className={`px-2 py-1 rounded-lg ${fontSize === 'text-xl' ? 'bg-midnight-750 text-white font-bold' : ''}`}
+                  className={`px-2 py-1 rounded-md ${fontSize === 'text-xl' ? 'bg-midnight-750 text-white font-bold' : ''}`}
                 >
                   A
                 </button>
                 <button
                   type="button"
                   onClick={() => setFontSize('text-2xl')}
-                  className={`px-2 py-1 rounded-lg ${fontSize === 'text-2xl' ? 'bg-midnight-750 text-white font-bold' : ''}`}
+                  className={`px-2 py-1 rounded-md ${fontSize === 'text-2xl' ? 'bg-midnight-750 text-white font-bold' : ''}`}
                 >
                   A+
                 </button>
                 <button
                   type="button"
                   onClick={() => setFontSize('text-3xl')}
-                  className={`px-2 py-1 rounded-lg ${fontSize === 'text-3xl' ? 'bg-midnight-750 text-white font-bold' : ''}`}
+                  className={`px-2 py-1 rounded-md ${fontSize === 'text-3xl' ? 'bg-midnight-750 text-white font-bold' : ''}`}
                 >
                   A++
                 </button>
@@ -607,8 +610,8 @@ const SuraDetails = () => {
             <>
               {/* Bismillah Banner */}
               {showBismillah && (
-                <div className="text-center py-4 bg-midnight-850/40 border border-midnight-700/50 rounded-xl">
-                  <p className="font-quran text-3xl sm:text-4xl text-indigo-300 tracking-wide select-none">
+                <div className="text-center py-5 bg-midnight-850/40 border border-midnight-700/50 rounded-xl">
+                  <p className="font-quran text-3xl sm:text-4xl text-slate-100 tracking-wide select-none">
                     بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
                   </p>
                 </div>
@@ -626,20 +629,20 @@ const SuraDetails = () => {
                       onClick={() => handleJumpToVerse(verse.verse_key)}
                       className={`p-5 sm:p-6 rounded-xl border transition-all duration-200 cursor-pointer text-right relative group ${
                         isPlayingThisVerse
-                          ? 'bg-indigo-950/35 border-indigo-500/80 shadow-xl shadow-indigo-950/60 ring-1 ring-indigo-500/50'
-                          : 'bg-midnight-850/60 hover:bg-midnight-800/80 border-midnight-700/60 hover:border-midnight-600'
+                          ? 'bg-midnight-800/95 border-indigo-500/60 shadow-lg shadow-black/40 ring-1 ring-indigo-500/30'
+                          : 'bg-midnight-850/50 hover:bg-midnight-800/70 border-midnight-700/50 hover:border-midnight-600/60'
                       }`}
                     >
-                      {/* Header Row: Verse Number Pill + Jump-to-verse trigger */}
-                      <div className="flex items-center justify-between pb-3 mb-2 border-b border-midnight-700/40 select-none">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-xs font-mono font-bold text-indigo-400 bg-midnight-800 border border-midnight-700 px-2.5 py-0.5 rounded-full">
-                            {verse.verse_key}
+                      {/* Header Row: Verse Index + Jump-to-verse trigger */}
+                      <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-midnight-700/30 select-none">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium text-slate-400">
+                            الآية {toArabicDigits(verse.verse_number)} · <span className="font-mono text-slate-500">{verse.verse_key}</span>
                           </span>
                           {isPlayingThisVerse && (
-                            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <span className="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full flex items-center gap-1.5">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                              Reciting
+                              يتلو الآن
                             </span>
                           )}
                         </div>
@@ -652,8 +655,8 @@ const SuraDetails = () => {
                           }}
                           className="text-xs text-slate-400 group-hover:text-indigo-300 font-medium flex items-center gap-1 transition"
                         >
-                          <BsFillPlayFill size={14} />
-                          <span>Jump to Ayah</span>
+                          <BsFillPlayFill size={15} />
+                          <span>استماع</span>
                         </button>
                       </div>
 
@@ -665,8 +668,8 @@ const SuraDetails = () => {
                         }`}
                       >
                         {verse.text_uthmani}
-                        <span className="inline-flex items-center justify-center font-sans font-bold text-xs text-indigo-400 mx-2 px-2.5 py-0.5 rounded-full bg-midnight-800 border border-indigo-500/30 align-middle">
-                          {verse.verse_number}
+                        <span className="font-arabic text-amber-400/90 font-normal mx-2 select-none text-[0.85em] align-middle">
+                          ﴿{toArabicDigits(verse.verse_number)}﴾
                         </span>
                       </p>
 
@@ -693,8 +696,8 @@ const SuraDetails = () => {
             <>
               {/* Bismillah Banner */}
               {showBismillah && (
-                <div className="text-center py-4 bg-midnight-850/40 border border-midnight-700/50 rounded-xl">
-                  <p className="font-quran text-3xl sm:text-4xl text-indigo-300 tracking-wide select-none">
+                <div className="text-center py-5 bg-midnight-850/40 border border-midnight-700/50 rounded-xl">
+                  <p className="font-quran text-3xl sm:text-4xl text-slate-100 tracking-wide select-none">
                     بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
                   </p>
                 </div>
@@ -711,15 +714,15 @@ const SuraDetails = () => {
                       <span
                         key={verse.id}
                         onClick={() => handleJumpToVerse(verse.verse_key)}
-                        className={`${fontSize} inline transition-all cursor-pointer rounded-lg px-1 ${
+                        className={`${fontSize} inline transition-all cursor-pointer rounded px-1 ${
                           isPlayingThisVerse
-                            ? 'bg-indigo-500/25 text-indigo-200 font-semibold ring-1 ring-indigo-500/50'
-                            : 'hover:text-indigo-300 hover:bg-midnight-800/50'
+                            ? 'bg-indigo-500/20 text-indigo-200 font-medium ring-1 ring-indigo-500/40'
+                            : 'hover:text-indigo-300 hover:bg-midnight-800/40'
                         }`}
                       >
                         <span>{verse.text_uthmani}</span>
-                        <span className="inline-flex items-center justify-center font-sans font-bold text-xs text-indigo-300 mx-1.5 px-2 py-0.5 rounded-full bg-midnight-800 border border-indigo-500/30 select-none align-middle">
-                          {verse.verse_number}
+                        <span className="font-arabic text-amber-400/90 font-normal mx-1.5 select-none text-[0.8em] align-middle">
+                          ﴿{toArabicDigits(verse.verse_number)}﴾
                         </span>
                       </span>
                     );

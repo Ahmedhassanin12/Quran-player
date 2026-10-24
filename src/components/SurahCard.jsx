@@ -53,13 +53,13 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
   return (
     <div
       onClick={handlePlayClick}
-      className={`group relative flex flex-col justify-between p-4 sm:p-5 rounded-lg transition-all duration-200 cursor-pointer border ${
+      className={`group relative flex flex-col justify-between p-4 sm:p-5 rounded-xl transition-all duration-200 cursor-pointer border ${
         isCurrent
-          ? 'bg-midnight-800 border-indigo-500/70 shadow-lg shadow-indigo-950/40 ring-1 ring-indigo-500/40'
-          : 'bg-midnight-850 hover:bg-midnight-750 border-midnight-700/80 hover:border-midnight-600 hover:shadow-md'
+          ? 'bg-midnight-800/90 border-indigo-500/60 shadow-lg shadow-black/40 ring-1 ring-indigo-500/30'
+          : 'bg-midnight-850/60 hover:bg-midnight-800/80 border-midnight-700/60 hover:border-midnight-600 hover:shadow-md'
       }`}
     >
-      {/* Top Row: Medallion (Number) + Revelation & Favorite + Play/Pause Button */}
+      {/* Top Bar: Medallion Number + Favorite + Play/Pause Action */}
       <div className="relative z-10 flex items-center justify-between gap-2">
         <SurahMedallion
           number={surahId}
@@ -67,21 +67,16 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
           isPlaying={isCurrentAndPlaying}
         />
 
-        {/* Center Status: Revelation tag & Favorite Bookmark */}
         <div className="flex items-center space-x-1.5">
-          <span className="text-[10px] font-semibold text-slate-300 bg-midnight-800 border border-midnight-700 px-2.5 py-0.5 rounded-full">
-            {isMeccan ? 'مكية' : 'مدنية'}
-          </span>
-
           <button
             type="button"
             onClick={handleFavoriteClick}
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             title={isFavorite ? 'Saved to Favorites' : 'Add to Favorites'}
-            className={`p-1.5 rounded-full transition-colors ${
+            className={`p-1.5 rounded-lg transition-colors ${
               isFavorite
-                ? 'text-rose-400 bg-rose-500/15 border border-rose-500/30'
-                : 'text-slate-500 hover:text-slate-300 hover:bg-midnight-700/60'
+                ? 'text-rose-400 bg-rose-500/10 border border-rose-500/25'
+                : 'text-slate-500 hover:text-slate-300 hover:bg-midnight-800'
             }`}
           >
             <svg
@@ -98,10 +93,7 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
               />
             </svg>
           </button>
-        </div>
 
-        {/* Play / Pause Action Button (Isolated & Accessible) */}
-        <div className="shrink-0">
           <PlayPause
             isPlaying={isPlaying}
             activeSura={activeSura}
@@ -113,8 +105,8 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
         </div>
       </div>
 
-      {/* Middle Row: Full-width Arabic Calligraphy Title (NO truncation, fully visible) */}
-      <div className="relative z-10 my-1 text-center">
+      {/* Middle: Prominent Sacred Arabic Calligraphy Title */}
+      <div className="relative z-10 my-3 text-center">
         <Link
           to={`/surah/${surahId}`}
           onClick={(e) => e.stopPropagation()}
@@ -125,7 +117,7 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
           </h3>
         </Link>
         {isCurrentAndPlaying && (
-          <div className="flex items-center justify-center m-auto space-x-0.5 px-2 py-0.5 rounded-full bg-indigo-950/70 border border-indigo-500/40 w-[fit-content]">
+          <div className="flex items-center justify-center m-auto space-x-0.5 px-2 py-0.5 rounded-full bg-indigo-950/70 border border-indigo-500/40 w-[fit-content] mt-1">
             <span className="playing-bar" />
             <span className="playing-bar" />
             <span className="playing-bar" />
@@ -133,18 +125,15 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
         )}
       </div>
 
-      {/* Divider */}
-      <div className="relative z-10 my-2 h-px bg-gradient-to-r from-transparent via-midnight-700 to-transparent" />
-
-      {/* Bottom Details: English Name + Translation + Verse Count */}
-      <div className="relative z-10 flex items-end justify-between pt-1">
+      {/* Bottom Typographic Metadata: Latin Name, Translation, Revelation & Verses */}
+      <div className="relative z-10 flex items-end justify-between pt-2 border-t border-midnight-700/40">
         <div className="flex-1 min-w-0 pr-2">
           <Link
             to={`/surah/${surahId}`}
             onClick={(e) => e.stopPropagation()}
             className="hover:underline block"
           >
-            <h4 className="font-semibold text-sm text-slate-200 leading-tight">
+            <h4 className="font-semibold text-sm text-slate-200 leading-tight truncate">
               {sura?.name_simple || `Surah ${surahId}`}
             </h4>
           </Link>
@@ -153,10 +142,10 @@ const SurahCard = ({ sura, isPlaying, activeSura, i, data, audioData, currentRec
           </p>
         </div>
 
-        <div className="shrink-0">
-          <span className="text-[11px] font-medium text-indigo-300 bg-indigo-950/50 border border-indigo-500/25 px-2 py-0.5 rounded-full whitespace-nowrap">
-            {sura?.verses_count || sura?.verses?.length || '—'} verses
-          </span>
+        <div className="shrink-0 text-right text-xs text-slate-400 font-medium whitespace-nowrap">
+          <span>{isMeccan ? 'مكية' : 'مدنية'}</span>
+          <span className="mx-1 text-slate-600">·</span>
+          <span className="font-mono text-indigo-300/90">{sura?.verses_count || sura?.verses?.length || '—'} v</span>
         </div>
       </div>
     </div>
