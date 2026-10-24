@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { FiChevronDown, FiList, FiVolume2, FiVolumeX } from 'react-icons/fi';
 import {
   MdSkipNext,
@@ -46,6 +47,7 @@ const ExpandedPlayer = ({
   handleSeekRelative,
 }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     activeSura,
     currentSura,
@@ -89,6 +91,11 @@ const ExpandedPlayer = ({
   const surahId = activeSura?.chapter_id || activeSura?.id || 1;
   const progressPercentage = duration > 0 ? (appTime / duration) * 100 : 0;
   const remainingTime = duration > appTime ? duration - appTime : 0;
+
+  const handleNavigateToSurahDetails = () => {
+    dispatch(setIsExpanded(false));
+    navigate(`/surah/${surahId}`);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col justify-between bg-midnight-950/98 backdrop-blur-2xl text-slate-100 p-6 md:p-10 animate-slideup select-none overflow-y-auto">
@@ -135,21 +142,32 @@ const ExpandedPlayer = ({
       <div className="relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-center my-6 gap-8 max-w-5xl mx-auto w-full">
         {/* Left/Center: Artwork & Recitation Details */}
         <div className="flex-1 flex flex-col items-center text-center max-w-md w-full">
-          <SurahMedallion
-            number={surahId}
-            nameArabic={activeSura?.name_arabic}
-            size="xl"
-            isPlaying={isPlaying}
-            className="shadow-2xl shadow-indigo-950/80 mb-6"
-          />
+          {/* Clickable Surah Name & Medallion: Navigates to Surah Details and closes player */}
+          <button
+            type="button"
+            onClick={handleNavigateToSurahDetails}
+            className="group flex flex-col items-center focus:outline-none transition-transform hover:scale-[1.02] cursor-pointer"
+            title="الانتقال إلى صفحة وقراءة السورة / View Surah Details & Mushaf"
+          >
+            <SurahMedallion
+              number={surahId}
+              nameArabic={activeSura?.name_arabic}
+              size="xl"
+              isPlaying={isPlaying}
+              className="shadow-2xl shadow-indigo-950/80 mb-6 group-hover:ring-2 group-hover:ring-indigo-400/50 rounded-full transition-all"
+            />
 
-          <h2 className="font-arabic text-4xl sm:text-5xl font-bold text-slate-100 mb-2">
-            سورة {activeSura?.name_arabic}
-          </h2>
+            <h2 className="font-arabic text-4xl sm:text-5xl font-bold text-slate-100 mb-2 group-hover:text-indigo-300 transition-colors">
+              سورة {activeSura?.name_arabic}
+            </h2>
 
-          <h3 className="text-xl sm:text-2xl font-bold text-indigo-300 mb-1">
-            {activeSura?.name_simple || `Surah ${surahId}`}
-          </h3>
+            <h3 className="text-xl sm:text-2xl font-bold text-indigo-300 mb-1 group-hover:text-indigo-200 transition-colors flex items-center gap-1.5">
+              <span>{activeSura?.name_simple || `Surah ${surahId}`}</span>
+              <span className="text-xs font-normal text-indigo-400/80 group-hover:underline">
+                (عرض السورة ❯)
+              </span>
+            </h3>
+          </button>
 
           <p className="text-sm text-slate-400 mb-4">
             {activeSura?.translated_name?.name || 'The Holy Quran'} •{' '}
