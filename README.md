@@ -1,154 +1,221 @@
-# Project Quran-player
+# القرآن الكريم — Quran Kareem Player
 
-## Quran-player
-- Is Quran player App created with React js 
-- Redux toolkit for state management and fetch API
-- Tailwind css for styling App
+<div align="center">
 
-## demo 
-- https://quranplayer.vercel.app/
-- https://quran-app-ahmed.netlify.app/
+![Quran Kareem Banner](https://user-images.githubusercontent.com/89364017/194591197-d6cd72a2-b978-417d-bd1c-f0096d466633.png)
 
+**A calm, authentic Quran listening and reading application built with modern craftsmanship.**
 
-## VIWE
-![1](https://user-images.githubusercontent.com/89364017/194591197-d6cd72a2-b978-417d-bd1c-f0096d466633.png)
-![2](https://user-images.githubusercontent.com/89364017/194591233-9dc0d70b-c5bf-4698-912b-6026a740b2b3.png)
-![3](https://user-images.githubusercontent.com/89364017/194591255-4bb29698-6c33-45be-8a4d-72b63940f48d.png)
-![4](https://user-images.githubusercontent.com/89364017/194591283-a857a37b-2ce5-45b7-98ea-4a131c01cb84.png)
-![5](https://user-images.githubusercontent.com/89364017/194591304-2afc0036-599c-4e3d-bb78-85e5ac62d020.png)
+Featuring the exact 604-page King Fahd Madinah Mushaf, synchronized verse-by-verse recitation, curated Sunnah collections, Hifz memorization looping, and a restrained Linear-inspired dark aesthetic.
 
+[![Live Demo (Vercel)](https://img.shields.io/badge/Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://quranplayer.vercel.app/)
+[![Live Demo (Netlify)](https://img.shields.io/badge/Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify)](https://quran-app-ahmed.netlify.app/)
+[![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-2.9-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev/)
+[![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-1.8-764ABC?style=for-the-badge&logo=redux)](https://redux-toolkit.js.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.1-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![PWA Ready](https://img.shields.io/badge/PWA-Ready-orange?style=for-the-badge&logo=pwa)](https://web.dev/progressive-web-apps/)
+[![Mushaf Tests](https://img.shields.io/badge/Mushaf_Tests-9%2F9_Passing-brightgreen?style=for-the-badge)](tests/mushaf.test.js)
 
-Develop an elegant React.js Music Application. 
+</div>
 
-Check out the complete project requirements [here](https://docs.google.com/document/d/13PeFwRlPEhMw_HPyrIrInvQuKaVWnpNmcv-y3NA208s/edit?usp=sharing)
+---
 
-# Contributing
+## 📖 Highlights & Features
 
-When contributing to this repository, please first discuss the change you wish to make via issue.
-Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
+### 1. Authentic 604-Page Madinah Mushaf Mode
+Faithful reproduction of the official **King Fahd Glorious Quran Complex (مجمع الملك فهد لطباعة المصحف الشريف)** edition with exactly 604 pages:
+* **Zero Line Reflow**: Strict 15 lines per standard page matching the physical printed copy.
+* **Dual Rendering Engines**:
+  * **Calligraphic Plate Scan**: High-resolution 1260px official scans with pure white night-mode calligraphy (`خط أبيض ناصع`) and classic ivory parchment mode (`نمط ورقي عاجي`).
+  * **15-Line Digital Typography Engine**: Responsive vector typography using authentic Uthmani script with interactive word/ayah popovers.
+* **Navigation & Tools**: Instant Jump to Page (1–604), Surah & Juz headers, and persistent Mushaf bookmarks modal.
 
+### 2. Versatile Quran Reading Modes
+* **Madinah Mushaf Mode**: Exact page-by-page layout for physical Mushaf familiarity.
+* **Structured Ayah Cards Mode**: Verse-by-verse presentation with sacred Uthmani calligraphy, authentic ayah end markers (`﴿٥﴾`), Saheeh International English translations, and 1-click **Jump to Ayah** audio seeking.
+* **Continuous Flow Mode**: Continuous reading surface with real-time active recitation highlighting.
+* **Historical Context & Commentary (Surah Info)**: Historical background, revelation period (Meccan vs. Medinan), and chapter reflections.
 
-## System Requirements
+### 3. Precision Audio & Recitation Suite
+* **Verse-Synchronized Audio**: Millisecond-accurate ayah timestamp segments matching audio playback to the highlighted verse in real time.
+* **Interactive Top Scrubber "Tape"**: Scrub recitations directly from the player's top timeline edge.
+* **Architectural Audio Player**: Floating island on desktop screens (`lg:rounded-2xl`), seamlessly docked with safe-area insets on mobile viewports.
+* **Expanded Fullscreen Player**: Fullscreen recitation sanctuary featuring active Surah queue, quick navigation, and large typography.
+* **Pitch-Preserving Speed Selector**: Speed adjustment from `0.80x` (slow Tajweed study) to `1.20x` (fluent review) with zero pitch distortion.
+* **Sleep Sanctuary Timer**: Timed bedtime timer (15m, 30m, 45m, 60m) or end-of-surah mode with a smooth 30-second volume fade.
+* **Hifz Memorization Looper**: Configurable loop count (1 to ∞) for memorizing specific verses or passages.
 
-To get started with development, you need to install few tools
+### 4. Curated Sunnah & Thematic Collections
+Quick 1-click access to recommended Sunnah recitations with authentic Hadith citations:
+* **Friday Light**: Surah Al-Kahf (*سنة الجمعة - الكهف*)
+* **Nightly Protection**: Surah Al-Mulk & Surah As-Sajdah (*منجيات الليل*)
+* **Daily Fortress**: Al-Ikhlas & Al-Mu'awwidhatayn (*المعوذات والإخلاص*)
+* **Heart Softeners**: Surah Ar-Rahman, Al-Waqi'ah, Maryam, Taha, Qaf (*تلاوات خاشعة ومؤثرة*)
+* **Juz 'Amma**: The complete 30th portion (37 chapters) for daily memorization.
 
-1. git 
-   
-   `git` version 2.13.1 or higher. Download [git](https://git-scm.com/downloads) if you don't have it already.
+### 5. Verified Global Qari Roster
+Complete catalog of renowned Islamic reciters with verified audio sources across different recitation styles:
+* **Murattal (مرتل)**: Sheikh Mishari Rashid al-Afasy, Mahmoud Khalil Al-Husary, Saad Al-Ghamdi, Abu Bakr Al-Shatri, Maher Al-Muaiqly, etc.
+* **Mujawwad (مجود)**: Abdul Basit Abdus Samad, Muhammad Siddiq Al-Minshawi, Mustafa Ismail.
+* **Mu'allim (معلم)**: Educational pacing for Tajweed practice.
 
-   To check your version of git, run:
+### 6. Restrained Editorial Design (Linear Dark Palette)
+Designed according to strict anti-UI-slop principles:
+* **Calm Obsidian Palette**: Near-black backgrounds (`#08090B`), charcoal surfaces (`#0D0F12`, `#111318`, `#171A21`), and subtle borders (`#242833`).
+* **Restrained Accents**: Subtle Linear indigo (`#7778F6`) reserved strictly for active playback and primary triggers.
+* **Typography Hierarchy**: Scheherazade New and Amiri for sacred Arabic calligraphy, paired with Plus Jakarta Sans for the English UI.
+* **Zero Visual Slop**: No artificial neon glows, dot grids, or crowded dashboard cards.
 
-   ```shell
-    git --version
-   ```
+### 7. Progressive Web App (PWA) & Offline Ready
+* **Installable**: One-click installation on iOS, Android, macOS, and Windows.
+* **Offline Caching**: Cached UI assets and Surah metadata.
+* **Dynamic Viewport**: Dynamic viewport height calculation (`100dvh`) preventing mobile browser navigation bar clipping.
 
-2. node 
-   
-   `node` version 16.15.1 or higher. Download [node](https://nodejs.org/en/download/) if you don't have it already.
+---
 
-   To check your version of node, run:
+## 🛠️ Tech Stack & Architecture
 
-   ```shell
-    node --version
-   ```
+| Layer | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Framework** | [React 18](https://reactjs.org/) | Component-driven UI |
+| **Build Tool** | [Vite 2.9](https://vitejs.dev/) | Ultra-fast HMR and optimized production bundling |
+| **State Management** | [Redux Toolkit](https://redux-toolkit.js.org/) | Global audio player state, active Surah, favorites, recents |
+| **Data Fetching** | [RTK Query](https://redux-toolkit.js.org/rtk-query/overview) | Quran.com v4 API caching and endpoint management |
+| **Styling** | [Tailwind CSS 3.1](https://tailwindcss.com/) | Custom design tokens and responsive styling |
+| **Icons** | [React Icons](https://react-icons.github.io/react-icons/) | Feather (`Fi*`) and Bootstrap/Material SVG vector icons |
+| **Arabic Typography** | Scheherazade New & Amiri | Classical Uthmani Quranic script and diacritics |
+| **Testing** | Node.js Test Runner | Automated 9-point regression test suite for 604-page Mushaf fidelity |
 
-3. npm
-  
-   `npm` version 5.6.1 or higher. You will have it after you install node.
+---
 
-   To check your version of npm, run:
+## 🚀 Getting Started
 
-   ```shell
-    npm --version
-   ```
+### Prerequisites
+* **Node.js**: `18.0.0` or higher
+* **npm**: `8.0.0` or higher
 
-## Setup
+### Installation
 
-To set up a development environment, please follow these steps:
-
-1. Clone the repo
-
-   ```shell
-    git clone https://github.com/JavaScript-Mastery-PRO/project1_team4_repository.git
-   ```
-
-2. Change directory to the project directory
-
-    ```shell
-    cd project1_team4_repository
-    ```
-
-3. Install the dependencies
-   
-    ```shell
-     npm install
-    ```
-
-    If you get an error, please check the console for more information.
-
-    If you don't get an error, you are ready to start development.
-
-4. Run the app
-   
-    ```shell
-    npm run dev
-    ```
-
-    Project will be running in the browser.
-
-    Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-## Issues
-
-You've found a bug in the source code, a mistake in the documentation or maybe you'd like a new feature? You can help us by [submitting an issue on GitHub](https://github.com/orgs/JavaScript-Mastery-PRO/projects/8). Before you create an issue, make sure to search the issue archive -- your issue may have already been addressed!
-
-Please try to create bug reports that are:
-
-- _Reproducible._ Include steps to reproduce the problem.
-- _Specific._ Include as much detail as possible: which version, what environment, etc.
-- _Unique._ Do not duplicate existing opened issues.
-- _Scoped to a Single Bug._ One bug per report.
-
-
-## Pull Request
-
-There are 2 main work flows when dealing with pull requests:
-
-* Pull Request from a [forked repository](https://help.github.com/articles/fork-a-repo)
-* Pull Request from a branch within a repository
-
-Here we are going to focus on 2. Creating a Topical Branch:
-
-
-1. First, we will need to create a branch from the latest commit on master. Make sure your repository is up to date first using
-
+1. **Clone the repository**:
    ```bash
-    git pull origin main
+   git clone https://github.com/Ahmedhassanin12/Quran-player.git
+   cd Quran-player
    ```
 
-   *Note:* `git pull` does a `git fetch` followed by a `git merge` to update the local repo with the remote repo. For a more detailed explanation, see [this stackoverflow post](http://stackoverflow.com/questions/292357/whats-the-difference-between-git-pull-and-git-fetch).
-
-2. To create a branch, use `git checkout -b <new-branch-name> [<base-branch-name>]`, where `base-branch-name` is optional and defaults to `main`. 
-   
-   Use a standard convention for branch names. For example, `<your-name>-dev`. It will be easier to track your pull requests if you use this convention.
-   
-   I'm going to create a new branch called `jsm-dev` from the `main` branch and push it to github.
-
+2. **Install dependencies**:
    ```bash
-    git checkout -b jsm-dev main
-    git push origin jsm-dev
+   npm install
    ```
 
-3. To create a pull request, you must have changes committed to your new branch.
+3. **Start the local development server**:
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) (or the port displayed in your terminal) in your browser.
 
-4. Go to [Pull Requests](https://github.com/JavaScript-Mastery-PRO/project1_team4_repository/pulls) and click on the `New Pull Request` button.
+4. **Run the test suite**:
+   ```bash
+   npm test
+   ```
 
-5. Select the `main` branch as the `base` branch and the `jsm-dev` branch as the `compare` branch.
+5. **Build for production**:
+   ```bash
+   npm run build
+   ```
+   The compiled output will be generated in the `dist/` directory.
 
-6. Follow the template and fill in the proper information for the pull request.
+---
 
-7. Click on the `Submit` button.
+## 🧪 Testing & Verification
 
-8. You have successfully created a pull request. Now wait for mentor approval. Once approved, you can merge the pull request.
+The project includes an automated regression test suite (`tests/mushaf.test.js`) verifying:
+1. **Total Page Count**: Exactly 604 pages.
+2. **Page Bounds & Sequence**: Continuity from page 1 to 604.
+3. **Surah Al-Fatihah Frontispiece**: Page 1 bounds (`1:1` to `1:7`).
+4. **Al-Baqarah Frontispiece**: Page 2 bounds (`2:1` to `2:5`).
+5. **Standard 15-Line Page**: Page 3 bounds (`2:6` to `2:16`).
+6. **Final Page**: Page 604 bounds (`112:1` to `114:6`).
+7. **Ayah-to-Page Resolution**: Verified mappings for arbitrary verses (e.g. Ayat Al-Kursi `2:255`, Surat Ya-Sin `36:1`).
+8. **Out-of-Bounds Clamping**: Safe boundary handling for invalid inputs.
+9. **Asset CDN Routing**: Formatted 3-digit padded official CDN URLs.
 
-#
+To execute the test suite:
+```bash
+node tests/mushaf.test.js
+```
+
+---
+
+## 📂 Project Structure
+
+```
+Quran-player/
+├── public/                 # Static assets, icons, manifest.webmanifest
+├── src/
+│   ├── assets/             # Mushaf metadata (604 pages), collections data, reciters data
+│   │   ├── collectionsData.js
+│   │   ├── constants.js
+│   │   ├── mushafMetadata.js
+│   │   └── recitersData.js
+│   ├── components/         # Reusable UI & reading components
+│   │   ├── IslamicArtwork.jsx
+│   │   ├── Mushaf/
+│   │   │   ├── MushafAyahModal.jsx
+│   │   │   ├── MushafBookmarksModal.jsx
+│   │   │   ├── MushafNavigation.jsx
+│   │   │   └── MushafPageRenderer.jsx
+│   │   ├── QuranPlayer/
+│   │   │   ├── Controls.jsx
+│   │   │   ├── ExpandedPlayer.jsx
+│   │   │   ├── Player.jsx
+│   │   │   ├── Seekbar.jsx
+│   │   │   ├── SleepTimerModal.jsx
+│   │   │   ├── SpeedSelectorModal.jsx
+│   │   │   ├── TopScrubber.jsx
+│   │   │   ├── Track.jsx
+│   │   │   ├── VolumeBar.jsx
+│   │   │   └── index.jsx
+│   │   ├── ContinueListeningBanner.jsx
+│   │   ├── CuratedCollections.jsx
+│   │   ├── DetailsHeader.jsx
+│   │   ├── InstallPwaButton.jsx
+│   │   ├── PlayPause.jsx
+│   │   ├── Searchbar.jsx
+│   │   ├── Sidebar.jsx
+│   │   └── SurahCard.jsx
+│   ├── pages/              # Application views
+│   │   ├── ArtistDetails.jsx
+│   │   ├── Discover.jsx
+│   │   ├── SuraDetails.jsx
+│   │   └── TopReaders.jsx
+│   ├── redux/              # Redux slices and RTK Query services
+│   │   ├── features/playerSlice.js
+│   │   ├── services/quranCore.js
+│   │   └── store.js
+│   ├── services/           # LocalStorage bookmark & progress persistence
+│   │   └── storageService.js
+│   ├── App.jsx             # Main application shell & router
+│   ├── index.css           # Base styles, scrollbars, sliders, Tailwind directives
+│   └── index.jsx           # React DOM root entry
+├── tests/                  # Madinah Mushaf regression test suite
+│   └── mushaf.test.js
+├── tailwind.config.js      # Linear dark palette design tokens
+├── vite.config.js          # Vite build configuration
+└── package.json
+```
+
+---
+
+## 📄 License & Attribution
+
+* **Source Code**: Released under the [MIT License](LICENSE).
+* **Quran Text & Translations**: Powered by [Quran.com API v4](https://api-docs.quran.com/) and [Tanzil](https://tanzil.net/).
+* **Mushaf Page Plates**: King Fahd Glorious Quran Complex (مجمع الملك فهد لطباعة المصحف الشريف).
+* **Audio Recitations**: Everyayah and Quran.com Audio CDN.
+
+---
+
+<div align="center">
+  <b>والحمد لله رب العالمين</b>
+</div>
