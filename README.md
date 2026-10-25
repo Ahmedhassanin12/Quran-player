@@ -2,8 +2,7 @@
 
 <div align="center">
 
-![Quran Kareem Banner](<img width="3830" height="1937" alt="Screenshot 2026-10-25 140810" src="https://github.com/user-attachments/assets/a5d546e4-05fb-45a1-96d8-fcae585a3fd8" />
-)
+![Quran Kareem Banner](https://github.com/user-attachments/assets/a5d546e4-05fb-45a1-96d8-fcae585a3fd8)
 
 **A calm, authentic Quran listening and reading application built with modern craftsmanship.**
 
