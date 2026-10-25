@@ -2,14 +2,13 @@
 
 <div align="center">
 
-![Quran Kareem Banner](https://user-images.githubusercontent.com/89364017/194591197-d6cd72a2-b978-417d-bd1c-f0096d466633.png)
+![Quran Kareem Banner](https://github.com/user-attachments/assets/a5d546e4-05fb-45a1-96d8-fcae585a3fd8)
 
 **A calm, authentic Quran listening and reading application built with modern craftsmanship.**
 
 Featuring the exact 604-page King Fahd Madinah Mushaf, synchronized verse-by-verse recitation, curated Sunnah collections, Hifz memorization looping, and a restrained Linear-inspired dark aesthetic.
 
 [![Live Demo (Vercel)](https://img.shields.io/badge/Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://quranplayer.vercel.app/)
-[![Live Demo (Netlify)](https://img.shields.io/badge/Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify)](https://quran-app-ahmed.netlify.app/)
 [![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-2.9-646CFF?style=for-the-badge&logo=vite)](https://vitejs.dev/)
 [![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-1.8-764ABC?style=for-the-badge&logo=redux)](https://redux-toolkit.js.org/)
@@ -89,7 +88,7 @@ Designed according to strict anti-UI-slop principles:
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 * **Node.js**: `18.0.0` or higher
