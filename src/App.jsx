@@ -1,14 +1,20 @@
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Sidebar, QuranPlayer } from './components';
+import OfflineGate from './components/OfflineGate';
 import {
   ArtistDetails,
   TopReaders,
   Discover,
   SuraDetails,
+  Downloads,
 } from './pages';
+import { hydrateDownloads } from './redux/features/downloadsSlice';
 
 const App = () => {
+  const dispatch = useDispatch();
+
   // Precision mobile dynamic viewport calculation
   useEffect(() => {
     const updateAppHeight = () => {
@@ -28,8 +34,15 @@ const App = () => {
     };
   }, []);
 
+  // Hydrate offline library metadata from IndexedDB
+  useEffect(() => {
+    dispatch(hydrateDownloads());
+  }, [dispatch]);
+
   return (
     <div className="relative flex app-viewport w-full overflow-hidden bg-midnight-950 text-slate-100 font-sans">
+      <OfflineGate />
+
       {/* Primary Sidebar */}
       <Sidebar />
 
@@ -44,6 +57,7 @@ const App = () => {
               <Route path="/reciters" element={<TopReaders />} />
               <Route path="/reader/:id" element={<ArtistDetails />} />
               <Route path="/surah/:surahId" element={<SuraDetails />} />
+              <Route path="/downloads" element={<Downloads />} />
               <Route path="*" element={<Discover />} />
             </Routes>
           </div>

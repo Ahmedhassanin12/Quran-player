@@ -49,6 +49,20 @@ const QuranPlayer = () => {
   const [isSleepModalOpen, setIsSleepModalOpen] = useState(false);
   const [isSpeedModalOpen, setIsSpeedModalOpen] = useState(false);
 
+  // Identity of the active recitation — used to reset progress UI on track change (critical on iOS)
+  const trackKey = [
+    activeSura?.chapter_id || activeSura?.id || '',
+    activeSura?.reciter_id || currentReciter?.id || '',
+    activeSura?.audio_url || '',
+  ].join(':');
+
+  // When switching surah/reciter, clear stale duration/position so the bar doesn't jump
+  useEffect(() => {
+    setDuration(0);
+    setAppTime(0);
+    setSeekTime(0);
+  }, [trackKey]);
+
   // Synchronize seekTime triggered from outside (e.g. handleJumpToVerse, ContinueListening, Hifz loop)
   useEffect(() => {
     if (typeof reduxSeekTime === 'number' && !isNaN(reduxSeekTime)) {
@@ -56,6 +70,24 @@ const QuranPlayer = () => {
       setSeekTime(reduxSeekTime);
     }
   }, [reduxSeekTime, seekCount]);
+
+  const handleDurationUpdate = useCallback((e) => {
+    const next = Number(e?.target?.duration);
+    // iOS Safari often reports Infinity/NaN until metadata is ready
+    if (Number.isFinite(next) && next > 0) {
+      setDuration(next);
+    }
+  }, []);
+
+  const handleTimeUpdate = useCallback((e) => {
+    const next = Number(e?.target?.currentTime);
+    if (!Number.isFinite(next) || next < 0) return;
+    setAppTime((prev) => {
+      // Avoid noisy re-renders from tiny float jitter
+      if (Math.abs(prev - next) < 0.05) return prev;
+      return next;
+    });
+  }, []);
 
   const handlePlayPause = useCallback((forcedState) => {
     if (!isActive) return;
@@ -218,8 +250,9 @@ const QuranPlayer = () => {
           role="region"
           aria-label="Audio Player"
         >
-          {/* Interactive Top-Edge "Tape" Timeline Scrubber */}
+          {/* Interactive Top-Edge "Tape" Timeline Scrubber (mobile) */}
           <TopScrubber
+            key={trackKey}
             appTime={appTime}
             duration={duration}
             onSeek={handleSeekDirect}
@@ -248,7 +281,7 @@ const QuranPlayer = () => {
               handleSeekRelative={handleSeekRelative}
             />
 
-            <div className="w-full hidden sm:block">
+            <div className="w-full max-w-full px-0.5 sm:px-0">
               <Seekbar
                 appTime={appTime}
                 min={0}
@@ -266,8 +299,9 @@ const QuranPlayer = () => {
               seekCount={seekCount}
               repeat={repeatMode === 'one'}
               onEnded={handleTrackEnded}
-              onTimeUpdate={(e) => setAppTime(e.target.currentTime)}
-              onLoadedData={(e) => setDuration(e.target.duration)}
+              onTimeUpdate={handleTimeUpdate}
+              onLoadedData={handleDurationUpdate}
+              onDurationChange={handleDurationUpdate}
             />
           </div>
 
@@ -338,6 +372,7 @@ const QuranPlayer = () => {
 
       {/* Expanded Player Overlay Modal */}
       <ExpandedPlayer
+        key={`expanded-${trackKey}`}
         appTime={appTime}
         duration={duration}
         onSeek={handleSeekInput}

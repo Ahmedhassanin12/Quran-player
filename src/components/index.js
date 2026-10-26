@@ -11,6 +11,7 @@ import PlayPause from './PlayPause';
 import CuratedCollections from './CuratedCollections';
 import ContinueListeningBanner from './ContinueListeningBanner';
 import InstallPwaButton from './InstallPwaButton';
+import DownloadSurahButton from './DownloadSurahButton';
 import {
   MushafPageRenderer,
   MushafNavigation,
@@ -37,6 +38,7 @@ export {
   CuratedCollections,
   ContinueListeningBanner,
   InstallPwaButton,
+  DownloadSurahButton,
   MushafPageRenderer,
   MushafNavigation,
   MushafAyahModal,

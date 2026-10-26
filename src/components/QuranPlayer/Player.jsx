@@ -1,5 +1,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { downloadService } from '../../services/downloadService';
 
 const Player = ({
   activeSura,
@@ -12,10 +14,78 @@ const Player = ({
   onEnded,
   onTimeUpdate,
   onLoadedData,
+  onDurationChange,
   onError,
 }) => {
   const ref = useRef(null);
   const pendingSeekRef = useRef(null);
+  const blobUrlRef = useRef(null);
+  const { currentReciter } = useSelector((state) => state.player);
+  const [resolvedSrc, setResolvedSrc] = useState(activeSura?.audio_url || '');
+
+  const surahId = Number(activeSura?.chapter_id || activeSura?.id || 0);
+  const reciterId = Number(
+    activeSura?.reciter_id || currentReciter?.id || 0,
+  );
+
+  // Prefer offline IndexedDB blob when available; fall back to remote CDN URL
+  useEffect(() => {
+    let cancelled = false;
+
+    const resolveSource = async () => {
+      const remoteUrl = activeSura?.audio_url || '';
+
+      if (!surahId || !reciterId) {
+        if (blobUrlRef.current) {
+          downloadService.revokeObjectUrl(blobUrlRef.current);
+          blobUrlRef.current = null;
+        }
+        if (!cancelled) setResolvedSrc(remoteUrl);
+        return;
+      }
+
+      try {
+        const offlineUrl = await downloadService.getObjectUrl(reciterId, surahId);
+        if (cancelled) {
+          downloadService.revokeObjectUrl(offlineUrl);
+          return;
+        }
+
+        if (blobUrlRef.current && blobUrlRef.current !== offlineUrl) {
+          downloadService.revokeObjectUrl(blobUrlRef.current);
+        }
+
+        if (offlineUrl) {
+          blobUrlRef.current = offlineUrl;
+          setResolvedSrc(offlineUrl);
+        } else {
+          blobUrlRef.current = null;
+          setResolvedSrc(remoteUrl);
+        }
+      } catch (_) {
+        if (!cancelled) {
+          if (blobUrlRef.current) {
+            downloadService.revokeObjectUrl(blobUrlRef.current);
+            blobUrlRef.current = null;
+          }
+          setResolvedSrc(remoteUrl);
+        }
+      }
+    };
+
+    resolveSource();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [surahId, reciterId, activeSura?.audio_url]);
+
+  useEffect(() => () => {
+    if (blobUrlRef.current) {
+      downloadService.revokeObjectUrl(blobUrlRef.current);
+      blobUrlRef.current = null;
+    }
+  }, []);
 
   // Safely manage playback state
   useEffect(() => {
@@ -34,7 +104,7 @@ const Player = ({
     } else {
       audio.pause();
     }
-  }, [isPlaying, activeSura?.audio_url]);
+  }, [isPlaying, resolvedSrc]);
 
   // Manage volume
   useEffect(() => {
@@ -74,7 +144,7 @@ const Player = ({
       // Audio is still loading source, queue seekTime for when metadata loads
       pendingSeekRef.current = seekTime;
     }
-  }, [seekTime, seekCount, activeSura?.audio_url]);
+  }, [seekTime, seekCount, resolvedSrc]);
 
   const handleLoadedData = (e) => {
     const audio = e.target;
@@ -94,6 +164,9 @@ const Player = ({
       pendingSeekRef.current = null;
     }
 
+    if (onDurationChange) {
+      onDurationChange(e);
+    }
     if (onLoadedData) {
       onLoadedData(e);
     }
@@ -115,13 +188,19 @@ const Player = ({
   return (
     <audio
       ref={ref}
-      src={activeSura?.audio_url}
+      src={resolvedSrc || undefined}
       loop={repeat}
       onEnded={onEnded}
       onTimeUpdate={handleInternalTimeUpdate}
+      onLoadedMetadata={handleLoadedData}
       onLoadedData={handleLoadedData}
+      onDurationChange={(e) => {
+        if (onDurationChange) onDurationChange(e);
+        else if (onLoadedData) onLoadedData(e);
+      }}
       onCanPlay={handleLoadedData}
       onError={onError}
+      playsInline
       preload="auto"
     />
   );

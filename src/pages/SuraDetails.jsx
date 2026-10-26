@@ -18,6 +18,7 @@ import {
   MushafNavigation,
   MushafBookmarksModal,
 } from '../components';
+import DownloadSurahButton from '../components/DownloadSurahButton';
 import {
   useGetChapterIdQuery,
   useGetChapterInfoQuery,
@@ -118,6 +119,13 @@ const SuraDetails = () => {
       Number(activeSura.id) === numSurahId);
 
   const isCurrentAndPlaying = isCurrentSurah && isPlaying;
+
+  const downloadAudioUrl = useMemo(() => {
+    const audioFile =
+      audioSegmentsData?.audio_file ||
+      audioData?.audio_files?.find((f) => Number(f.chapter_id) === numSurahId);
+    return audioFile?.audio_url || '';
+  }, [audioSegmentsData, audioData, numSurahId]);
 
   const timestamps = useMemo(
     () => audioSegmentsData?.audio_file?.timestamps || [],
@@ -396,6 +404,16 @@ const SuraDetails = () => {
               </span>
             )}
           </button>
+
+          <DownloadSurahButton
+            labelMode="labeled"
+            surahId={numSurahId}
+            reciterId={reciterId}
+            reciterName={currentReciter?.reciter_name || ''}
+            surahName={chapterData?.chapter?.name_simple || `Surah ${numSurahId}`}
+            arabicName={chapterData?.chapter?.name_arabic || ''}
+            audioUrl={downloadAudioUrl}
+          />
         </div>
 
         {/* Right: Reading Mode Controls */}

@@ -6,40 +6,49 @@ import { useSelector } from 'react-redux';
 import { links } from '../assets/constants';
 import { RubElHizbIcon, ReciterAvatar } from './IslamicArtwork';
 import InstallPwaButton from './InstallPwaButton';
+import useOnlineStatus from '../hooks/useOnlineStatus';
 
-const NavLinks = ({ handleClick }) => (
-  <nav className="flex flex-col space-y-1 mt-6">
-    {links.map((item) => (
-      <NavLink
-        to={item.to}
-        key={item.name}
-        end={item.to === '/'}
-        onClick={() => handleClick && handleClick()}
-        className={({ isActive }) =>
-          `flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-            isActive
-              ? 'bg-midnight-800 text-slate-100 border border-midnight-700/80 shadow-sm'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-800/40'
-          }`
-        }
-      >
-        <div className="flex items-center gap-3">
-          <item.icon className="h-4.5 w-4.5 shrink-0" />
-          <span>{item.name}</span>
-        </div>
-        {item.arabicName && (
-          <span className="font-arabic text-xs text-slate-400">
-            {item.arabicName}
-          </span>
-        )}
-      </NavLink>
-    ))}
-  </nav>
-);
+const NavLinks = ({ handleClick, offlineOnly = false }) => {
+  const visibleLinks = offlineOnly
+    ? links.filter((item) => item.to === '/downloads')
+    : links;
+
+  return (
+    <nav className="flex flex-col space-y-1 mt-6">
+      {visibleLinks.map((item) => (
+        <NavLink
+          to={item.to}
+          key={item.name}
+          end={item.to === '/'}
+          onClick={() => handleClick && handleClick()}
+          className={({ isActive }) =>
+            `flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              isActive
+                ? 'bg-midnight-800 text-slate-100 border border-midnight-700/80 shadow-sm'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-800/40'
+            }`
+          }
+        >
+          <div className="flex items-center gap-3">
+            <item.icon className="h-4.5 w-4.5 shrink-0" />
+            <span>{item.name}</span>
+          </div>
+          {item.arabicName && (
+            <span className="font-arabic text-xs text-slate-400">
+              {item.arabicName}
+            </span>
+          )}
+        </NavLink>
+      ))}
+    </nav>
+  );
+};
 
 const Sidebar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { currentReciter } = useSelector((state) => state.player);
+  const isOnline = useOnlineStatus();
+  const homePath = isOnline ? '/' : '/downloads';
 
   return (
     <>
@@ -47,7 +56,7 @@ const Sidebar = () => {
       <aside className="hidden md:flex flex-col justify-between w-64 lg:w-72 h-screen shrink-0 bg-midnight-900 border-r border-midnight-700/60 p-5 select-none">
         <div>
           {/* Logo & Brand Header */}
-          <Link to="/" className="flex items-center space-x-3 px-2 py-3 group">
+          <Link to={homePath} className="flex items-center space-x-3 px-2 py-3 group">
             <div className="w-10 h-10 rounded-lg bg-midnight-850 border border-midnight-700/80 flex items-center justify-center text-indigo-400 shadow-sm group-hover:border-indigo-500/50 transition-colors">
               <RubElHizbIcon className="w-5 h-5 text-indigo-400" />
             </div>
@@ -61,13 +70,19 @@ const Sidebar = () => {
             </div>
           </Link>
 
+          {!isOnline && (
+            <div className="mx-1 mt-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200/90 leading-relaxed">
+              Offline mode — choose a downloaded surah to listen.
+            </div>
+          )}
+
           {/* Navigation Links */}
-          <NavLinks />
+          <NavLinks offlineOnly={!isOnline} />
         </div>
 
         {/* Bottom Actions: PWA Install + Active Reciter Card */}
         <div className="space-y-3">
-          <InstallPwaButton />
+          {isOnline && <InstallPwaButton />}
 
           {currentReciter && (
             <div className="p-3.5 rounded-lg bg-midnight-850 border border-midnight-700/60">
@@ -75,12 +90,14 @@ const Sidebar = () => {
                 <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
                   Current Reciter
                 </span>
-                <Link
-                  to="/top-reciters"
-                  className="text-[11px] text-indigo-400 hover:text-indigo-300 transition-colors"
-                >
-                  Change
-                </Link>
+                {isOnline && (
+                  <Link
+                    to="/top-reciters"
+                    className="text-[11px] text-indigo-400 hover:text-indigo-300 transition-colors"
+                  >
+                    Change
+                  </Link>
+                )}
               </div>
               <div className="flex items-center space-x-3">
                 <ReciterAvatar
@@ -135,7 +152,7 @@ const Sidebar = () => {
       >
         <div>
           <Link
-            to="/"
+            to={homePath}
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center space-x-3 px-1 py-2"
           >
@@ -151,12 +168,22 @@ const Sidebar = () => {
               </p>
             </div>
           </Link>
-          <NavLinks handleClick={() => setMobileMenuOpen(false)} />
+
+          {!isOnline && (
+            <div className="mt-3 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200/90 leading-relaxed">
+              Offline mode — choose a downloaded surah to listen.
+            </div>
+          )}
+
+          <NavLinks
+            offlineOnly={!isOnline}
+            handleClick={() => setMobileMenuOpen(false)}
+          />
         </div>
 
         {/* Mobile Drawer Footer: PWA Install + Active Reciter */}
         <div className="space-y-3">
-          <InstallPwaButton />
+          {isOnline && <InstallPwaButton />}
 
           {currentReciter && (
             <div className="p-3 rounded-lg bg-midnight-800 border border-midnight-700">

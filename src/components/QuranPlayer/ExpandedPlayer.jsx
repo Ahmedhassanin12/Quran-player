@@ -89,8 +89,12 @@ const ExpandedPlayer = ({
   if (!isExpanded || !activeSura) return null;
 
   const surahId = activeSura?.chapter_id || activeSura?.id || 1;
-  const progressPercentage = duration > 0 ? (appTime / duration) * 100 : 0;
-  const remainingTime = duration > appTime ? duration - appTime : 0;
+  const safeDuration = Number.isFinite(duration) && duration > 0 ? duration : 0;
+  const safeAppTime = Number.isFinite(appTime) && appTime > 0
+    ? Math.min(appTime, safeDuration || appTime)
+    : 0;
+  const progressPercentage = safeDuration > 0 ? (safeAppTime / safeDuration) * 100 : 0;
+  const remainingTime = safeDuration > safeAppTime ? safeDuration - safeAppTime : 0;
 
   const handleNavigateToSurahDetails = () => {
     dispatch(setIsExpanded(false));
@@ -257,26 +261,28 @@ const ExpandedPlayer = ({
       <div className="relative z-10 max-w-3xl mx-auto w-full pt-4">
         {/* Seekbar */}
         <div className="w-full flex items-center space-x-3 mb-4">
-          <span className="text-xs text-slate-400 w-12 text-right">
-            {formatTime(appTime)}
+          <span className="text-xs text-slate-400 w-12 text-right tabular-nums">
+            {formatTime(safeAppTime)}
           </span>
 
           <div className="relative flex-1 flex items-center group py-2">
             <div className="w-full h-2 bg-midnight-700 rounded-full overflow-hidden">
               <div
-                className="h-full bg-indigo-500 group-hover:bg-indigo-400 transition-all rounded-full"
-                style={{ width: `${progressPercentage}%` }}
+                className="h-full bg-indigo-500 group-hover:bg-indigo-400 rounded-full"
+                style={{ width: `${progressPercentage}%`, transition: 'width 80ms linear' }}
               />
             </div>
             <input
               type="range"
               step="any"
-              value={appTime || 0}
+              value={safeDuration > 0 ? safeAppTime : 0}
               min={0}
-              max={duration || 100}
+              max={safeDuration > 0 ? safeDuration : 1}
+              disabled={safeDuration <= 0}
               onInput={onSeek}
+              onChange={onSeek}
               aria-label="Seek timeline"
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-default"
             />
           </div>
 
