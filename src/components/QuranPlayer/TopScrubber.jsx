@@ -179,7 +179,7 @@ const TopScrubber = ({ appTime = 0, duration = 0, onSeek }) => {
       aria-valuemax={safeDuration || 100}
       aria-valuenow={Math.round(activeTime)}
       aria-disabled={safeDuration <= 0}
-      className="group absolute -top-3.5 left-0 right-0 h-8 cursor-pointer select-none z-40 touch-none flex sm:hidden flex-col justify-end outline-none"
+      className="group absolute -top-3.5 left-0 right-0 h-8 cursor-pointer select-none z-40 touch-none flex sm:hidden flex-col justify-end outline-none pb-4 sm:pb-0"
       style={{ WebkitUserSelect: 'none', userSelect: 'none' }}
     >
       {/* Background track bar */}
