@@ -21,26 +21,29 @@ const Player = ({
   const pendingSeekRef = useRef(null);
   const blobUrlRef = useRef(null);
   const { currentReciter } = useSelector((state) => state.player);
-  const [resolvedSrc, setResolvedSrc] = useState(activeSura?.audio_url || '');
+  // Start with empty string to prevent premature remote requests and onError when offline
+  const [resolvedSrc, setResolvedSrc] = useState('');
 
   const surahId = Number(activeSura?.chapter_id || activeSura?.id || 0);
   const reciterId = Number(
     activeSura?.reciter_id || currentReciter?.id || 0,
   );
 
-  // Prefer offline IndexedDB blob when available; fall back to remote CDN URL
+  // Prefer offline IndexedDB blob when available; fall back to remote CDN URL if online
   useEffect(() => {
     let cancelled = false;
 
     const resolveSource = async () => {
       const remoteUrl = activeSura?.audio_url || '';
+      const isOnline = typeof navigator === 'undefined' || navigator.onLine;
 
       if (!surahId || !reciterId) {
         if (blobUrlRef.current) {
-          downloadService.revokeObjectUrl(blobUrlRef.current);
+          const oldUrl = blobUrlRef.current;
           blobUrlRef.current = null;
+          downloadService.revokeObjectUrl(oldUrl);
         }
-        if (!cancelled) setResolvedSrc(remoteUrl);
+        if (!cancelled) setResolvedSrc(isOnline ? remoteUrl : '');
         return;
       }
 
@@ -51,24 +54,31 @@ const Player = ({
           return;
         }
 
-        if (blobUrlRef.current && blobUrlRef.current !== offlineUrl) {
-          downloadService.revokeObjectUrl(blobUrlRef.current);
-        }
-
+        const prevBlobUrl = blobUrlRef.current;
         if (offlineUrl) {
           blobUrlRef.current = offlineUrl;
           setResolvedSrc(offlineUrl);
         } else {
           blobUrlRef.current = null;
-          setResolvedSrc(remoteUrl);
+          setResolvedSrc(isOnline ? remoteUrl : '');
+        }
+
+        // Defer revoke slightly so the DOM audio element has finished switching sources
+        if (prevBlobUrl && prevBlobUrl !== offlineUrl) {
+          setTimeout(() => {
+            downloadService.revokeObjectUrl(prevBlobUrl);
+          }, 150);
         }
       } catch (_) {
         if (!cancelled) {
-          if (blobUrlRef.current) {
-            downloadService.revokeObjectUrl(blobUrlRef.current);
-            blobUrlRef.current = null;
+          const prevBlobUrl = blobUrlRef.current;
+          blobUrlRef.current = null;
+          if (prevBlobUrl) {
+            setTimeout(() => {
+              downloadService.revokeObjectUrl(prevBlobUrl);
+            }, 150);
           }
-          setResolvedSrc(remoteUrl);
+          setResolvedSrc(isOnline ? remoteUrl : '');
         }
       }
     };
@@ -90,7 +100,7 @@ const Player = ({
   // Safely manage playback state
   useEffect(() => {
     const audio = ref.current;
-    if (!audio) return;
+    if (!audio || !resolvedSrc) return;
 
     if (isPlaying) {
       const playPromise = audio.play();
@@ -124,7 +134,7 @@ const Player = ({
   // Manage seeking (handles both immediate seeking and queued seeking for loading tracks)
   useEffect(() => {
     const audio = ref.current;
-    if (!audio || typeof seekTime !== 'number' || isNaN(seekTime)) return;
+    if (!audio || typeof seekTime !== 'number' || Number.isNaN(seekTime)) return;
 
     if (audio.readyState >= 1) {
       try {
@@ -160,7 +170,9 @@ const Player = ({
             }),
           );
         }
-      } catch (_) {}
+      } catch (_) {
+        // ignore seek error
+      }
       pendingSeekRef.current = null;
     }
 
@@ -199,8 +211,9 @@ const Player = ({
         else if (onLoadedData) onLoadedData(e);
       }}
       onCanPlay={handleLoadedData}
-      onError={onError}
-      playsInline
+      onError={(e) => {
+        if (onError && resolvedSrc) onError(e);
+      }}
       preload="auto"
     />
   );

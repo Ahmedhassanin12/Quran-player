@@ -1,7 +1,7 @@
 import React from 'react';
 
 const formatTime = (time) => {
-  if (isNaN(time) || time === null || time === undefined) return '0:00';
+  if (Number.isNaN(time) || time === null || time === undefined) return '0:00';
   const totalSeconds = Math.floor(time);
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -50,7 +50,6 @@ const Seekbar = ({
           min={min}
           max={rangeMax}
           disabled={safeMax <= 0}
-          onInput={onInput}
           onChange={onInput}
           aria-label="Seek recitation timeline"
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-default"

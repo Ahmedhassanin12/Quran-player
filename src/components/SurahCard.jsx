@@ -9,8 +9,7 @@ import {
   toggleFavoriteSurah,
 } from '../redux/features/playerSlice';
 
-const toArabicDigits = (num) =>
-  String(num).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
+const toArabicDigits = (num) => String(num).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
 
 const SurahCard = ({
   sura,
@@ -27,7 +26,8 @@ const SurahCard = ({
 
   const surahId = Number(sura?.chapter_id || sura?.id || i + 1);
   const isFavorite = favorites.includes(surahId);
-  const reciterId = Number(currentReciter?.id || sura?.reciter_id || 0);
+  const reciterId = Number(sura?.reciter_id || currentReciter?.id || 0);
+  const effectiveReciterName = sura?.reciter_name || currentReciter?.reciter_name || '';
 
   const audioUrl = useMemo(() => {
     if (sura?.audio_url) return sura.audio_url;
@@ -36,12 +36,11 @@ const SurahCard = ({
     return match?.audio_url || '';
   }, [sura?.audio_url, audioData, surahId]);
 
-  const isCurrent =
-    activeSura &&
-    sura &&
-    ((activeSura.chapter_id &&
-      Number(sura.chapter_id || sura.id) === Number(activeSura.chapter_id)) ||
-      Number(activeSura.id) === Number(sura.id));
+  const isCurrent = activeSura
+    && sura
+    && ((activeSura.chapter_id
+      && Number(sura.chapter_id || sura.id) === Number(activeSura.chapter_id))
+      || Number(activeSura.id) === Number(sura.id));
 
   const isCurrentAndPlaying = isPlaying && isCurrent;
 
@@ -140,7 +139,7 @@ const SurahCard = ({
             size="sm"
             surahId={surahId}
             reciterId={reciterId}
-            reciterName={currentReciter?.reciter_name || ''}
+            reciterName={effectiveReciterName}
             surahName={sura?.name_simple || `Surah ${surahId}`}
             arabicName={sura?.name_arabic || ''}
             audioUrl={audioUrl}
@@ -206,7 +205,7 @@ const SurahCard = ({
             className="opacity-70 group-hover:opacity-100"
             surahId={surahId}
             reciterId={reciterId}
-            reciterName={currentReciter?.reciter_name || ''}
+            reciterName={effectiveReciterName}
             surahName={sura?.name_simple || `Surah ${surahId}`}
             arabicName={sura?.name_arabic || ''}
             audioUrl={audioUrl}

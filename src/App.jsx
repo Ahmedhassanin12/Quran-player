@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Sidebar, QuranPlayer } from './components';
-import OfflineGate from './components/OfflineGate';
 import {
   ArtistDetails,
   TopReaders,
@@ -41,8 +40,6 @@ const App = () => {
 
   return (
     <div className="relative flex app-viewport w-full overflow-hidden bg-midnight-950 text-slate-100 font-sans">
-      <OfflineGate />
-
       {/* Primary Sidebar */}
       <Sidebar />
 

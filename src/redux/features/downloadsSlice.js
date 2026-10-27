@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   downloadService,
   makeDownloadKey,
-} from '../../services/downloadService';
+} from '../../services/downloadService.js';
 
 export const hydrateDownloads = createAsyncThunk(
   'downloads/hydrate',
@@ -11,7 +11,7 @@ export const hydrateDownloads = createAsyncThunk(
 
 export const downloadSurah = createAsyncThunk(
   'downloads/downloadSurah',
-  async (payload, { rejectWithValue }) => {
+  async (payload, { rejectWithValue, signal }) => {
     const {
       surahId,
       reciterId,
@@ -32,25 +32,14 @@ export const downloadSurah = createAsyncThunk(
       return rejectWithValue('Audio URL unavailable for this recitation');
     }
 
-    // No-op if already present (same surah + reciter)
-    const existing = await downloadService.get(reader, id);
-    if (existing?.blob) {
-      return {
-        key: existing.key,
-        surahId: existing.surahId,
-        reciterId: existing.reciterId,
-        reciterName: existing.reciterName,
-        surahName: existing.surahName,
-        arabicName: existing.arabicName,
-        sourceUrl: existing.sourceUrl,
-        sizeBytes: existing.sizeBytes,
-        mimeType: existing.mimeType,
-        downloadedAt: existing.downloadedAt,
-      };
+    // Fast existence check without loading binary blob into memory
+    const existing = await downloadService.getMetadata(reader, id);
+    if (existing) {
+      return existing;
     }
 
     try {
-      const { blob, mimeType, sizeBytes } = await downloadService.fetchAudioBlob(audioUrl);
+      const { blob, mimeType, sizeBytes } = await downloadService.fetchAudioBlob(audioUrl, { signal });
       const meta = await downloadService.put({
         key: makeDownloadKey(reader, id),
         surahId: id,
@@ -67,6 +56,18 @@ export const downloadSurah = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err?.message || 'Download failed');
     }
+  },
+  {
+    // Concurrency guard: ignore if a download for this surah/reciter is already in-flight
+    condition: (payload, { getState }) => {
+      const { surahId, reciterId } = payload || {};
+      const key = makeDownloadKey(reciterId, surahId);
+      const status = getState()?.downloads?.statusByKey?.[key];
+      if (status === 'downloading') {
+        return false;
+      }
+      return true;
+    },
   },
 );
 
@@ -95,9 +96,14 @@ const downloadsSlice = createSlice({
   initialState,
   reducers: {
     clearDownloadError: (state, action) => {
-      const key = action.payload;
-      if (key && state.errorByKey[key]) {
+      const key = typeof action.payload === 'string'
+        ? action.payload
+        : makeDownloadKey(action.payload?.reciterId, action.payload?.surahId);
+      if (key) {
         delete state.errorByKey[key];
+        if (state.statusByKey[key] === 'error') {
+          delete state.statusByKey[key];
+        }
       }
     },
   },
@@ -166,7 +172,6 @@ export const selectDownloadError = (reciterId, surahId) => (state) => {
   const key = makeDownloadKey(reciterId, surahId);
   return state.downloads.errorByKey[key] || null;
 };
-export const selectTotalDownloadBytes = (state) =>
-  state.downloads.items.reduce((sum, item) => sum + (Number(item.sizeBytes) || 0), 0);
+export const selectTotalDownloadBytes = (state) => state.downloads.items.reduce((sum, item) => sum + (Number(item.sizeBytes) || 0), 0);
 
 export default downloadsSlice.reducer;

@@ -65,7 +65,7 @@ const QuranPlayer = () => {
 
   // Synchronize seekTime triggered from outside (e.g. handleJumpToVerse, ContinueListening, Hifz loop)
   useEffect(() => {
-    if (typeof reduxSeekTime === 'number' && !isNaN(reduxSeekTime)) {
+    if (typeof reduxSeekTime === 'number' && !Number.isNaN(reduxSeekTime)) {
       setAppTime(reduxSeekTime);
       setSeekTime(reduxSeekTime);
     }
@@ -179,7 +179,7 @@ const QuranPlayer = () => {
 
   // Sleep timer interval countdown
   useEffect(() => {
-    if (!sleepTimer?.active || sleepTimer.mode === 'surah') return;
+    if (!sleepTimer?.active || sleepTimer.mode === 'surah') return undefined;
 
     const interval = setInterval(() => {
       dispatch(decrementSleepTimer());
@@ -202,7 +202,7 @@ const QuranPlayer = () => {
 
   // Periodically throttle saving playback position for "Continue Listening"
   useEffect(() => {
-    if (!isPlaying || !activeSura || appTime <= 0) return;
+    if (!isPlaying || !activeSura || appTime <= 0) return undefined;
 
     const timer = setTimeout(() => {
       dispatch(savePlaybackProgress(appTime));
@@ -281,7 +281,7 @@ const QuranPlayer = () => {
               handleSeekRelative={handleSeekRelative}
             />
 
-            <div className="w-full max-w-full px-0.5 sm:px-0">
+            <div className="w-full hidden sm:block max-w-full px-0.5 sm:px-0">
               <Seekbar
                 appTime={appTime}
                 min={0}

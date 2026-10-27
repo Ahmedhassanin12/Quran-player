@@ -24,7 +24,7 @@ import {
 import { SurahMedallion, ReciterAvatar } from '../IslamicArtwork';
 
 const formatTime = (time) => {
-  if (isNaN(time) || time === null || time === undefined) return '0:00';
+  if (Number.isNaN(time) || time === null || time === undefined) return '0:00';
   const totalSeconds = Math.floor(time);
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -62,7 +62,7 @@ const ExpandedPlayer = ({
 
   // Keyboard navigation shortcuts
   useEffect(() => {
-    if (!isExpanded) return;
+    if (!isExpanded) return undefined;
 
     const handleKeyDown = (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -214,8 +214,7 @@ const ExpandedPlayer = ({
             <div className="flex-1 overflow-y-auto space-y-1.5 pr-1">
               {currentSura?.map((item, idx) => {
                 const itemId = item.chapter_id || item.id || idx + 1;
-                const isItemCurrent =
-                  surahId === itemId || activeSura?.id === item.id;
+                const isItemCurrent = surahId === itemId || activeSura?.id === item.id;
 
                 return (
                   <button
@@ -279,7 +278,6 @@ const ExpandedPlayer = ({
               min={0}
               max={safeDuration > 0 ? safeDuration : 1}
               disabled={safeDuration <= 0}
-              onInput={onSeek}
               onChange={onSeek}
               aria-label="Seek timeline"
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-default"

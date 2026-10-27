@@ -11,7 +11,6 @@ import {
 import {
   playPause,
   setActiveSura,
-  setReciter,
 } from '../redux/features/playerSlice';
 import { VERIFIED_RECITERS, DEFAULT_RECITER } from '../assets/recitersData';
 import useOnlineStatus from '../hooks/useOnlineStatus';
@@ -52,26 +51,37 @@ const Downloads = () => {
   );
 
   const handlePlay = (item) => {
-    const reciter =
-      VERIFIED_RECITERS.find((r) => Number(r.id) === Number(item.reciterId)) ||
-      {
+    const reciter = VERIFIED_RECITERS.find((r) => Number(r.id) === Number(item.reciterId))
+      || {
         ...(currentReciter || DEFAULT_RECITER),
         id: item.reciterId,
         reciter_name: item.reciterName || currentReciter?.reciter_name,
       };
 
-    dispatch(setReciter(reciter));
+    const playIndex = sortedItems.findIndex((it) => it.key === item.key);
+    const downloadPlaylist = sortedItems.map((it) => ({
+      id: it.surahId,
+      chapter_id: it.surahId,
+      name_simple: it.surahName,
+      name_arabic: it.arabicName,
+      audio_url: it.sourceUrl || '',
+      reciter_id: it.reciterId,
+      reciter_name: it.reciterName,
+    }));
+
     dispatch(
       setActiveSura({
-        sura: {
+        sura: downloadPlaylist[playIndex] || {
           id: item.surahId,
           chapter_id: item.surahId,
           name_simple: item.surahName,
           name_arabic: item.arabicName,
           audio_url: item.sourceUrl || '',
           reciter_id: item.reciterId,
+          reciter_name: item.reciterName,
         },
-        i: item.surahId - 1,
+        data: downloadPlaylist,
+        i: playIndex >= 0 ? playIndex : 0,
         reciter,
       }),
     );
@@ -98,7 +108,7 @@ const Downloads = () => {
           <div className="text-sm leading-relaxed">
             <p className="font-semibold text-amber-100">You&apos;re offline</p>
             <p className="text-xs text-amber-200/80 mt-0.5">
-              Pick a downloaded surah below to listen. Other pages need a connection.
+              Pick a downloaded surah below to listen. You can also read cached surahs from details.
             </p>
           </div>
         </div>
@@ -146,17 +156,10 @@ const Downloads = () => {
       ) : (
         <ul className="flex flex-col space-y-2">
           {sortedItems.map((item) => {
-            const isCurrent =
-              activeSura &&
-              Number(activeSura.chapter_id || activeSura.id) === Number(item.surahId) &&
-              Number(currentReciter?.id || activeSura.reciter_id) === Number(item.reciterId);
+            const isCurrent = activeSura
+              && Number(activeSura.chapter_id || activeSura.id) === Number(item.surahId)
+              && Number(activeSura.reciter_id || currentReciter?.id) === Number(item.reciterId);
             const isCurrentAndPlaying = isCurrent && isPlaying;
-
-            const title = (
-              <span className="font-semibold text-sm text-slate-100 truncate">
-                {item.surahName || `Surah ${item.surahId}`}
-              </span>
-            );
 
             return (
               <li
@@ -167,23 +170,26 @@ const Downloads = () => {
                     : 'bg-midnight-850/50 border-midnight-700/50 hover:border-midnight-600/60'
                 }`}
               >
-                <button
-                  type="button"
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => handlePlay(item)}
-                  className="min-w-0 flex-1 text-left"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handlePlay(item);
+                    }
+                  }}
+                  className="min-w-0 flex-1 text-left cursor-pointer"
                 >
                   <div className="flex items-baseline gap-2 flex-wrap">
-                    {isOnline ? (
-                      <Link
-                        to={`/surah/${item.surahId}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="font-semibold text-sm text-slate-100 hover:text-indigo-300 truncate"
-                      >
-                        {item.surahName || `Surah ${item.surahId}`}
-                      </Link>
-                    ) : (
-                      title
-                    )}
+                    <Link
+                      to={`/surah/${item.surahId}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="font-semibold text-sm text-slate-100 hover:text-indigo-300 truncate"
+                    >
+                      {item.surahName || `Surah ${item.surahId}`}
+                    </Link>
                     {item.arabicName && (
                       <span className="font-arabic text-base text-slate-300 truncate">
                         {item.arabicName}
@@ -197,7 +203,7 @@ const Downloads = () => {
                     <span className="text-slate-600 mx-1.5">·</span>
                     {formatDate(item.downloadedAt)}
                   </p>
-                </button>
+                </div>
 
                 <div className="flex items-center gap-1.5 shrink-0">
                   <button
@@ -213,17 +219,15 @@ const Downloads = () => {
                   >
                     <FiPlay size={14} />
                   </button>
-                  {isOnline && (
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(item)}
-                      aria-label="Remove download"
-                      title="Remove from offline library"
-                      className="p-2 rounded-lg border bg-midnight-800 text-slate-400 border-midnight-700 hover:text-rose-300 hover:border-rose-500/40 transition"
-                    >
-                      <FiTrash2 size={14} />
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(item)}
+                    aria-label="Remove download"
+                    title="Remove from offline library"
+                    className="p-2 rounded-lg border bg-midnight-800 text-slate-400 border-midnight-700 hover:text-rose-300 hover:border-rose-500/40 transition"
+                  >
+                    <FiTrash2 size={14} />
+                  </button>
                 </div>
               </li>
             );

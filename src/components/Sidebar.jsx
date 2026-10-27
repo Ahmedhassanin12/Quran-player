@@ -8,47 +8,38 @@ import { RubElHizbIcon, ReciterAvatar } from './IslamicArtwork';
 import InstallPwaButton from './InstallPwaButton';
 import useOnlineStatus from '../hooks/useOnlineStatus';
 
-const NavLinks = ({ handleClick, offlineOnly = false }) => {
-  const visibleLinks = offlineOnly
-    ? links.filter((item) => item.to === '/downloads')
-    : links;
-
-  return (
-    <nav className="flex flex-col space-y-1 mt-6">
-      {visibleLinks.map((item) => (
-        <NavLink
-          to={item.to}
-          key={item.name}
-          end={item.to === '/'}
-          onClick={() => handleClick && handleClick()}
-          className={({ isActive }) =>
-            `flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-              isActive
-                ? 'bg-midnight-800 text-slate-100 border border-midnight-700/80 shadow-sm'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-800/40'
-            }`
-          }
-        >
-          <div className="flex items-center gap-3">
-            <item.icon className="h-4.5 w-4.5 shrink-0" />
-            <span>{item.name}</span>
-          </div>
-          {item.arabicName && (
-            <span className="font-arabic text-xs text-slate-400">
-              {item.arabicName}
-            </span>
-          )}
-        </NavLink>
-      ))}
-    </nav>
-  );
-};
+const NavLinks = ({ handleClick }) => (
+  <nav className="flex flex-col space-y-1 mt-6">
+    {links.map((item) => (
+      <NavLink
+        to={item.to}
+        key={item.name}
+        end={item.to === '/'}
+        onClick={() => handleClick && handleClick()}
+        className={({ isActive }) => `flex items-center justify-between px-3.5 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+          isActive
+            ? 'bg-midnight-800 text-slate-100 border border-midnight-700/80 shadow-sm'
+            : 'text-slate-400 hover:text-slate-200 hover:bg-midnight-800/40'
+        }`}
+      >
+        <div className="flex items-center gap-3">
+          <item.icon className="h-4.5 w-4.5 shrink-0" />
+          <span>{item.name}</span>
+        </div>
+        {item.arabicName && (
+          <span className="font-arabic text-xs text-slate-400">
+            {item.arabicName}
+          </span>
+        )}
+      </NavLink>
+    ))}
+  </nav>
+);
 
 const Sidebar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { currentReciter } = useSelector((state) => state.player);
   const isOnline = useOnlineStatus();
-  const homePath = isOnline ? '/' : '/downloads';
 
   return (
     <>
@@ -56,7 +47,7 @@ const Sidebar = () => {
       <aside className="hidden md:flex flex-col justify-between w-64 lg:w-72 h-screen shrink-0 bg-midnight-900 border-r border-midnight-700/60 p-5 select-none">
         <div>
           {/* Logo & Brand Header */}
-          <Link to={homePath} className="flex items-center space-x-3 px-2 py-3 group">
+          <Link to="/" className="flex items-center space-x-3 px-2 py-3 group">
             <div className="w-10 h-10 rounded-lg bg-midnight-850 border border-midnight-700/80 flex items-center justify-center text-indigo-400 shadow-sm group-hover:border-indigo-500/50 transition-colors">
               <RubElHizbIcon className="w-5 h-5 text-indigo-400" />
             </div>
@@ -72,17 +63,17 @@ const Sidebar = () => {
 
           {!isOnline && (
             <div className="mx-1 mt-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200/90 leading-relaxed">
-              Offline mode — choose a downloaded surah to listen.
+              Offline mode — reading cached pages & listening to saved surahs.
             </div>
           )}
 
           {/* Navigation Links */}
-          <NavLinks offlineOnly={!isOnline} />
+          <NavLinks />
         </div>
 
         {/* Bottom Actions: PWA Install + Active Reciter Card */}
         <div className="space-y-3">
-          {isOnline && <InstallPwaButton />}
+          <InstallPwaButton />
 
           {currentReciter && (
             <div className="p-3.5 rounded-lg bg-midnight-850 border border-midnight-700/60">
@@ -90,14 +81,12 @@ const Sidebar = () => {
                 <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
                   Current Reciter
                 </span>
-                {isOnline && (
-                  <Link
-                    to="/top-reciters"
-                    className="text-[11px] text-indigo-400 hover:text-indigo-300 transition-colors"
-                  >
-                    Change
-                  </Link>
-                )}
+                <Link
+                  to="/top-reciters"
+                  className="text-[11px] text-indigo-400 hover:text-indigo-300 transition-colors"
+                >
+                  Change
+                </Link>
               </div>
               <div className="flex items-center space-x-3">
                 <ReciterAvatar
@@ -110,7 +99,7 @@ const Sidebar = () => {
                   <p className="text-xs font-semibold text-slate-200 truncate">
                     {currentReciter.reciter_name}
                   </p>
-                  <p className="text-[11px] text-slate-400 font-arabic truncate mt-0.5">
+                  <p className="text-[11px] text-indigo-300/90 font-arabic truncate mt-0.5">
                     {currentReciter.arabic_name || currentReciter.style}
                   </p>
                 </div>
@@ -121,49 +110,49 @@ const Sidebar = () => {
       </aside>
 
       {/* Mobile Menu Button */}
-      <div className="md:hidden fixed top-4 right-4 z-50">
+      <div className="md:hidden fixed top-3 right-3 z-50">
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle navigation menu"
-          className="p-2.5 rounded-lg bg-midnight-800 border border-midnight-700 text-slate-200 hover:text-indigo-400 shadow-lg focus:outline-none"
+          className="p-2 rounded-lg bg-midnight-850/90 border border-midnight-700/80 text-slate-200 hover:text-white shadow-lg backdrop-blur focus:outline-none"
         >
           {mobileMenuOpen ? (
-            <RiCloseLine className="w-6 h-6" />
+            <RiCloseLine size={22} className="text-slate-100" />
           ) : (
-            <HiOutlineMenuAlt2 className="w-6 h-6" />
+            <HiOutlineMenuAlt2 size={22} className="text-slate-100" />
           )}
         </button>
       </div>
 
-      {/* Mobile Drawer Backdrop */}
+      {/* Mobile Drawer Overlay */}
       {mobileMenuOpen && (
         <div
-          className="md:hidden fixed inset-0 bg-black/75 backdrop-blur-sm z-40"
+          className="md:hidden fixed inset-0 z-40 bg-midnight-950/80 backdrop-blur-sm animate-slowfade"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
-      {/* Mobile Drawer Content */}
+      {/* Mobile Sidebar Drawer */}
       <div
-        className={`md:hidden fixed top-0 bottom-0 left-0 w-3/4 max-w-xs bg-midnight-900 border-r border-midnight-700 z-50 p-6 flex flex-col justify-between transition-transform duration-300 ease-in-out ${
-          mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`md:hidden fixed top-0 right-0 h-full w-4/5 max-w-xs bg-midnight-900 border-l border-midnight-700/80 p-6 z-40 flex flex-col justify-between transition-transform duration-300 ease-in-out ${
+          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div>
           <Link
-            to={homePath}
+            to="/"
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center space-x-3 px-1 py-2"
           >
-            <div className="w-10 h-10 rounded-lg bg-midnight-800 border border-midnight-700/80 flex items-center justify-center text-indigo-300 shadow-sm">
-              <RubElHizbIcon className="w-5 h-5 text-indigo-300" />
+            <div className="w-9 h-9 rounded-lg bg-midnight-850 border border-midnight-700 flex items-center justify-center text-indigo-400">
+              <RubElHizbIcon className="w-5 h-5 text-indigo-400" />
             </div>
             <div>
-              <h2 className="font-arabic font-bold text-xl text-slate-100">
+              <h1 className="font-arabic font-bold text-lg text-slate-100 leading-none">
                 القرآن الكريم
-              </h2>
-              <p className="text-[11px] text-slate-400 uppercase tracking-wider">
+              </h1>
+              <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-1">
                 Quran Kareem
               </p>
             </div>
@@ -171,31 +160,35 @@ const Sidebar = () => {
 
           {!isOnline && (
             <div className="mt-3 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-200/90 leading-relaxed">
-              Offline mode — choose a downloaded surah to listen.
+              Offline mode — reading cached pages & listening to saved surahs.
             </div>
           )}
 
-          <NavLinks
-            offlineOnly={!isOnline}
-            handleClick={() => setMobileMenuOpen(false)}
-          />
+          <NavLinks handleClick={() => setMobileMenuOpen(false)} />
         </div>
 
         {/* Mobile Drawer Footer: PWA Install + Active Reciter */}
         <div className="space-y-3">
-          {isOnline && <InstallPwaButton />}
+          <InstallPwaButton />
 
           {currentReciter && (
             <div className="p-3 rounded-lg bg-midnight-800 border border-midnight-700">
-              <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-400 block mb-1">
-                Active Reciter
-              </span>
-              <p className="text-xs font-semibold text-slate-200 truncate">
-                {currentReciter.reciter_name}
-              </p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                {currentReciter.style}
-              </p>
+              <div className="flex items-center space-x-3">
+                <ReciterAvatar
+                  photoUrl={currentReciter.photo_url}
+                  name={currentReciter.reciter_name}
+                  arabicName={currentReciter.arabic_name}
+                  size="sm"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold text-slate-200 truncate">
+                    {currentReciter.reciter_name}
+                  </p>
+                  <p className="text-[10px] text-slate-400 font-arabic truncate mt-0.5">
+                    {currentReciter.arabic_name || currentReciter.style}
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>
