@@ -278,6 +278,20 @@ export const downloadService = {
     });
   },
 
+  async clearAll() {
+    const db = await openDb();
+
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction([METADATA_STORE, BLOBS_STORE], 'readwrite');
+      tx.objectStore(METADATA_STORE).clear();
+      tx.objectStore(BLOBS_STORE).clear();
+
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(mapError(tx.error));
+      tx.onabort = () => reject(mapError(tx.error));
+    });
+  },
+
   async getObjectUrl(reciterId, surahId) {
     const db = await openDb();
     const key = makeDownloadKey(reciterId, surahId);

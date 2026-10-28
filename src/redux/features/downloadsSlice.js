@@ -83,6 +83,18 @@ export const removeDownload = createAsyncThunk(
   },
 );
 
+export const clearAllDownloads = createAsyncThunk(
+  'downloads/clearAll',
+  async (_, { rejectWithValue }) => {
+    try {
+      await downloadService.clearAll();
+      return true;
+    } catch (err) {
+      return rejectWithValue(err?.message || 'Failed to clear all downloads');
+    }
+  },
+);
+
 const initialState = {
   items: [],
   statusByKey: {},
@@ -144,6 +156,11 @@ const downloadsSlice = createSlice({
         const key = makeDownloadKey(reciterId, surahId);
         state.statusByKey[key] = 'error';
         state.errorByKey[key] = action.payload || action.error?.message || 'Download failed';
+      })
+      .addCase(clearAllDownloads.fulfilled, (state) => {
+        state.items = [];
+        state.statusByKey = {};
+        state.errorByKey = {};
       })
       .addCase(removeDownload.fulfilled, (state, action) => {
         const { key } = action.payload || {};

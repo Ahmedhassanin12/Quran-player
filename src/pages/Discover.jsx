@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FiGrid, FiList, FiMic, FiBookmark, FiClock } from 'react-icons/fi';
+import { FiMic, FiBookmark, FiClock } from 'react-icons/fi';
 import {
   Error,
   Loader,
@@ -9,7 +9,9 @@ import {
   Searchbar,
   CuratedCollections,
   ContinueListeningBanner,
+  ViewModeToggle,
 } from '../components';
+import { storageService } from '../services/storageService';
 import {
   useGetAllChaptersQuery,
   useGetAllSurahAudioQuery,
@@ -29,7 +31,12 @@ const Discover = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('all'); // 'all' | 'makkah' | 'madinah' | 'favorites' | 'history'
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+  const [viewMode, setViewMode] = useState(() => storageService.getViewMode());
+
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode);
+    storageService.saveViewMode(mode);
+  }; // 'grid' | 'list'
   const [selectedCollectionId, setSelectedCollectionId] = useState(null);
 
   const reciterId = currentReciter?.id || 7;
@@ -90,11 +97,10 @@ const Discover = () => {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter(
-        (s) =>
-          String(s.id) === q ||
-          s.name_simple?.toLowerCase().includes(q) ||
-          s.name_arabic?.includes(q) ||
-          s.translated_name?.name?.toLowerCase().includes(q),
+        (s) => String(s.id) === q
+          || s.name_simple?.toLowerCase().includes(q)
+          || s.name_arabic?.includes(q)
+          || s.translated_name?.name?.toLowerCase().includes(q),
       );
     }
 
@@ -266,32 +272,7 @@ const Discover = () => {
               {filteredSurahs.length} {filteredSurahs.length === 1 ? 'Surah' : 'Surahs'}
             </span>
 
-            <div className="flex p-0.5 rounded-lg bg-midnight-850/80 border border-midnight-700/60">
-              <button
-                type="button"
-                onClick={() => setViewMode('grid')}
-                aria-label="Grid layout"
-                className={`p-1.5 rounded-md transition-colors ${
-                  viewMode === 'grid'
-                    ? 'bg-midnight-750 text-white'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <FiGrid size={15} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode('list')}
-                aria-label="List layout"
-                className={`p-1.5 rounded-md transition-colors ${
-                  viewMode === 'list'
-                    ? 'bg-midnight-750 text-white'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <FiList size={15} />
-              </button>
-            </div>
+            <ViewModeToggle viewMode={viewMode} onChange={handleViewModeChange} />
           </div>
         </div>
       </div>

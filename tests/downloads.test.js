@@ -57,6 +57,7 @@ const runSuite = async () => {
       'has',
       'list',
       'remove',
+      'clearAll',
       'getObjectUrl',
       'revokeObjectUrl',
       'fetchAudioBlob',

@@ -8,6 +8,7 @@ const STORAGE_KEYS = {
   SETTINGS: 'quran_player_settings',
   MUSHAF_PAGE: 'quran_player_last_mushaf_page',
   MUSHAF_BOOKMARKS: 'quran_player_mushaf_bookmarks',
+  VIEW_MODE: 'quran_player_view_mode',
 };
 
 const safeGet = (key, fallback = null) => {
@@ -33,6 +34,10 @@ const safeSet = (key, value) => {
 };
 
 export const storageService = {
+  // View mode (grid | list) across Surah Library and Downloads
+  getViewMode: () => safeGet(STORAGE_KEYS.VIEW_MODE, 'grid'),
+  saveViewMode: (mode) => safeSet(STORAGE_KEYS.VIEW_MODE, mode === 'list' ? 'list' : 'grid'),
+
   // Last session (for Continue Listening)
   getLastSession: () => safeGet(STORAGE_KEYS.LAST_SESSION, null),
   saveLastSession: (session) => safeSet(STORAGE_KEYS.LAST_SESSION, session),
@@ -87,7 +92,10 @@ export const storageService = {
 
   // Authentic Madinah Mushaf position persistence
   getLastMushafPage: () => Number(safeGet(STORAGE_KEYS.MUSHAF_PAGE, 1)) || 1,
-  saveLastMushafPage: (pageNumber) => safeSet(STORAGE_KEYS.MUSHAF_PAGE, Math.max(1, Math.min(604, Number(pageNumber) || 1))),
+  saveLastMushafPage: (pageNumber) => safeSet(
+    STORAGE_KEYS.MUSHAF_PAGE,
+    Math.max(1, Math.min(604, Number(pageNumber) || 1)),
+  ),
 
   // Mushaf Ayah Bookmarks
   getMushafBookmarks: () => safeGet(STORAGE_KEYS.MUSHAF_BOOKMARKS, []),
@@ -97,12 +105,12 @@ export const storageService = {
     const updated = exists
       ? list.filter((b) => b.verseKey !== bookmarkItem.verseKey)
       : [
-          {
-            ...bookmarkItem,
-            createdAt: new Date().toISOString(),
-          },
-          ...list,
-        ];
+        {
+          ...bookmarkItem,
+          createdAt: new Date().toISOString(),
+        },
+        ...list,
+      ];
     safeSet(STORAGE_KEYS.MUSHAF_BOOKMARKS, updated);
     return updated;
   },

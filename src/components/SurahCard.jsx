@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { FiTrash2 } from 'react-icons/fi';
 import PlayPause from './PlayPause';
 import DownloadSurahButton from './DownloadSurahButton';
 import {
@@ -8,6 +9,7 @@ import {
   setActiveSura,
   toggleFavoriteSurah,
 } from '../redux/features/playerSlice';
+import { VERIFIED_RECITERS, DEFAULT_RECITER } from '../assets/recitersData';
 
 const toArabicDigits = (num) => String(num).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[d]);
 
@@ -20,6 +22,7 @@ const SurahCard = ({
   audioData,
   currentReciter,
   viewMode = 'grid',
+  onRemoveDownload,
 }) => {
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.player.favorites) || [];
@@ -28,6 +31,20 @@ const SurahCard = ({
   const isFavorite = favorites.includes(surahId);
   const reciterId = Number(sura?.reciter_id || currentReciter?.id || 0);
   const effectiveReciterName = sura?.reciter_name || currentReciter?.reciter_name || '';
+
+  const surahReciter = useMemo(() => {
+    if (sura?.reciter) return sura.reciter;
+    const verified = VERIFIED_RECITERS.find((r) => Number(r.id) === reciterId);
+    if (verified) return verified;
+    if (effectiveReciterName) {
+      return {
+        ...(currentReciter || DEFAULT_RECITER),
+        id: reciterId,
+        reciter_name: effectiveReciterName,
+      };
+    }
+    return currentReciter || DEFAULT_RECITER;
+  }, [sura?.reciter, reciterId, effectiveReciterName, currentReciter]);
 
   const audioUrl = useMemo(() => {
     if (sura?.audio_url) return sura.audio_url;
@@ -40,7 +57,8 @@ const SurahCard = ({
     && sura
     && ((activeSura.chapter_id
       && Number(sura.chapter_id || sura.id) === Number(activeSura.chapter_id))
-      || Number(activeSura.id) === Number(sura.id));
+      || Number(activeSura.id) === Number(sura.id))
+    && (!reciterId || !activeSura.reciter_id || Number(activeSura.reciter_id || currentReciter?.id) === reciterId);
 
   const isCurrentAndPlaying = isPlaying && isCurrent;
 
@@ -55,7 +73,7 @@ const SurahCard = ({
         i,
         data,
         audioData,
-        reciter: currentReciter,
+        reciter: surahReciter,
       }),
     );
     dispatch(playPause(true));
@@ -110,8 +128,12 @@ const SurahCard = ({
                 {sura?.name_simple || `Surah ${surahId}`}
               </h4>
             </Link>
-            <p className="text-[11px] text-slate-400 truncate">
-              {sura?.translated_name?.name || sura?.name_complex || 'The Holy Quran'}
+            <p className="text-[11px] text-slate-400 truncate mt-0.5">
+              {sura?.reciter_name ? (
+                <span className="text-indigo-300/90 font-medium">{sura.reciter_name}</span>
+              ) : (
+                sura?.translated_name?.name || sura?.name_complex || 'The Holy Quran'
+              )}
             </p>
           </div>
         </div>
@@ -123,7 +145,7 @@ const SurahCard = ({
           <span>{versesCount} آية</span>
         </div>
 
-        {/* Right: Sacred Arabic Title + Download + Favorite Action */}
+        {/* Right: Sacred Arabic Title + Download + Actions */}
         <div className="flex items-center space-x-2 shrink-0">
           <Link
             to={`/surah/${surahId}`}
@@ -144,6 +166,21 @@ const SurahCard = ({
             arabicName={sura?.name_arabic || ''}
             audioUrl={audioUrl}
           />
+
+          {onRemoveDownload && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemoveDownload(sura);
+              }}
+              aria-label="Remove download"
+              title="Remove from offline library"
+              className="p-1.5 rounded-lg border border-midnight-700/60 bg-midnight-800 text-slate-400 hover:text-rose-400 hover:border-rose-500/40 hover:bg-rose-500/10 transition"
+            >
+              <FiTrash2 size={13} />
+            </button>
+          )}
 
           <button
             type="button"
@@ -211,6 +248,21 @@ const SurahCard = ({
             audioUrl={audioUrl}
           />
 
+          {onRemoveDownload && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRemoveDownload(sura);
+              }}
+              aria-label="Remove download"
+              title="Remove from offline library"
+              className="p-1 rounded-lg border border-midnight-700/60 bg-midnight-800 text-slate-400 hover:text-rose-400 hover:border-rose-500/40 hover:bg-rose-500/10 transition opacity-80 group-hover:opacity-100"
+            >
+              <FiTrash2 size={13} />
+            </button>
+          )}
+
           <button
             type="button"
             onClick={handleFavoriteClick}
@@ -272,7 +324,11 @@ const SurahCard = ({
             </h4>
           </Link>
           <p className="text-[11px] text-slate-400 truncate mt-0.5">
-            {sura?.translated_name?.name || sura?.name_complex || 'The Holy Quran'}
+            {sura?.reciter_name ? (
+              <span className="text-indigo-300/90 font-medium">{sura.reciter_name}</span>
+            ) : (
+              sura?.translated_name?.name || sura?.name_complex || 'The Holy Quran'
+            )}
           </p>
         </div>
 
