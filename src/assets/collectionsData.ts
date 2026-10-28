@@ -1,0 +1,62 @@
+import type { CuratedCollection } from '../types/collections';
+
+// Verified Curated Sunnah & Thematic Quran Collections
+export const CURATED_COLLECTIONS: CuratedCollection[] = [
+  {
+    id: 'friday-kahf',
+    title: 'Friday Light',
+    arabic_title: 'سنة الجمعة - الكهف',
+    badge: 'Friday Sunnah',
+    description: 'Whoever recites Surah Al-Kahf on Friday, light will shine for him between the two Fridays.',
+    citation: 'Sahih Al-Jami (6470)',
+    surahIds: [18],
+    accent: 'indigo',
+    icon: 'sun',
+  },
+  {
+    id: 'night-protection',
+    title: 'Nightly Protection',
+    arabic_title: 'منجيات الليل',
+    badge: 'Nightly Practice',
+    description: 'The Prophet ﷺ would not sleep until he had recited Surah As-Sajdah and Surah Al-Mulk.',
+    citation: 'Jami` at-Tirmidhi (2892)',
+    surahIds: [67, 32],
+    accent: 'indigo',
+    icon: 'moon',
+  },
+  {
+    id: 'fortress-muawwidhat',
+    title: 'Daily Fortress',
+    arabic_title: 'المعوذات والإخلاص',
+    badge: 'Morning & Evening',
+    description: 'Reciting Al-Ikhlas and the Mu’awwidhatayn morning and evening suffices you against all harm.',
+    citation: 'Sunan Abi Dawud (5082)',
+    surahIds: [112, 113, 114],
+    accent: 'indigo',
+    icon: 'shield',
+  },
+  {
+    id: 'heart-softeners',
+    title: 'Heart Softeners',
+    arabic_title: 'تلاوات خاشعة ومؤثرة',
+    badge: 'Khushu` & Peace',
+    description: 'Melodic and deeply moving chapters reflecting on divine mercy, paradise, and the soul.',
+    citation: 'Contemplative Recitations',
+    surahIds: [55, 56, 19, 20, 50],
+    accent: 'indigo',
+    icon: 'heart',
+  },
+  {
+    id: 'juz-amma',
+    title: 'Juz `Amma',
+    arabic_title: 'جزء عم',
+    badge: '37 Short Surahs',
+    description: 'The 30th portion of the Holy Quran, ideal for daily memorization, reflection, and prayers.',
+    citation: 'Chapters 78 through 114',
+    surahIds: Array.from({ length: 37 }, (_, i) => 78 + i),
+    accent: 'indigo',
+    icon: 'book-open',
+  },
+];
+
+export default CURATED_COLLECTIONS;

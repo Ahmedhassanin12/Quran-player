@@ -12,6 +12,28 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react'],
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
+  },
+  overrides: [
+    {
+      files: ['**/*.ts', '**/*.tsx'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
+      rules: {
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': 'off',
+        'no-shadow': 'off',
+        '@typescript-eslint/no-shadow': 'off',
+        'no-undef': 'off',
+        'import/no-unresolved': 0,
+      },
+    },
+  ],
   rules: {
     'max-len': 0,
     'no-param-reassign': 0,
@@ -23,6 +45,14 @@ module.exports = {
     'linebreak-style': 0,
     'react/state-in-constructor': 0,
     'import/prefer-default-export': 0,
+    'quote-props': 0,
+    'quotes': 0,
+    'operator-linebreak': 0,
+    'implicit-arrow-linebreak': 0,
+    'function-paren-newline': 0,
+    'comma-dangle': 0,
+    'import/first': 0,
+    'jsx-a11y/no-noninteractive-element-interactions': 0,
     'no-multiple-empty-lines': [
       'error',
       {
