@@ -28,6 +28,10 @@ export interface ChapterInfo {
   text: string;
 }
 
+export interface ChapterInfoResponse {
+  chapter_info: ChapterInfo;
+}
+
 export interface AudioFile {
   id?: number;
   chapter_id: number;

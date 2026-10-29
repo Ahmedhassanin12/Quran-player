@@ -19,6 +19,7 @@ export type DownloadStatus = 'idle' | 'downloading' | 'error';
 
 export interface DownloadsState {
   items: DownloadedSurahMetadata[];
+  downloadedKeys: Record<string, boolean>;
   statusByKey: Record<string, DownloadStatus>;
   errorByKey: Record<string, string | null>;
   hydrated: boolean;

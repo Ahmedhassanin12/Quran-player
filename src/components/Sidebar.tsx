@@ -3,6 +3,7 @@ import { NavLink, Link } from 'react-router-dom';
 import { RiCloseLine } from 'react-icons/ri';
 import { HiOutlineMenuAlt2 } from 'react-icons/hi';
 import { useAppSelector } from '../redux/hooks';
+import { selectCurrentReciter } from '../redux/features/playerSlice';
 import { links } from '../assets/constants';
 import { RubElHizbIcon, ReciterAvatar } from './IslamicArtwork';
 import InstallPwaButton from './InstallPwaButton';
@@ -42,7 +43,7 @@ const NavLinks: React.FC<NavLinksProps> = ({ handleClick }) => (
 
 const Sidebar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { currentReciter } = useAppSelector((state) => state.player);
+  const currentReciter = useAppSelector(selectCurrentReciter);
   const isOnline = useOnlineStatus();
 
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setSleepTimer, clearSleepTimer } from '../../redux/features/playerSlice';
+import { setSleepTimer, clearSleepTimer, selectSleepTimer } from '../../redux/features/playerSlice';
 import type { SleepTimerMode } from '../../types/player';
 
 export interface SleepTimerModalProps {
@@ -25,7 +25,7 @@ const TIMER_OPTIONS: TimerOption[] = [
 
 const SleepTimerModal: React.FC<SleepTimerModalProps> = ({ isOpen, onClose }) => {
   const dispatch = useAppDispatch();
-  const sleepTimer = useAppSelector((state) => state.player.sleepTimer);
+  const sleepTimer = useAppSelector(selectSleepTimer);
 
   if (!isOpen) return null;
 

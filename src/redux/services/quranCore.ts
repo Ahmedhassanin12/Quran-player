@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type {
   Chapter,
-  ChapterInfo,
+  ChapterInfoResponse,
   AudioFile,
   Verse,
   ChapterAudioWithSegmentsResponse,
@@ -15,9 +15,7 @@ export interface ChapterResponse {
   chapter: Chapter;
 }
 
-export interface ChapterInfoResponse {
-  chapter_info: ChapterInfo;
-}
+export type { ChapterInfoResponse };
 
 export interface VersesResponse {
   verses: Verse[];

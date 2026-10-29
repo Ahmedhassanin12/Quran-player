@@ -8,7 +8,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint --ext .ts,.tsx src",
-    "test": "tsx tests/mushaf.test.ts && tsx tests/downloads.test.ts"
+    "test": "tsx tests/mushaf.test.ts && tsx tests/downloads.test.ts && tsx tests/formatters.test.ts && tsx tests/storage.test.ts && tsx tests/player.test.ts"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.5",

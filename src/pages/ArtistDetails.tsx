@@ -6,7 +6,14 @@ import {
   useGetAllSurahAudioQuery,
   useGetAllChaptersQuery,
 } from '../redux/services/quranCore';
-import { setReciter, setActiveSura, playPause } from '../redux/features/playerSlice';
+import {
+  setReciter,
+  setActiveSura,
+  playPause,
+  selectActiveSura,
+  selectIsPlaying,
+  selectCurrentReciter,
+} from '../redux/features/playerSlice';
 import { getReciterById } from '../assets/recitersData';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import type { AudioFile, Surah, VerifiedReciter, Reciter } from '../types';
@@ -20,7 +27,9 @@ const ArtistDetails: React.FC = () => {
   const location = useLocation();
   const dispatch = useAppDispatch();
 
-  const { activeSura, isPlaying, currentReciter } = useAppSelector((state) => state.player);
+  const activeSura = useAppSelector(selectActiveSura);
+  const isPlaying = useAppSelector(selectIsPlaying);
+  const currentReciter = useAppSelector(selectCurrentReciter);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
 

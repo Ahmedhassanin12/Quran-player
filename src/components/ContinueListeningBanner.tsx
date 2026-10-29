@@ -1,7 +1,15 @@
 import React from 'react';
 import { BsFillPlayFill } from 'react-icons/bs';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { setActiveSura, playPause, setSeekTime } from '../redux/features/playerSlice';
+import {
+  setActiveSura,
+  playPause,
+  setSeekTime,
+  selectLastSession,
+  selectIsPlaying,
+  selectActiveSura,
+} from '../redux/features/playerSlice';
+import { formatTimeShort } from '../utils/formatters';
 import type { Surah, AudioFile } from '../types/quran';
 
 export interface ContinueListeningBannerProps {
@@ -9,18 +17,14 @@ export interface ContinueListeningBannerProps {
   audioFiles?: AudioFile[] | { audio_files?: AudioFile[] };
 }
 
-const formatTime = (seconds = 0): string => {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-};
-
 const ContinueListeningBanner: React.FC<ContinueListeningBannerProps> = ({
   allSurahs,
   audioFiles,
 }) => {
   const dispatch = useAppDispatch();
-  const { lastSession, isPlaying, activeSura } = useAppSelector((state) => state.player);
+  const lastSession = useAppSelector(selectLastSession);
+  const isPlaying = useAppSelector(selectIsPlaying);
+  const activeSura = useAppSelector(selectActiveSura);
 
   if (!lastSession?.activeSura) return null;
 
@@ -66,7 +70,7 @@ const ContinueListeningBanner: React.FC<ContinueListeningBannerProps> = ({
         <span className="text-slate-500 hidden md:inline">· {reciter?.reciter_name}</span>
         {progressSec > 0 && (
           <span className="font-mono text-slate-400 text-[11px] hidden sm:inline">
-            عند {formatTime(progressSec)}
+            عند {formatTimeShort(progressSec)}
           </span>
         )}
       </div>

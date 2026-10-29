@@ -20,22 +20,17 @@ import {
   cycleRepeatMode,
   toggleShuffle,
   setActiveSura,
+  selectActiveSura,
+  selectCurrentSura,
+  selectIsPlaying,
+  selectCurrentReciter,
+  selectRepeatMode,
+  selectShuffle,
+  selectIsExpanded,
 } from '../../redux/features/playerSlice';
 import { SurahMedallion, ReciterAvatar } from '../IslamicArtwork';
+import { formatPlaybackTime } from '../../utils/formatters';
 import type { Surah } from '../../types';
-
-const formatTime = (time: number): string => {
-  if (Number.isNaN(time) || time === null || time === undefined) return '0:00';
-  const totalSeconds = Math.floor(time);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  }
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-};
 
 export interface ExpandedPlayerProps {
   appTime?: number;
@@ -60,15 +55,13 @@ const ExpandedPlayer: React.FC<ExpandedPlayerProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const {
-    activeSura,
-    currentSura,
-    isPlaying,
-    currentReciter,
-    repeatMode,
-    shuffle,
-    isExpanded,
-  } = useAppSelector((state) => state.player);
+  const activeSura = useAppSelector(selectActiveSura);
+  const currentSura = useAppSelector(selectCurrentSura);
+  const isPlaying = useAppSelector(selectIsPlaying);
+  const currentReciter = useAppSelector(selectCurrentReciter);
+  const repeatMode = useAppSelector(selectRepeatMode);
+  const shuffle = useAppSelector(selectShuffle);
+  const isExpanded = useAppSelector(selectIsExpanded);
 
   const [showQueue, setShowQueue] = useState<boolean>(false);
 
@@ -274,7 +267,7 @@ const ExpandedPlayer: React.FC<ExpandedPlayerProps> = ({
         {/* Seekbar */}
         <div className="w-full flex items-center space-x-3 mb-4">
           <span className="text-xs text-slate-400 w-12 text-right tabular-nums">
-            {formatTime(safeAppTime)}
+            {formatPlaybackTime(safeAppTime)}
           </span>
 
           <div className="relative flex-1 flex items-center group py-2">
@@ -298,7 +291,7 @@ const ExpandedPlayer: React.FC<ExpandedPlayerProps> = ({
           </div>
 
           <span className="text-xs text-slate-400 w-14 text-left">
-            -{formatTime(remainingTime)}
+            -{formatPlaybackTime(remainingTime)}
           </span>
         </div>
 

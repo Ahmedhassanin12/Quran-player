@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BsFillPlayFill } from 'react-icons/bs';
 import { ReciterAvatar } from './IslamicArtwork';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { setReciter } from '../redux/features/playerSlice';
+import { setReciter, selectCurrentReciter, selectIsPlaying } from '../redux/features/playerSlice';
 import { getReciterById } from '../assets/recitersData';
 import type { Reciter } from '../types/reciter';
 
@@ -14,7 +14,8 @@ export interface ArtistCardProps {
 const ArtistCard: React.FC<ArtistCardProps> = ({ reader }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { currentReciter, isPlaying } = useAppSelector((state) => state.player);
+  const currentReciter = useAppSelector(selectCurrentReciter);
+  const isPlaying = useAppSelector(selectIsPlaying);
 
   const verified = getReciterById(reader?.id || 7);
   const reciterId = reader?.id || verified.id;
@@ -120,4 +121,4 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ reader }) => {
   );
 };
 
-export default ArtistCard;
+export default React.memo(ArtistCard);

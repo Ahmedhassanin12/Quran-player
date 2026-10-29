@@ -13,6 +13,18 @@ import {
   decrementSleepTimer,
   triggerSurahSleepStop,
   savePlaybackProgress,
+  selectActiveSura,
+  selectCurrentSura,
+  selectIsActive,
+  selectIsPlaying,
+  selectCurrentReciter,
+  selectRepeatMode,
+  selectShuffle,
+  selectVolume,
+  selectPlaybackSpeed,
+  selectSleepTimer,
+  selectSeekTime,
+  selectSeekCount,
 } from '../../redux/features/playerSlice';
 import Controls from './Controls';
 import Player from './Player';
@@ -27,20 +39,18 @@ import { useMediaSession } from '../../hooks/useMediaSession';
 
 const QuranPlayer: React.FC = () => {
   const dispatch = useAppDispatch();
-  const {
-    activeSura,
-    currentSura,
-    isActive,
-    isPlaying,
-    currentReciter,
-    repeatMode,
-    shuffle,
-    volume: storedVolume,
-    playbackSpeed,
-    sleepTimer,
-    seekTime: reduxSeekTime,
-    seekCount = 0,
-  } = useAppSelector((state) => state.player);
+  const activeSura = useAppSelector(selectActiveSura);
+  const currentSura = useAppSelector(selectCurrentSura);
+  const isActive = useAppSelector(selectIsActive);
+  const isPlaying = useAppSelector(selectIsPlaying);
+  const currentReciter = useAppSelector(selectCurrentReciter);
+  const repeatMode = useAppSelector(selectRepeatMode);
+  const shuffle = useAppSelector(selectShuffle);
+  const storedVolume = useAppSelector(selectVolume);
+  const playbackSpeed = useAppSelector(selectPlaybackSpeed);
+  const sleepTimer = useAppSelector(selectSleepTimer);
+  const reduxSeekTime = useAppSelector(selectSeekTime);
+  const seekCount = useAppSelector(selectSeekCount);
 
   const [duration, setDuration] = useState<number>(0);
   const [seekTime, setSeekTime] = useState<number | null>(null);

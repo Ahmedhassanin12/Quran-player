@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import {
   downloadService,
   makeDownloadKey,
@@ -122,6 +122,7 @@ export const clearAllDownloads = createAsyncThunk<boolean, void, { rejectValue: 
 
 const initialState: DownloadsState = {
   items: [],
+  downloadedKeys: {},
   statusByKey: {},
   errorByKey: {},
   hydrated: false,
@@ -151,6 +152,11 @@ const downloadsSlice = createSlice({
       })
       .addCase(hydrateDownloads.fulfilled, (state, action) => {
         state.items = action.payload || [];
+        const keys: Record<string, boolean> = {};
+        (action.payload || []).forEach((item) => {
+          if (item?.key) keys[item.key] = true;
+        });
+        state.downloadedKeys = keys;
         state.hydrated = true;
         state.hydrating = false;
       })
@@ -169,6 +175,7 @@ const downloadsSlice = createSlice({
         if (!meta?.key) return;
         state.statusByKey[meta.key] = 'idle';
         delete state.errorByKey[meta.key];
+        state.downloadedKeys[meta.key] = true;
         const idx = state.items.findIndex((item) => item.key === meta.key);
         if (idx >= 0) {
           state.items[idx] = meta;
@@ -184,6 +191,7 @@ const downloadsSlice = createSlice({
       })
       .addCase(clearAllDownloads.fulfilled, (state) => {
         state.items = [];
+        state.downloadedKeys = {};
         state.statusByKey = {};
         state.errorByKey = {};
       })
@@ -191,6 +199,7 @@ const downloadsSlice = createSlice({
         const { key } = action.payload || {};
         state.items = state.items.filter((item) => item.key !== key);
         if (key) {
+          delete state.downloadedKeys[key];
           delete state.statusByKey[key];
           delete state.errorByKey[key];
         }
@@ -205,7 +214,7 @@ export const selectDownloadsHydrated = (state: { downloads: DownloadsState }): b
 export const selectIsDownloaded = (reciterId: number | string, surahId: number | string) =>
   (state: { downloads: DownloadsState }): boolean => {
     const key = makeDownloadKey(reciterId, surahId);
-    return state.downloads.items.some((item) => item.key === key);
+    return Boolean(state.downloads.downloadedKeys[key]);
   };
 export const selectDownloadStatus = (reciterId: number | string, surahId: number | string) =>
   (state: { downloads: DownloadsState }): DownloadStatus => {
@@ -217,7 +226,9 @@ export const selectDownloadError = (reciterId: number | string, surahId: number 
     const key = makeDownloadKey(reciterId, surahId);
     return state.downloads.errorByKey[key] || null;
   };
-export const selectTotalDownloadBytes = (state: { downloads: DownloadsState }): number =>
-  state.downloads.items.reduce((sum, item) => sum + (Number(item.sizeBytes) || 0), 0);
+export const selectTotalDownloadBytes = createSelector(
+  [selectDownloadItems],
+  (items) => items.reduce((sum, item) => sum + (Number(item.sizeBytes) || 0), 0),
+);
 
 export default downloadsSlice.reducer;

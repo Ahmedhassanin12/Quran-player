@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { BsFillPlayFill } from 'react-icons/bs';
 import {
   FiBookOpen,
   FiInfo,
@@ -17,6 +16,12 @@ import {
 } from '../components';
 import DownloadSurahButton from '../components/DownloadSurahButton';
 import {
+  HifzLooperPanel,
+  SuraCardsView,
+  SuraContinuousView,
+  SuraInfoTab,
+} from '../components/SuraDetails';
+import {
   useGetChapterIdQuery,
   useGetChapterInfoQuery,
   useGetAllSurahAudioQuery,
@@ -27,6 +32,9 @@ import {
   setActiveSura,
   playPause,
   setSeekTime,
+  selectActiveSura,
+  selectIsPlaying,
+  selectCurrentReciter,
 } from '../redux/features/playerSlice';
 import {
   getPageForAyah,
@@ -34,6 +42,7 @@ import {
 } from '../assets/mushafMetadata';
 import { storageService } from '../services/storageService';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { useAyahAudioSync } from '../hooks/useAyahAudioSync';
 import type {
   MushafBookmark,
   MushafEngine,
@@ -41,9 +50,6 @@ import type {
   AudioFile,
   Verse,
 } from '../types';
-
-const toArabicDigits = (num: number | string): string =>
-  String(num).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[Number(d)]);
 
 type ActiveTab = 'verses' | 'info';
 type FontSize = 'text-xl' | 'text-2xl' | 'text-3xl';
@@ -54,13 +60,14 @@ const SuraDetails: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const numSurahId = Number(surahId) || 1;
-  const { activeSura, isPlaying, currentReciter } = useAppSelector((state) => state.player);
+  const activeSura = useAppSelector(selectActiveSura);
+  const isPlaying = useAppSelector(selectIsPlaying);
+  const currentReciter = useAppSelector(selectCurrentReciter);
 
   const [activeTab, setActiveTab] = useState<ActiveTab>('verses');
   const [fontSize, setFontSize] = useState<FontSize>('text-2xl');
   const [showTranslation, setShowTranslation] = useState<boolean>(true);
   const [viewStyle, setViewStyle] = useState<ViewStyle>('cards');
-  const [activeVerseKey, setActiveVerseKey] = useState<string | null>(null);
 
   // Authentic Madinah Mushaf State
   const initialMushafPage = useMemo(() => getPageForAyah(numSurahId, 1), [numSurahId]);
@@ -81,7 +88,6 @@ const SuraDetails: React.FC = () => {
   const [hifzCurrentLoop, setHifzCurrentLoop] = useState<number>(1);
   const [isHifzActive, setIsHifzActive] = useState<boolean>(false);
 
-  const activeVerseRef = useRef<HTMLDivElement | null>(null);
   const reciterId = currentReciter?.id || 7;
 
   // Sync mushafPage when opening a new Surah
@@ -123,10 +129,11 @@ const SuraDetails: React.FC = () => {
   // 5. Surah audio catalog
   const { data: audioData } = useGetAllSurahAudioQuery(reciterId);
 
-  const isCurrentSurah =
+  const isCurrentSurah = Boolean(
     activeSura &&
     ((activeSura.chapter_id && Number(activeSura.chapter_id) === numSurahId) ||
-      Number(activeSura.id) === numSurahId);
+      Number(activeSura.id) === numSurahId),
+  );
 
   const isCurrentAndPlaying = Boolean(isCurrentSurah && isPlaying);
 
@@ -153,86 +160,42 @@ const SuraDetails: React.FC = () => {
     return map;
   }, [timestamps]);
 
-  // Listen to audio time updates for high-performance verse synchronization
-  useEffect(() => {
-    if (!isCurrentSurah || timestamps.length === 0) {
-      setActiveVerseKey(null);
-      return undefined;
-    }
+  // High-performance verse audio synchronization and Hifz loop control
+  const handleSeekToVerseTime = useCallback((seconds: number) => {
+    dispatch(setSeekTime(seconds));
+  }, [dispatch]);
 
-    const handleAudioTime = (e: Event) => {
-      const customEvent = e as CustomEvent<{ currentTime: number }>;
-      const currentTimeMs = (customEvent.detail?.currentTime || 0) * 1000;
+  const handleLoopStep = useCallback(() => {
+    setHifzCurrentLoop((prev) => prev + 1);
+  }, []);
 
-      // Hifz looping boundary check
-      if (isHifzActive) {
-        const startKey = `${numSurahId}:${hifzStart}`;
-        const endKey = `${numSurahId}:${hifzEnd}`;
-        const startTs = timestampMap[startKey];
-        const endTs = timestampMap[endKey];
+  const handleLoopComplete = useCallback(() => {
+    setIsHifzActive(false);
+    setHifzCurrentLoop(1);
+  }, []);
 
-        if (endTs && currentTimeMs >= endTs.timestamp_to) {
-          if (hifzCurrentLoop < hifzTargetLoops || hifzTargetLoops === 0) {
-            // Loop back to start verse
-            setHifzCurrentLoop((prev) => prev + 1);
-            if (startTs) {
-              dispatch(setSeekTime(startTs.timestamp_from / 1000));
-            }
-          } else {
-            // Completed target loops
-            setIsHifzActive(false);
-            setHifzCurrentLoop(1);
-          }
-          return;
-        }
-      }
+  const handlePageChange = useCallback((page: number) => {
+    setMushafPage(page);
+  }, []);
 
-      // Find current active verse segment
-      const current = timestamps.find(
-        (t) => currentTimeMs >= t.timestamp_from && currentTimeMs < t.timestamp_to,
-      );
-
-      if (current && current.verse_key !== activeVerseKey) {
-        setActiveVerseKey(current.verse_key);
-
-        // Synchronize Mushaf page with reciting Ayah
-        const [s, a] = current.verse_key.split(':').map(Number);
-        const targetPage = getPageForAyah(s, a);
-        if (targetPage && targetPage !== mushafPage) {
-          setMushafPage(targetPage);
-          storageService.saveLastMushafPage(targetPage);
-        }
-      }
-    };
-
-    window.addEventListener('quran-audio-time', handleAudioTime);
-    return () => window.removeEventListener('quran-audio-time', handleAudioTime);
-  }, [
+  const { activeVerseKey, setActiveVerseKey } = useAyahAudioSync({
     isCurrentSurah,
     timestamps,
-    activeVerseKey,
+    timestampMap,
     isHifzActive,
     hifzStart,
     hifzEnd,
     hifzCurrentLoop,
     hifzTargetLoops,
     numSurahId,
-    timestampMap,
     mushafPage,
-    dispatch,
-  ]);
+    onSeekToVerseTime: handleSeekToVerseTime,
+    onLoopStep: handleLoopStep,
+    onLoopComplete: handleLoopComplete,
+    onPageChange: handlePageChange,
+  });
 
-  // Smoothly scroll active verse into view in card mode
-  useEffect(() => {
-    if (activeVerseRef.current && isCurrentAndPlaying && viewStyle === 'cards') {
-      activeVerseRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      });
-    }
-  }, [activeVerseKey, isCurrentAndPlaying, viewStyle]);
-
-  const handlePlaySurah = () => {
+  const handlePlaySurah = useCallback(() => {
     if (isCurrentAndPlaying) {
       dispatch(playPause(false));
       return;
@@ -263,10 +226,19 @@ const SuraDetails: React.FC = () => {
       }),
     );
     dispatch(playPause(true));
-  };
+  }, [
+    isCurrentAndPlaying,
+    isCurrentSurah,
+    audioSegmentsData?.audio_file,
+    audioData?.audio_files,
+    chapterData?.chapter,
+    numSurahId,
+    reciterId,
+    currentReciter,
+    dispatch,
+  ]);
 
-  const handleJumpToVerse = (verseKey: string) => {
-    // Start playing this surah if not already playing
+  const handleJumpToVerse = useCallback((verseKey: string) => {
     if (!isCurrentSurah) {
       const audioFile =
         audioSegmentsData?.audio_file ||
@@ -292,7 +264,6 @@ const SuraDetails: React.FC = () => {
     dispatch(playPause(true));
     setActiveVerseKey(verseKey);
 
-    // Jump to verse page in Mushaf mode
     const [s, a] = verseKey.split(':').map(Number);
     const targetPage = getPageForAyah(s, a);
     if (targetPage) {
@@ -300,22 +271,32 @@ const SuraDetails: React.FC = () => {
       storageService.saveLastMushafPage(targetPage);
     }
 
-    // Jump to verse timestamp if available
     const ts = timestampMap[verseKey];
     if (ts && typeof ts.timestamp_from === 'number') {
       const seekSeconds = ts.timestamp_from / 1000;
       dispatch(setSeekTime(seekSeconds));
     }
-  };
+  }, [
+    isCurrentSurah,
+    audioSegmentsData?.audio_file,
+    audioData?.audio_files,
+    chapterData?.chapter,
+    numSurahId,
+    reciterId,
+    currentReciter,
+    dispatch,
+    setActiveVerseKey,
+    timestampMap,
+  ]);
 
-  const handleToggleBookmark = (
+  const handleToggleBookmark = useCallback((
     bookmarkItem: Partial<MushafBookmark> & { verseKey: string; verseNumber?: number; surahId?: number },
   ) => {
     const updated = storageService.toggleMushafBookmark(bookmarkItem);
     setMushafBookmarks(updated);
-  };
+  }, []);
 
-  const handleSelectBookmark = (bookmark: MushafBookmark) => {
+  const handleSelectBookmark = useCallback((bookmark: MushafBookmark) => {
     if (bookmark.pageNumber) {
       setMushafPage(bookmark.pageNumber);
       storageService.saveLastMushafPage(bookmark.pageNumber);
@@ -324,9 +305,9 @@ const SuraDetails: React.FC = () => {
         handleJumpToVerse(bookmark.verseKey);
       }
     }
-  };
+  }, [handleJumpToVerse]);
 
-  const handleStartHifz = () => {
+  const handleStartHifz = useCallback(() => {
     setIsHifzActive(true);
     setHifzCurrentLoop(1);
 
@@ -341,12 +322,12 @@ const SuraDetails: React.FC = () => {
       dispatch(setSeekTime(startTs.timestamp_from / 1000));
       dispatch(playPause(true));
     }
-  };
+  }, [numSurahId, hifzStart, timestampMap, isCurrentSurah, handlePlaySurah, dispatch]);
 
-  const handleStopHifz = () => {
+  const handleStopHifz = useCallback(() => {
     setIsHifzActive(false);
     setHifzCurrentLoop(1);
-  };
+  }, []);
 
   if (isFetchingChapter || isFetchingVerses) {
     return <Loader title="Loading Surah verses & synchronizing..." />;
@@ -524,80 +505,24 @@ const SuraDetails: React.FC = () => {
       </div>
 
       {/* Hifz Memorization Panel */}
-      {isHifzOpen && (
-        <div className="p-4 sm:p-5 rounded-xl bg-midnight-900 border border-midnight-700/80 shadow-xl space-y-3 animate-slidedown">
-          <div className="flex items-center justify-between pb-2 border-b border-midnight-800">
-            <div className="flex items-center space-x-2">
-              <FiRepeat className="text-emerald-400" size={16} />
-              <h3 className="text-sm font-bold text-slate-100">
-                Hifz Verse Memorization Looper
-              </h3>
-            </div>
-            {isHifzActive ? (
-              <button
-                type="button"
-                onClick={handleStopHifz}
-                className="px-3 py-1 rounded-lg bg-red-500/20 text-red-300 border border-red-500/40 text-xs font-semibold"
-              >
-                Stop Looper
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={handleStartHifz}
-                className="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold shadow-md shadow-emerald-950/60"
-              >
-                Start Memorizing
-              </button>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div>
-              <label className="text-slate-400 block mb-1">Start Verse:</label>
-              <input
-                type="number"
-                min="1"
-                max={chapterData?.chapter?.verses_count || 1}
-                value={hifzStart}
-                onChange={(e) => setHifzStart(Number(e.target.value))}
-                className="w-full bg-midnight-800 border border-midnight-700 rounded-lg p-2 text-slate-100"
-              />
-            </div>
-            <div>
-              <label className="text-slate-400 block mb-1">End Verse:</label>
-              <input
-                type="number"
-                min={hifzStart}
-                max={chapterData?.chapter?.verses_count || 1}
-                value={hifzEnd}
-                onChange={(e) => setHifzEnd(Number(e.target.value))}
-                className="w-full bg-midnight-800 border border-midnight-700 rounded-lg p-2 text-slate-100"
-              />
-            </div>
-            <div>
-              <label className="text-slate-400 block mb-1">Loop Count:</label>
-              <select
-                value={hifzTargetLoops}
-                onChange={(e) => setHifzTargetLoops(Number(e.target.value))}
-                className="w-full bg-midnight-800 border border-midnight-700 rounded-lg p-2 text-slate-100"
-              >
-                <option value="3">3 Repetitions</option>
-                <option value="5">5 Repetitions</option>
-                <option value="10">10 Repetitions</option>
-                <option value="0">Infinite Loop (∞)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      )}
+      <HifzLooperPanel
+        isOpen={isHifzOpen}
+        isActive={isHifzActive}
+        startVerse={hifzStart}
+        endVerse={hifzEnd}
+        maxVerses={chapterData?.chapter?.verses_count || 1}
+        targetLoops={hifzTargetLoops}
+        onStart={handleStartHifz}
+        onStop={handleStopHifz}
+        onStartChange={setHifzStart}
+        onEndChange={setHifzEnd}
+        onTargetLoopsChange={setHifzTargetLoops}
+      />
 
       {/* Verses Tab Content */}
       {activeTab === 'verses' && (
         <div className="space-y-4">
-          {/* ======================================================== */}
           {/* MODE 1: AUTHENTIC MADINAH MUSHAF (EXACT 604-PAGE EDITION) */}
-          {/* ======================================================== */}
           {viewStyle === 'mushaf' && (
             <div className="w-full flex flex-col items-center">
               <MushafNavigation
@@ -636,161 +561,35 @@ const SuraDetails: React.FC = () => {
             </div>
           )}
 
-          {/* ======================================================== */}
-          {/* MODE 2: STRUCTURED AYAH CARDS (WITH SYNC & TRANSLATION)  */}
-          {/* ======================================================== */}
+          {/* MODE 2: STRUCTURED AYAH CARDS */}
           {viewStyle === 'cards' && (
-            <>
-              {/* Bismillah Banner */}
-              {showBismillah && (
-                <div className="text-center py-5 bg-midnight-850/40 border border-midnight-700/50 rounded-xl">
-                  <p className="font-quran text-3xl sm:text-4xl text-slate-100 tracking-wide select-none">
-                    بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
-                  </p>
-                </div>
-              )}
-
-              <div className="space-y-3">
-                {verses.map((verse) => {
-                  const isPlayingThisVerse = isCurrentAndPlaying && activeVerseKey === verse.verse_key;
-                  const translationText = verse.translations?.[0]?.text?.replace(/<sup.*?<\/sup>/g, '') || '';
-
-                  return (
-                    <div
-                      key={verse.id}
-                      ref={isPlayingThisVerse ? activeVerseRef : null}
-                      onClick={() => handleJumpToVerse(verse.verse_key)}
-                      className={`p-5 sm:p-6 rounded-xl border transition-all duration-200 cursor-pointer text-right relative group ${
-                        isPlayingThisVerse
-                          ? 'bg-midnight-800/95 border-indigo-500/60 shadow-lg shadow-black/40 ring-1 ring-indigo-500/30'
-                          : 'bg-midnight-850/50 hover:bg-midnight-800/70 border-midnight-700/50 hover:border-midnight-600/60'
-                      }`}
-                    >
-                      {/* Header Row: Verse Index + Jump-to-verse trigger */}
-                      <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-midnight-700/30 select-none">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-medium text-slate-400">
-                            الآية {toArabicDigits(verse.verse_number)} · <span className="font-mono text-slate-500">{verse.verse_key}</span>
-                          </span>
-                          {isPlayingThisVerse && (
-                            <span className="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                              يتلو الآن
-                            </span>
-                          )}
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleJumpToVerse(verse.verse_key);
-                          }}
-                          className="text-xs text-slate-400 group-hover:text-indigo-300 font-medium flex items-center gap-1 transition"
-                        >
-                          <BsFillPlayFill size={15} />
-                          <span>استماع</span>
-                        </button>
-                      </div>
-
-                      {/* Sacred Uthmani Arabic Text */}
-                      <p
-                        dir="rtl"
-                        className={`font-quran ${fontSize} leading-[2.6] text-slate-100 ${
-                          isPlayingThisVerse ? 'text-indigo-200' : 'text-slate-100'
-                        }`}
-                      >
-                        {verse.text_uthmani}
-                        <span className="font-arabic text-amber-400/90 font-normal mx-2 select-none text-[0.85em] align-middle">
-                          ﴿{toArabicDigits(verse.verse_number)}﴾
-                        </span>
-                      </p>
-
-                      {/* Saheeh International English Translation */}
-                      {showTranslation && translationText && (
-                        <p
-                          dir="ltr"
-                          className="text-left text-xs sm:text-sm text-slate-400 font-sans mt-3 pt-3 border-t border-midnight-700/30 leading-relaxed"
-                        >
-                          {translationText}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </>
+            <SuraCardsView
+              verses={verses}
+              showBismillah={showBismillah}
+              isCurrentAndPlaying={isCurrentAndPlaying}
+              activeVerseKey={activeVerseKey}
+              fontSize={fontSize}
+              showTranslation={showTranslation}
+              onJumpToVerse={handleJumpToVerse}
+            />
           )}
 
-          {/* ======================================================== */}
-          {/* MODE 3: CONTINUOUS MUSHAF FLOW                          */}
-          {/* ======================================================== */}
+          {/* MODE 3: CONTINUOUS MUSHAF FLOW */}
           {viewStyle === 'continuous' && (
-            <>
-              {/* Bismillah Banner */}
-              {showBismillah && (
-                <div className="text-center py-5 bg-midnight-850/40 border border-midnight-700/50 rounded-xl">
-                  <p className="font-quran text-3xl sm:text-4xl text-slate-100 tracking-wide select-none">
-                    بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
-                  </p>
-                </div>
-              )}
-
-              <div className="p-6 sm:p-10 rounded-xl bg-midnight-850/60 border border-midnight-700/60 shadow-xl">
-                <div
-                  dir="rtl"
-                  className="leading-[2.8] text-right font-quran text-slate-100 selection:bg-indigo-500/30"
-                >
-                  {verses.map((verse) => {
-                    const isPlayingThisVerse = isCurrentAndPlaying && activeVerseKey === verse.verse_key;
-                    return (
-                      <span
-                        key={verse.id}
-                        onClick={() => handleJumpToVerse(verse.verse_key)}
-                        className={`${fontSize} inline transition-all cursor-pointer rounded px-1 ${
-                          isPlayingThisVerse
-                            ? 'bg-indigo-500/20 text-indigo-200 font-medium ring-1 ring-indigo-500/40'
-                            : 'hover:text-indigo-300 hover:bg-midnight-800/40'
-                        }`}
-                      >
-                        <span>{verse.text_uthmani}</span>
-                        <span className="font-arabic text-amber-400/90 font-normal mx-1.5 select-none text-[0.8em] align-middle">
-                          ﴿{toArabicDigits(verse.verse_number)}﴾
-                        </span>
-                      </span>
-                    );
-                  })}
-                </div>
-              </div>
-            </>
+            <SuraContinuousView
+              verses={verses}
+              showBismillah={showBismillah}
+              isCurrentAndPlaying={isCurrentAndPlaying}
+              activeVerseKey={activeVerseKey}
+              fontSize={fontSize}
+              onJumpToVerse={handleJumpToVerse}
+            />
           )}
         </div>
       )}
 
       {/* Info Tab Content */}
-      {activeTab === 'info' && (
-        <div className="p-6 sm:p-8 rounded-xl bg-midnight-850/60 border border-midnight-700/60 leading-relaxed text-slate-300 space-y-4">
-          <h3 className="text-lg font-bold text-slate-100">
-            Historical Context & Revelation
-          </h3>
-          {infoData?.chapter_info?.short_text && (
-            <p className="text-indigo-300/90 font-medium bg-indigo-950/40 border border-indigo-500/20 p-4 rounded-lg">
-              {infoData.chapter_info.short_text}
-            </p>
-          )}
-          {infoData?.chapter_info?.text ? (
-            <div
-              className="prose prose-invert max-w-none text-slate-300 text-sm leading-7 space-y-3"
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: infoData.chapter_info.text }}
-            />
-          ) : (
-            <p className="text-sm text-slate-400">
-              No detailed commentary available for this Surah.
-            </p>
-          )}
-        </div>
-      )}
+      {activeTab === 'info' && <SuraInfoTab infoData={infoData} />}
     </div>
   );
 };

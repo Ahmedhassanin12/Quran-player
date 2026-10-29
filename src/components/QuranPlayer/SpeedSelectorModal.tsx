@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { setPlaybackSpeed } from '../../redux/features/playerSlice';
+import { setPlaybackSpeed, selectPlaybackSpeed } from '../../redux/features/playerSlice';
 
 export interface SpeedSelectorModalProps {
   isOpen: boolean;
@@ -25,7 +25,7 @@ const SPEED_OPTIONS: SpeedOption[] = [
 
 const SpeedSelectorModal: React.FC<SpeedSelectorModalProps> = ({ isOpen, onClose }) => {
   const dispatch = useAppDispatch();
-  const currentSpeed = useAppSelector((state) => state.player.playbackSpeed) || 1.0;
+  const currentSpeed = useAppSelector(selectPlaybackSpeed) || 1.0;
 
   if (!isOpen) return null;
 

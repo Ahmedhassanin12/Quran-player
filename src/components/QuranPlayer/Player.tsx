@@ -1,7 +1,9 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { useRef, useEffect, useState } from 'react';
 import { useAppSelector } from '../../redux/hooks';
+import { selectCurrentReciter } from '../../redux/features/playerSlice';
 import { downloadService } from '../../services/downloadService';
+import { getSurahId, getEffectiveReciterId } from '../../utils/quranUtils';
 import type { Surah } from '../../types/quran';
 
 export interface PlayerProps {
@@ -36,14 +38,13 @@ const Player: React.FC<PlayerProps> = ({
   const ref = useRef<HTMLAudioElement>(null);
   const pendingSeekRef = useRef<number | null>(null);
   const blobUrlRef = useRef<string | null>(null);
-  const { currentReciter } = useAppSelector((state) => state.player);
+  const pendingRevokeUrlRef = useRef<string | null>(null);
+  const currentReciter = useAppSelector(selectCurrentReciter);
   // Start with empty string to prevent premature remote requests and onError when offline
   const [resolvedSrc, setResolvedSrc] = useState<string>('');
 
-  const surahId = Number(activeSura?.chapter_id || activeSura?.id || 0);
-  const reciterId = Number(
-    activeSura?.reciter_id || currentReciter?.id || 0,
-  );
+  const surahId = getSurahId(activeSura);
+  const reciterId = getEffectiveReciterId(activeSura, currentReciter);
 
   // Prefer offline IndexedDB blob when available; fall back to remote CDN URL if online
   useEffect(() => {
@@ -79,20 +80,28 @@ const Player: React.FC<PlayerProps> = ({
           setResolvedSrc(isOnline ? remoteUrl : '');
         }
 
-        // Defer revoke slightly so the DOM audio element has finished switching sources
+        // Clean up previous blob URL via event-driven hook with safety timeout fallback
         if (prevBlobUrl && prevBlobUrl !== offlineUrl) {
+          pendingRevokeUrlRef.current = prevBlobUrl;
           setTimeout(() => {
-            downloadService.revokeObjectUrl(prevBlobUrl);
-          }, 150);
+            if (pendingRevokeUrlRef.current === prevBlobUrl) {
+              downloadService.revokeObjectUrl(prevBlobUrl);
+              pendingRevokeUrlRef.current = null;
+            }
+          }, 500);
         }
       } catch (_) {
         if (!cancelled) {
           const prevBlobUrl = blobUrlRef.current;
           blobUrlRef.current = null;
           if (prevBlobUrl) {
+            pendingRevokeUrlRef.current = prevBlobUrl;
             setTimeout(() => {
-              downloadService.revokeObjectUrl(prevBlobUrl);
-            }, 150);
+              if (pendingRevokeUrlRef.current === prevBlobUrl) {
+                downloadService.revokeObjectUrl(prevBlobUrl);
+                pendingRevokeUrlRef.current = null;
+              }
+            }, 500);
           }
           setResolvedSrc(isOnline ? remoteUrl : '');
         }
@@ -110,6 +119,10 @@ const Player: React.FC<PlayerProps> = ({
     if (blobUrlRef.current) {
       downloadService.revokeObjectUrl(blobUrlRef.current);
       blobUrlRef.current = null;
+    }
+    if (pendingRevokeUrlRef.current) {
+      downloadService.revokeObjectUrl(pendingRevokeUrlRef.current);
+      pendingRevokeUrlRef.current = null;
     }
   }, []);
 
@@ -174,6 +187,12 @@ const Player: React.FC<PlayerProps> = ({
 
   const handleLoadedData = (e: React.SyntheticEvent<HTMLAudioElement>) => {
     const audio = e.currentTarget;
+
+    // Safely revoke any pending previous blob URL now that the new audio source has loaded
+    if (pendingRevokeUrlRef.current) {
+      downloadService.revokeObjectUrl(pendingRevokeUrlRef.current);
+      pendingRevokeUrlRef.current = null;
+    }
 
     // Apply any queued seek position (e.g. from handleJumpToVerse when starting new surah)
     if (pendingSeekRef.current !== null && typeof pendingSeekRef.current === 'number') {

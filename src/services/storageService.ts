@@ -65,6 +65,9 @@ export const storageService = {
 
   // Favorite Reciters (Reciter IDs)
   getFavoriteReciters: (): number[] => safeGet<number[]>(STORAGE_KEYS.FAVORITE_RECITERS, []),
+  saveFavoriteReciters: (reciters: number[]): void => {
+    safeSet(STORAGE_KEYS.FAVORITE_RECITERS, reciters);
+  },
   toggleFavoriteReciter: (reciterId: number | string): number[] => {
     const list = safeGet<number[]>(STORAGE_KEYS.FAVORITE_RECITERS, []);
     const id = Number(reciterId);
@@ -77,6 +80,9 @@ export const storageService = {
 
   // Recently played history (max 20 recitations)
   getRecents: (): RecentRecitation[] => safeGet<RecentRecitation[]>(STORAGE_KEYS.RECENTS, []),
+  saveRecents: (recents: RecentRecitation[]): void => {
+    safeSet(STORAGE_KEYS.RECENTS, recents.slice(0, 20));
+  },
   addRecent: (recentItem: RecentRecitation): RecentRecitation[] => {
     const list = safeGet<RecentRecitation[]>(STORAGE_KEYS.RECENTS, []);
     // deduplicate by surahId & reciterId

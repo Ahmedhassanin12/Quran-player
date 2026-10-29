@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMic, FiBookmark, FiClock } from 'react-icons/fi';
 import {
@@ -16,7 +16,15 @@ import {
   useGetAllSurahAudioQuery,
 } from '../redux/services/quranCore';
 import { CURATED_COLLECTIONS } from '../assets/collectionsData';
-import { setActiveSura, playPause } from '../redux/features/playerSlice';
+import {
+  setActiveSura,
+  playPause,
+  selectActiveSura,
+  selectIsPlaying,
+  selectCurrentReciter,
+  selectFavorites,
+  selectRecents,
+} from '../redux/features/playerSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import type { Surah, AudioFile, RecentRecitation } from '../types';
 
@@ -24,23 +32,21 @@ type ActiveTab = 'all' | 'makkah' | 'madinah' | 'favorites' | 'history';
 
 const Discover: React.FC = () => {
   const dispatch = useAppDispatch();
-  const {
-    activeSura,
-    isPlaying,
-    currentReciter,
-    favorites = [],
-    recents = [],
-  } = useAppSelector((state) => state.player);
+  const activeSura = useAppSelector(selectActiveSura);
+  const isPlaying = useAppSelector(selectIsPlaying);
+  const currentReciter = useAppSelector(selectCurrentReciter);
+  const favorites = useAppSelector(selectFavorites);
+  const recents = useAppSelector(selectRecents);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeTab, setActiveTab] = useState<ActiveTab>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => storageService.getViewMode());
   const [selectedCollectionId, setSelectedCollectionId] = useState<string | null>(null);
 
-  const handleViewModeChange = (mode: 'grid' | 'list') => {
+  const handleViewModeChange = useCallback((mode: 'grid' | 'list') => {
     setViewMode(mode);
     storageService.saveViewMode(mode);
-  };
+  }, []);
 
   const reciterId = currentReciter?.id || 7;
   const { data: surahData, isFetching: isFetchingSurahs, error: surahError } = useGetAllChaptersQuery();
@@ -110,7 +116,7 @@ const Discover: React.FC = () => {
     return list;
   }, [allSurahsWithAudio, activeTab, selectedCollectionId, searchQuery, favorites]);
 
-  const handlePlayRecent = (recent: RecentRecitation) => {
+  const handlePlayRecent = useCallback((recent: RecentRecitation) => {
     const matchedSura = allSurahsWithAudio.find((s) => s.id === recent.surahId);
     if (!matchedSura) return;
 
@@ -124,7 +130,7 @@ const Discover: React.FC = () => {
       }),
     );
     dispatch(playPause(true));
-  };
+  }, [allSurahsWithAudio, audioData?.audio_files, currentReciter, dispatch]);
 
   if (isFetchingSurahs || (isFetchingAudio && allSurahsWithAudio.length === 0)) {
     return <Loader title="Loading Holy Quran Surahs..." />;

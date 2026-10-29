@@ -1,17 +1,5 @@
 import React from 'react';
-
-const formatTime = (time: number): string => {
-  if (Number.isNaN(time) || time === null || time === undefined) return '0:00';
-  const totalSeconds = Math.floor(time);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  }
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-};
+import { formatPlaybackTime } from '../../utils/formatters';
 
 export interface SeekbarProps {
   min?: number;
@@ -38,7 +26,7 @@ const Seekbar: React.FC<SeekbarProps> = ({
   return (
     <div className="w-full flex items-center space-x-3 select-none">
       <span className="text-[11px] font-medium text-slate-400 w-11 text-right shrink-0 tabular-nums">
-        {formatTime(safeTime)}
+        {formatPlaybackTime(safeTime)}
       </span>
 
       <div className="relative flex-1 flex items-center group py-2">
@@ -64,7 +52,7 @@ const Seekbar: React.FC<SeekbarProps> = ({
       </div>
 
       <span className="text-[11px] font-medium text-slate-400 w-11 text-left shrink-0 tabular-nums">
-        {formatTime(safeMax)}
+        {formatPlaybackTime(safeMax)}
       </span>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FiDownload,
@@ -20,18 +20,17 @@ import {
   selectTotalDownloadBytes,
 } from '../redux/features/downloadsSlice';
 import { useGetAllChaptersQuery } from '../redux/services/quranCore';
+import {
+  selectActiveSura,
+  selectIsPlaying,
+  selectCurrentReciter,
+} from '../redux/features/playerSlice';
 import { VERIFIED_RECITERS, DEFAULT_RECITER } from '../assets/recitersData';
 import { storageService } from '../services/storageService';
 import useOnlineStatus from '../hooks/useOnlineStatus';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { formatBytes } from '../utils/formatters';
 import type { Chapter, Surah, DownloadedSurahMetadata } from '../types';
-
-const formatBytes = (bytes: number): string => {
-  const size = Number(bytes) || 0;
-  if (size < 1024) return `${size} B`;
-  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
-};
 
 const Downloads: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -39,7 +38,9 @@ const Downloads: React.FC = () => {
   const items = useAppSelector(selectDownloadItems);
   const hydrated = useAppSelector(selectDownloadsHydrated);
   const totalBytes = useAppSelector(selectTotalDownloadBytes);
-  const { activeSura, isPlaying, currentReciter } = useAppSelector((state) => state.player);
+  const activeSura = useAppSelector(selectActiveSura);
+  const isPlaying = useAppSelector(selectIsPlaying);
+  const currentReciter = useAppSelector(selectCurrentReciter);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeReciterFilter, setActiveReciterFilter] = useState<string>('all');
@@ -137,16 +138,16 @@ const Downloads: React.FC = () => {
     return list;
   }, [surahsForDisplay, activeReciterFilter, searchQuery]);
 
-  const handleViewModeChange = (mode: 'grid' | 'list') => {
+  const handleViewModeChange = useCallback((mode: 'grid' | 'list') => {
     setViewMode(mode);
     storageService.saveViewMode(mode);
-  };
+  }, []);
 
-  const handlePromptDeleteSingle = (sura: Surah) => {
+  const handlePromptDeleteSingle = useCallback((sura: Surah) => {
     setDeleteTarget(sura);
-  };
+  }, []);
 
-  const handleConfirmDeleteSingle = () => {
+  const handleConfirmDeleteSingle = useCallback(() => {
     if (deleteTarget && deleteTarget.reciter_id) {
       dispatch(
         removeDownload({
@@ -156,12 +157,12 @@ const Downloads: React.FC = () => {
       );
       setDeleteTarget(null);
     }
-  };
+  }, [deleteTarget, dispatch]);
 
-  const handleConfirmClearAll = () => {
+  const handleConfirmClearAll = useCallback(() => {
     dispatch(clearAllDownloads());
     setIsClearAllOpen(false);
-  };
+  }, [dispatch]);
 
   if (!hydrated) {
     return (

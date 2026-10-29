@@ -8,12 +8,12 @@ import {
   playPause,
   setActiveSura,
   toggleFavoriteSurah,
+  selectIsFavoriteSurah,
 } from '../redux/features/playerSlice';
 import { VERIFIED_RECITERS, DEFAULT_RECITER } from '../assets/recitersData';
+import { toArabicDigits } from '../utils/formatters';
 import type { Surah, AudioFile } from '../types/quran';
 import type { Reciter } from '../types/reciter';
-
-const toArabicDigits = (num: number | string): string => String(num).replace(/[0-9]/g, (d) => '٠١٢٣٤٥٦٧٨٩'[Number(d)]);
 
 export interface SurahCardProps {
   sura: Surah;
@@ -39,10 +39,8 @@ const SurahCard: React.FC<SurahCardProps> = ({
   onRemoveDownload,
 }) => {
   const dispatch = useAppDispatch();
-  const favorites = useAppSelector((state) => state.player.favorites) || [];
-
   const surahId = Number(sura?.chapter_id || sura?.id || i + 1);
-  const isFavorite = favorites.includes(surahId);
+  const isFavorite = useAppSelector(selectIsFavoriteSurah(surahId));
   const reciterId = Number(sura?.reciter_id || currentReciter?.id || 0);
   const effectiveReciterName = sura?.reciter_name || currentReciter?.reciter_name || '';
 
@@ -363,4 +361,4 @@ const SurahCard: React.FC<SurahCardProps> = ({
   );
 };
 
-export default SurahCard;
+export default React.memo(SurahCard);

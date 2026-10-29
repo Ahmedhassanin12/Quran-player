@@ -7,7 +7,6 @@ import type {
   SleepTimerMode,
   HifzModeState,
   RecentRecitation,
-  LastSession,
 } from '../../types/player';
 import type { Surah, AudioFile } from '../../types/quran';
 import type { Reciter } from '../../types/reciter';
@@ -32,7 +31,6 @@ const initialState: PlayerState = {
   playbackSpeed: typeof savedSettings?.speed === 'number' ? savedSettings.speed : 1.0,
   seekTime: savedLastSession?.progressSeconds || 0,
   seekCount: 0,
-  genreListId: '',
   favorites: savedFavorites,
   favoriteReciters: savedFavoriteReciters,
   recents: savedRecents,
@@ -64,6 +62,17 @@ export interface SetSleepTimerPayload {
   mode: SleepTimerMode;
   minutes?: number;
 }
+
+/** Pure helper to push and deduplicate recent recitations (max 20) */
+const addRecentToState = (
+  recents: RecentRecitation[],
+  item: RecentRecitation,
+): RecentRecitation[] => {
+  const filtered = recents.filter(
+    (existing) => !(existing.surahId === item.surahId && existing.reciterId === item.reciterId),
+  );
+  return [{ ...item, playedAt: new Date().toISOString() }, ...filtered].slice(0, 20);
+};
 
 const playerSlice = createSlice({
   name: 'player',
@@ -108,38 +117,35 @@ const playerSlice = createSlice({
       state.isActive = true;
       state.isPlaying = true;
 
-      // Automatically record in recently played history
       if (state.activeSura) {
+        const surahId = Number(state.activeSura.chapter_id || state.activeSura.id);
+        const reciterId = Number(state.currentReciter?.id || DEFAULT_RECITER.id);
+
         const recentItem: RecentRecitation = {
-          surahId: Number(state.activeSura.chapter_id || state.activeSura.id),
-          surahName: state.activeSura.name_simple || state.activeSura.name || `Surah ${state.activeSura.chapter_id || state.activeSura.id}`,
+          surahId,
+          surahName: state.activeSura.name_simple || state.activeSura.name || `Surah ${surahId}`,
           arabicName: state.activeSura.name_arabic || '',
-          reciterId: state.currentReciter?.id || DEFAULT_RECITER.id,
+          reciterId,
           reciterName: state.currentReciter?.reciter_name || DEFAULT_RECITER.reciter_name,
         };
-        state.recents = storageService.addRecent(recentItem);
+        state.recents = addRecentToState(state.recents, recentItem);
 
-        // Update lastSession
-        const session: LastSession = {
+        state.lastSession = {
           activeSura: state.activeSura,
           currentReciter: state.currentReciter,
           progressSeconds: 0,
         };
-        state.lastSession = session;
-        storageService.saveLastSession(session);
       }
     },
 
     setReciter: (state, action: PayloadAction<Reciter>) => {
       state.currentReciter = action.payload;
       if (state.activeSura) {
-        const session: LastSession = {
+        state.lastSession = {
           activeSura: state.activeSura,
           currentReciter: action.payload,
           progressSeconds: state.lastSession?.progressSeconds || 0,
         };
-        state.lastSession = session;
-        storageService.saveLastSession(session);
       }
     },
 
@@ -173,16 +179,18 @@ const playerSlice = createSlice({
 
       state.isActive = true;
 
-      // Update history
       if (state.activeSura) {
+        const surahId = Number(state.activeSura.chapter_id || state.activeSura.id);
+        const reciterId = Number(state.currentReciter?.id || DEFAULT_RECITER.id);
+
         const recentItem: RecentRecitation = {
-          surahId: Number(state.activeSura.chapter_id || state.activeSura.id),
-          surahName: state.activeSura.name_simple || state.activeSura.name || `Surah ${state.activeSura.chapter_id || state.activeSura.id}`,
+          surahId,
+          surahName: state.activeSura.name_simple || state.activeSura.name || `Surah ${surahId}`,
           arabicName: state.activeSura.name_arabic || '',
-          reciterId: state.currentReciter?.id || DEFAULT_RECITER.id,
+          reciterId,
           reciterName: state.currentReciter?.reciter_name || DEFAULT_RECITER.reciter_name,
         };
-        state.recents = storageService.addRecent(recentItem);
+        state.recents = addRecentToState(state.recents, recentItem);
       }
     },
 
@@ -232,20 +240,12 @@ const playerSlice = createSlice({
 
     setVolume: (state, action: PayloadAction<number>) => {
       state.volume = Number(action.payload);
-      storageService.saveSettings({
-        volume: state.volume,
-        speed: state.playbackSpeed,
-      });
     },
 
     setPlaybackSpeed: (state, action: PayloadAction<number>) => {
       const speed = Number(action.payload);
       if (speed >= 0.75 && speed <= 1.25) {
         state.playbackSpeed = speed;
-        storageService.saveSettings({
-          volume: state.volume,
-          speed: state.playbackSpeed,
-        });
       }
     },
 
@@ -257,13 +257,11 @@ const playerSlice = createSlice({
     savePlaybackProgress: (state, action: PayloadAction<number>) => {
       const seconds = Number(action.payload);
       if (state.activeSura) {
-        const session: LastSession = {
+        state.lastSession = {
           activeSura: state.activeSura,
           currentReciter: state.currentReciter,
           progressSeconds: Math.floor(seconds),
         };
-        state.lastSession = session;
-        storageService.saveLastSession(session);
       }
     },
 
@@ -275,17 +273,24 @@ const playerSlice = createSlice({
       state.isExpanded = !state.isExpanded;
     },
 
-    selectGenreListId: (state, action: PayloadAction<string>) => {
-      state.genreListId = action.payload;
-    },
-
-    // Favorites
+    // Favorites (Surah IDs)
     toggleFavoriteSurah: (state, action: PayloadAction<number | string>) => {
-      state.favorites = storageService.toggleFavorite(action.payload);
+      const id = Number(action.payload);
+      if (state.favorites.includes(id)) {
+        state.favorites = state.favorites.filter((fav) => fav !== id);
+      } else {
+        state.favorites.push(id);
+      }
     },
 
+    // Favorite Reciters (Reciter IDs)
     toggleFavoriteReciter: (state, action: PayloadAction<number | string>) => {
-      state.favoriteReciters = storageService.toggleFavoriteReciter(action.payload);
+      const id = Number(action.payload);
+      if (state.favoriteReciters.includes(id)) {
+        state.favoriteReciters = state.favoriteReciters.filter((fav) => fav !== id);
+      } else {
+        state.favoriteReciters.push(id);
+      }
     },
 
     // Sleep Timer
@@ -352,7 +357,6 @@ const playerSlice = createSlice({
       if (state.hifzMode.currentLoop < state.hifzMode.targetLoops) {
         state.hifzMode.currentLoop += 1;
       } else {
-        // finished loop target
         state.hifzMode.active = false;
       }
     },
@@ -375,7 +379,6 @@ export const {
   savePlaybackProgress,
   setIsExpanded,
   toggleExpanded,
-  selectGenreListId,
   toggleFavoriteSurah,
   toggleFavoriteReciter,
   setSleepTimer,
@@ -385,5 +388,32 @@ export const {
   setHifzMode,
   incrementHifzLoop,
 } = playerSlice.actions;
+
+// --- Granular Selectors ---
+export const selectActiveSura = (state: { player: PlayerState }) => state.player.activeSura;
+export const selectIsPlaying = (state: { player: PlayerState }) => state.player.isPlaying;
+export const selectIsActive = (state: { player: PlayerState }) => state.player.isActive;
+export const selectCurrentReciter = (state: { player: PlayerState }) => state.player.currentReciter;
+export const selectRepeatMode = (state: { player: PlayerState }) => state.player.repeatMode;
+export const selectShuffle = (state: { player: PlayerState }) => state.player.shuffle;
+export const selectVolume = (state: { player: PlayerState }) => state.player.volume;
+export const selectPlaybackSpeed = (state: { player: PlayerState }) => state.player.playbackSpeed;
+export const selectSeekTime = (state: { player: PlayerState }) => state.player.seekTime;
+export const selectSeekCount = (state: { player: PlayerState }) => state.player.seekCount;
+export const selectIsExpanded = (state: { player: PlayerState }) => state.player.isExpanded;
+export const selectSleepTimer = (state: { player: PlayerState }) => state.player.sleepTimer;
+export const selectHifzMode = (state: { player: PlayerState }) => state.player.hifzMode;
+export const selectFavorites = (state: { player: PlayerState }) => state.player.favorites;
+export const selectFavoriteReciters = (state: { player: PlayerState }) => state.player.favoriteReciters;
+export const selectRecents = (state: { player: PlayerState }) => state.player.recents;
+export const selectLastSession = (state: { player: PlayerState }) => state.player.lastSession;
+export const selectCurrentSura = (state: { player: PlayerState }) => state.player.currentSura;
+export const selectCurrentIndex = (state: { player: PlayerState }) => state.player.currentIndex;
+
+export const selectIsFavoriteSurah = (surahId: number | string) => (state: { player: PlayerState }) =>
+  state.player.favorites.includes(Number(surahId));
+
+export const selectIsFavoriteReciter = (reciterId: number | string) => (state: { player: PlayerState }) =>
+  state.player.favoriteReciters.includes(Number(reciterId));
 
 export default playerSlice.reducer;

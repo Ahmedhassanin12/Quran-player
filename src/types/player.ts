@@ -54,7 +54,6 @@ export interface PlayerState {
   playbackSpeed: number;
   seekTime: number;
   seekCount: number;
-  genreListId: string;
   favorites: number[];
   favoriteReciters: number[];
   recents: RecentRecitation[];
