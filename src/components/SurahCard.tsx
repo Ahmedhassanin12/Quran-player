@@ -109,11 +109,10 @@ const SurahCard: React.FC<SurahCardProps> = ({
     return (
       <div
         onClick={handlePlayClick}
-        className={`group flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-150 cursor-pointer ${
-          isCurrent
-            ? 'bg-midnight-800/95 border-indigo-500/60 shadow-md ring-1 ring-indigo-500/30'
-            : 'bg-midnight-850/50 hover:bg-midnight-800/70 border-midnight-700/50 hover:border-midnight-600/60'
-        }`}
+        className={`group flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-150 cursor-pointer ${isCurrent
+          ? 'bg-midnight-800/95 border-indigo-500/60 shadow-md ring-1 ring-indigo-500/30'
+          : 'bg-midnight-850/50 hover:bg-midnight-800/70 border-midnight-700/50 hover:border-midnight-600/60'
+          }`}
       >
         {/* Left: Number + Play + Latin Metadata */}
         <div className="flex items-center space-x-3.5 min-w-0">
@@ -201,11 +200,10 @@ const SurahCard: React.FC<SurahCardProps> = ({
             onClick={handleFavoriteClick}
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             title={isFavorite ? 'Saved to Favorites' : 'Add to Favorites'}
-            className={`p-1.5 rounded-lg transition-colors ${
-              isFavorite
-                ? 'text-rose-400 bg-rose-500/10'
-                : 'text-slate-500 hover:text-slate-300'
-            }`}
+            className={`p-1.5 rounded-lg transition-colors ${isFavorite
+              ? 'text-rose-400 bg-rose-500/10'
+              : 'text-slate-500 hover:text-slate-300'
+              }`}
           >
             <svg
               className="w-3.5 h-3.5"
@@ -232,11 +230,10 @@ const SurahCard: React.FC<SurahCardProps> = ({
   return (
     <div
       onClick={handlePlayClick}
-      className={`group relative flex flex-col justify-between p-4 rounded-xl transition-all duration-200 cursor-pointer border ${
-        isCurrent
-          ? 'bg-midnight-800/95 border-indigo-500/60 shadow-lg shadow-black/40 ring-1 ring-indigo-500/30'
-          : 'bg-midnight-850/50 hover:bg-midnight-800/70 border-midnight-700/50 hover:border-midnight-600/60'
-      }`}
+      className={`group relative flex flex-col justify-between p-4 rounded-xl transition-all duration-200 cursor-pointer border ${isCurrent
+        ? 'bg-midnight-800/95 border-indigo-500/60 shadow-lg shadow-black/40 ring-1 ring-indigo-500/30'
+        : 'bg-midnight-850/50 hover:bg-midnight-800/70 border-midnight-700/50 hover:border-midnight-600/60'
+        }`}
     >
       {/* Top Bar: Clean Discrete Number & Metadata + Download + Favorite Action */}
       <div className="relative z-10 flex items-center justify-between text-xs">
@@ -260,6 +257,7 @@ const SurahCard: React.FC<SurahCardProps> = ({
             surahName={sura?.name_simple || `Surah ${surahId}`}
             arabicName={sura?.name_arabic || ''}
             audioUrl={audioUrl}
+            labelMode="labeled"
           />
 
           {onRemoveDownload && (
@@ -282,11 +280,10 @@ const SurahCard: React.FC<SurahCardProps> = ({
             onClick={handleFavoriteClick}
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             title={isFavorite ? 'Saved to Favorites' : 'Add to Favorites'}
-            className={`p-1 rounded-lg transition-colors ${
-              isFavorite
-                ? 'text-rose-400 bg-rose-500/10'
-                : 'text-slate-500 hover:text-slate-300 opacity-60 group-hover:opacity-100'
-            }`}
+            className={`p-1 rounded-lg transition-colors ${isFavorite
+              ? 'text-rose-400 bg-rose-500/10'
+              : 'text-slate-500 hover:text-slate-300 opacity-60 group-hover:opacity-100'
+              }`}
           >
             <svg
               className="w-3.5 h-3.5"
@@ -316,13 +313,7 @@ const SurahCard: React.FC<SurahCardProps> = ({
             {sura?.name_arabic}
           </h3>
         </Link>
-        {isCurrentAndPlaying && (
-          <div className="flex items-center justify-center m-auto space-x-0.5 px-2 py-0.5 rounded-full bg-indigo-950/70 border border-indigo-500/40 w-[fit-content] mt-1">
-            <span className="playing-bar" />
-            <span className="playing-bar" />
-            <span className="playing-bar" />
-          </div>
-        )}
+
       </div>
 
       {/* Bottom Row: Latin Name & Subtitle + Play/Pause Action */}
@@ -346,7 +337,14 @@ const SurahCard: React.FC<SurahCardProps> = ({
           </p>
         </div>
 
-        <div className="shrink-0">
+        <div className="flex gap-2 shrink-0">
+          {isCurrentAndPlaying && (
+            <div className="flex items-center justify-center m-auto space-x-0.5 px-2 py-0.5 rounded-full bg-indigo-950/70 border border-indigo-500/40 w-[fit-content] mt-1">
+              <span className="playing-bar" />
+              <span className="playing-bar" />
+              <span className="playing-bar" />
+            </div>
+          )}
           <PlayPause
             isPlaying={isPlaying}
             activeSura={activeSura}

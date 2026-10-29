@@ -92,11 +92,13 @@ const DownloadSurahButton: React.FC<DownloadSurahButtonProps> = ({
   if (isDownloading) labelText = 'Downloading…';
   else if (isDownloaded) labelText = 'Downloaded';
 
-  return (
+  return labelMode === 'labeled' && isDownloaded ? (
+    <span className={isDownloaded ? stateClasses : undefined}>{labelText}</span>
+  ) : (
     <button
       type="button"
       onClick={handleClick}
-      disabled={isDownloaded ? true : disabled}
+
       aria-label={title}
       title={title}
       className={`inline-flex items-center gap-1.5 rounded-lg border font-semibold transition ${sizeClasses} ${stateClasses} ${className}`}
@@ -105,9 +107,7 @@ const DownloadSurahButton: React.FC<DownloadSurahButtonProps> = ({
         size={iconSize}
         className={isDownloading ? 'animate-spin' : undefined}
       />
-      {labelMode === 'labeled' && (
-        <span>{labelText}</span>
-      )}
+
     </button>
   );
 };
