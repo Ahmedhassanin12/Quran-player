@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   FiBookOpen,
   FiInfo,
@@ -41,6 +42,7 @@ import {
   getMushafPageInfo,
 } from '../assets/mushafMetadata';
 import { storageService } from '../services/storageService';
+import { normalizeLanguage } from '../i18n';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { useAyahAudioSync } from '../hooks/useAyahAudioSync';
 import type {
@@ -56,6 +58,8 @@ type FontSize = 'text-xl' | 'text-2xl' | 'text-3xl';
 type ViewStyle = 'mushaf' | 'cards' | 'continuous';
 
 const SuraDetails: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const currentLang = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
   const { surahId } = useParams<{ surahId: string }>();
   const dispatch = useAppDispatch();
 
@@ -69,18 +73,16 @@ const SuraDetails: React.FC = () => {
   const [showTranslation, setShowTranslation] = useState<boolean>(true);
   const [viewStyle, setViewStyle] = useState<ViewStyle>('cards');
 
-  // Authentic Madinah Mushaf State
   const initialMushafPage = useMemo(() => getPageForAyah(numSurahId, 1), [numSurahId]);
   const [mushafPage, setMushafPage] = useState<number>(initialMushafPage);
   const [mushafEngine, setMushafEngine] = useState<MushafEngine>('plate');
-  const [mushafBookmarks, setMushafBookmarks] = useState<MushafBookmark[]>(() =>
-    storageService.getMushafBookmarks(),
-  );
+  const [mushafBookmarks, setMushafBookmarks] = useState<MushafBookmark[]>(() => (
+    storageService.getMushafBookmarks()
+  ));
   const [isBookmarksModalOpen, setIsBookmarksModalOpen] = useState<boolean>(false);
 
   const currentMushafPageInfo = useMemo(() => getMushafPageInfo(mushafPage), [mushafPage]);
 
-  // Hifz Memorization Looping state
   const [isHifzOpen, setIsHifzOpen] = useState<boolean>(false);
   const [hifzStart, setHifzStart] = useState<number>(1);
   const [hifzEnd, setHifzEnd] = useState<number>(Math.min(5, 7));
@@ -90,20 +92,17 @@ const SuraDetails: React.FC = () => {
 
   const reciterId = currentReciter?.id || 7;
 
-  // Sync mushafPage when opening a new Surah
   useEffect(() => {
     const target = getPageForAyah(numSurahId, 1);
     setMushafPage(target);
   }, [numSurahId]);
 
-  // 1. Surah chapter metadata
   const {
     data: chapterData,
     isFetching: isFetchingChapter,
     error: chapterError,
-  } = useGetChapterIdQuery(numSurahId);
+  } = useGetChapterIdQuery({ chapterId: numSurahId, language: currentLang });
 
-  // 2. Verses with Uthmani script and Saheeh International translation
   const {
     data: versesWithTransData,
     isFetching: isFetchingVerses,
@@ -113,7 +112,6 @@ const SuraDetails: React.FC = () => {
     translationId: 20,
   });
 
-  // 3. Audio segment timestamps from Quran.com API v4
   const {
     data: audioSegmentsData,
   } = useGetChapterAudioWithSegmentsQuery({
@@ -121,26 +119,23 @@ const SuraDetails: React.FC = () => {
     chapterId: numSurahId,
   });
 
-  // 4. Surah overview and commentary
   const {
     data: infoData,
-  } = useGetChapterInfoQuery(numSurahId);
+  } = useGetChapterInfoQuery({ chapterId: numSurahId, language: currentLang });
 
-  // 5. Surah audio catalog
   const { data: audioData } = useGetAllSurahAudioQuery(reciterId);
 
   const isCurrentSurah = Boolean(
-    activeSura &&
-    ((activeSura.chapter_id && Number(activeSura.chapter_id) === numSurahId) ||
-      Number(activeSura.id) === numSurahId),
+    activeSura
+    && ((activeSura.chapter_id && Number(activeSura.chapter_id) === numSurahId)
+      || Number(activeSura.id) === numSurahId),
   );
 
   const isCurrentAndPlaying = Boolean(isCurrentSurah && isPlaying);
 
   const downloadAudioUrl = useMemo<string>(() => {
-    const audioFile =
-      audioSegmentsData?.audio_file ||
-      audioData?.audio_files?.find((f: AudioFile) => Number(f.chapter_id) === numSurahId);
+    const audioFile = audioSegmentsData?.audio_file
+      || audioData?.audio_files?.find((f: AudioFile) => Number(f.chapter_id) === numSurahId);
     return audioFile?.audio_url || '';
   }, [audioSegmentsData, audioData, numSurahId]);
 
@@ -149,18 +144,16 @@ const SuraDetails: React.FC = () => {
     [audioSegmentsData],
   );
 
-  // Map verse keys to timestamp objects
   const timestampMap = useMemo<Record<string, AudioTimestamp>>(() => {
     const map: Record<string, AudioTimestamp> = {};
-    timestamps.forEach((t) => {
-      if (t?.verse_key) {
-        map[t.verse_key] = t;
+    timestamps.forEach((ts) => {
+      if (ts?.verse_key) {
+        map[ts.verse_key] = ts;
       }
     });
     return map;
   }, [timestamps]);
 
-  // High-performance verse audio synchronization and Hifz loop control
   const handleSeekToVerseTime = useCallback((seconds: number) => {
     dispatch(setSeekTime(seconds));
   }, [dispatch]);
@@ -206,9 +199,8 @@ const SuraDetails: React.FC = () => {
       return;
     }
 
-    const audioFile =
-      audioSegmentsData?.audio_file ||
-      audioData?.audio_files?.find((f: AudioFile) => f.chapter_id === numSurahId);
+    const audioFile = audioSegmentsData?.audio_file
+      || audioData?.audio_files?.find((f: AudioFile) => f.chapter_id === numSurahId);
 
     const suraObject = {
       ...chapterData?.chapter,
@@ -240,9 +232,8 @@ const SuraDetails: React.FC = () => {
 
   const handleJumpToVerse = useCallback((verseKey: string) => {
     if (!isCurrentSurah) {
-      const audioFile =
-        audioSegmentsData?.audio_file ||
-        audioData?.audio_files?.find((f: AudioFile) => f.chapter_id === numSurahId);
+      const audioFile = audioSegmentsData?.audio_file
+        || audioData?.audio_files?.find((f: AudioFile) => f.chapter_id === numSurahId);
 
       const suraObject = {
         ...chapterData?.chapter,
@@ -330,11 +321,11 @@ const SuraDetails: React.FC = () => {
   }, []);
 
   if (isFetchingChapter || isFetchingVerses) {
-    return <Loader title="Loading Surah verses & synchronizing..." />;
+    return <Loader title={t('suraDetails.loadingSurah')} />;
   }
 
   if (chapterError || versesError) {
-    return <Error message="Unable to load Surah recitation details. Please check your connection." />;
+    return <Error message={t('error.connectionInterrupted')} />;
   }
 
   const verses: Verse[] = versesWithTransData?.verses || [];
@@ -354,8 +345,8 @@ const SuraDetails: React.FC = () => {
 
       {/* Primary Reading & Memorization Toolbar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-2.5 sm:p-3 rounded-xl bg-midnight-850/60 border border-midnight-700/60 shadow-sm">
-        {/* Left: Mode Tabs (Verses vs Commentary vs Hifz) */}
-        <div className="flex items-center space-x-1.5">
+        {/* Start: Mode Tabs (Verses vs Commentary vs Hifz) */}
+        <div className="flex flex-wrap items-center gap-1.5">
           <button
             type="button"
             onClick={() => setActiveTab('verses')}
@@ -366,7 +357,7 @@ const SuraDetails: React.FC = () => {
             }`}
           >
             <FiBookOpen size={13} />
-            <span>Verses & Recitation</span>
+            <span>{t('suraDetails.tabs.verses')}</span>
           </button>
 
           <button
@@ -379,7 +370,7 @@ const SuraDetails: React.FC = () => {
             }`}
           >
             <FiInfo size={13} />
-            <span>Surah Info</span>
+            <span>{t('suraDetails.tabs.info')}</span>
           </button>
 
           {/* Hifz Memorization Looping Mode Trigger */}
@@ -393,9 +384,9 @@ const SuraDetails: React.FC = () => {
             }`}
           >
             <FiRepeat size={13} />
-            <span className="hidden sm:inline">Hifz Looper</span>
+            <span className="hidden sm:inline">{t('suraDetails.tabs.hifzLooper')}</span>
             {isHifzActive && (
-              <span className="bg-emerald-500 text-black text-[10px] font-bold px-1.5 py-0.2 rounded-full">
+              <span className="bg-emerald-500 text-black text-[10px] font-bold px-1.5 py-0.2 rounded-full" dir="ltr">
                 {hifzCurrentLoop}/{hifzTargetLoops === 0 ? '∞' : hifzTargetLoops}
               </span>
             )}
@@ -412,7 +403,7 @@ const SuraDetails: React.FC = () => {
           />
         </div>
 
-        {/* Right: Reading Mode Controls */}
+        {/* End: Reading Mode Controls */}
         {activeTab === 'verses' && (
           <div className="flex flex-wrap items-center gap-2 text-xs">
             {/* Reading Modes: Madinah Mushaf (604 Pages) | Ayah Cards | Continuous Flow */}
@@ -425,10 +416,10 @@ const SuraDetails: React.FC = () => {
                     ? 'bg-midnight-750 text-white font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
-                title="المصحف الشريف (طبعة مجمع الملك فهد ٦٠٤ صفحة)"
+                title={t('suraDetails.modes.mushafTitle')}
               >
                 <FiBookOpen size={13} />
-                <span>المصحف الشريف</span>
+                <span>{t('suraDetails.modes.mushaf')}</span>
               </button>
 
               <button
@@ -439,10 +430,10 @@ const SuraDetails: React.FC = () => {
                     ? 'bg-midnight-750 text-white font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
-                title="بطاقات الآيات مع الترجمة والاستماع"
+                title={t('suraDetails.modes.cardsTitle')}
               >
                 <FiLayers size={13} />
-                <span>بطاقات الآيات</span>
+                <span>{t('suraDetails.modes.cards')}</span>
               </button>
 
               <button
@@ -453,9 +444,9 @@ const SuraDetails: React.FC = () => {
                     ? 'bg-midnight-750 text-white font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
-                title="القراءة المتصلة للآيات"
+                title={t('suraDetails.modes.continuousTitle')}
               >
-                <span>القراءة المتصلة</span>
+                <span>{t('suraDetails.modes.continuous')}</span>
               </button>
             </div>
 
@@ -470,13 +461,13 @@ const SuraDetails: React.FC = () => {
                     : 'bg-midnight-800/70 border-midnight-700/60 text-slate-400 hover:text-slate-200'
                 }`}
               >
-                Translation
+                {t('suraDetails.translationToggle')}
               </button>
             )}
 
             {/* Font Size Adjusters (for Cards & Continuous mode) */}
             {viewStyle !== 'mushaf' && (
-              <div className="flex items-center space-x-1 bg-midnight-900 border border-midnight-700/80 rounded-lg p-0.5 text-xs text-slate-400">
+              <div className="flex items-center gap-1 bg-midnight-900 border border-midnight-700/80 rounded-lg p-0.5 text-xs text-slate-400" dir="ltr">
                 <button
                   type="button"
                   onClick={() => setFontSize('text-xl')}
@@ -522,7 +513,6 @@ const SuraDetails: React.FC = () => {
       {/* Verses Tab Content */}
       {activeTab === 'verses' && (
         <div className="space-y-4">
-          {/* MODE 1: AUTHENTIC MADINAH MUSHAF (EXACT 604-PAGE EDITION) */}
           {viewStyle === 'mushaf' && (
             <div className="w-full flex flex-col items-center">
               <MushafNavigation
@@ -561,7 +551,6 @@ const SuraDetails: React.FC = () => {
             </div>
           )}
 
-          {/* MODE 2: STRUCTURED AYAH CARDS */}
           {viewStyle === 'cards' && (
             <SuraCardsView
               verses={verses}
@@ -574,7 +563,6 @@ const SuraDetails: React.FC = () => {
             />
           )}
 
-          {/* MODE 3: CONTINUOUS MUSHAF FLOW */}
           {viewStyle === 'continuous' && (
             <SuraContinuousView
               verses={verses}

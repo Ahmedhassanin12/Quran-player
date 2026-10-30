@@ -20,9 +20,9 @@ export const SuraContinuousView: React.FC<SuraContinuousViewProps> = ({
   onJumpToVerse,
 }) => (
   <>
-    {/* Bismillah Banner */}
+    {/* Bismillah Banner (Always sacred Arabic RTL) */}
     {showBismillah && (
-      <div className="text-center py-5 bg-midnight-850/40 border border-midnight-700/50 rounded-xl">
+      <div className="text-center py-5 bg-midnight-850/40 border border-midnight-700/50 rounded-xl" lang="ar" dir="rtl">
         <p className="font-quran text-3xl sm:text-4xl text-slate-100 tracking-wide select-none">
           بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
         </p>
@@ -31,6 +31,7 @@ export const SuraContinuousView: React.FC<SuraContinuousViewProps> = ({
 
     <div className="p-6 sm:p-10 rounded-xl bg-midnight-850/60 border border-midnight-700/60 shadow-xl">
       <div
+        lang="ar"
         dir="rtl"
         className="leading-[2.8] text-right font-quran text-slate-100 selection:bg-indigo-500/30"
       >

@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiCheck, FiDownload, FiLoader } from 'react-icons/fi';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import {
@@ -31,6 +32,7 @@ const DownloadSurahButton: React.FC<DownloadSurahButtonProps> = ({
   className = '',
   labelMode = 'icon',
 }) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const id = Number(surahId);
   const reader = Number(reciterId);
@@ -44,12 +46,12 @@ const DownloadSurahButton: React.FC<DownloadSurahButtonProps> = ({
   const disabled = !canStart || isDownloading;
 
   const title = useMemo(() => {
-    if (isDownloading) return 'Downloading…';
-    if (isDownloaded) return 'Downloaded for offline listening';
-    if (error) return `Download failed: ${error}`;
-    if (!audioUrl) return 'Audio unavailable';
-    return 'Download for offline listening';
-  }, [isDownloading, isDownloaded, error, audioUrl]);
+    if (isDownloading) return t('downloadButton.downloading');
+    if (isDownloaded) return t('downloadButton.downloadedOfflineSimple');
+    if (error) return t('downloadButton.failedRetryTitle');
+    if (!audioUrl) return t('downloadButton.unavailableTitle');
+    return t('downloadButton.downloadOfflineTitle');
+  }, [isDownloading, isDownloaded, error, audioUrl, t]);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -68,10 +70,9 @@ const DownloadSurahButton: React.FC<DownloadSurahButtonProps> = ({
     );
   };
 
-  const sizeClasses =
-    size === 'sm'
-      ? 'p-1.5 text-[11px]'
-      : 'px-3 py-1.5 text-xs';
+  const sizeClasses = size === 'sm'
+    ? 'p-1.5 text-[11px]'
+    : 'px-3 py-1.5 text-xs';
 
   const iconSize = size === 'sm' ? 13 : 14;
 
@@ -88,12 +89,14 @@ const DownloadSurahButton: React.FC<DownloadSurahButtonProps> = ({
     stateClasses = 'bg-rose-500/10 text-rose-300 border-rose-500/40 hover:bg-rose-500/20';
   }
 
-  let labelText = 'Download';
-  if (isDownloading) labelText = 'Downloading…';
-  else if (isDownloaded) labelText = 'Downloaded';
+  let labelText = t('downloadButton.download');
+  if (isDownloading) labelText = t('downloadButton.downloading');
+  else if (isDownloaded) labelText = t('downloadButton.downloaded');
 
   return labelMode === 'labeled' && isDownloaded ? (
-    <span className={isDownloaded ? stateClasses : undefined}>{labelText}</span>
+    <span className={`px-2 py-0.5 rounded-md border text-[10px] font-semibold ${stateClasses}`}>
+      {labelText}
+    </span>
   ) : (
     <button
       type="button"

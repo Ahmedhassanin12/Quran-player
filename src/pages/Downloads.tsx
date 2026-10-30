@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   FiDownload,
   FiTrash2,
@@ -26,13 +27,18 @@ import {
   selectCurrentReciter,
 } from '../redux/features/playerSlice';
 import { VERIFIED_RECITERS, DEFAULT_RECITER } from '../assets/recitersData';
+import { getOfflineSurahMetadata } from '../assets/surahMetadata';
 import { storageService } from '../services/storageService';
 import useOnlineStatus from '../hooks/useOnlineStatus';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { formatBytes } from '../utils/formatters';
+import { formatBytes, formatNumber } from '../utils/formatters';
+import { getLocalizedReciterName } from '../utils/quranUtils';
+import { normalizeLanguage } from '../i18n';
 import type { Chapter, Surah, DownloadedSurahMetadata } from '../types';
 
 const Downloads: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const currentLang = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
   const dispatch = useAppDispatch();
   const isOnline = useOnlineStatus();
   const items = useAppSelector(selectDownloadItems);
@@ -46,11 +52,9 @@ const Downloads: React.FC = () => {
   const [activeReciterFilter, setActiveReciterFilter] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => storageService.getViewMode());
 
-  // Confirmation modal states
   const [deleteTarget, setDeleteTarget] = useState<Surah | null>(null);
   const [isClearAllOpen, setIsClearAllOpen] = useState<boolean>(false);
 
-  // Optional chapter metadata from RTK Query cache (gracefully works offline if unpopulated)
   const { data: chaptersData } = useGetAllChaptersQuery(undefined, { skip: false });
 
   const chapterMap = useMemo<Record<number, Chapter>>(() => {
@@ -68,55 +72,58 @@ const Downloads: React.FC = () => {
     [items],
   );
 
-  // Transform downloads into full sura models compatible with SurahCard
+  // Transform downloads into full sura models compatible with SurahCard, with offline metadata fallback
   const surahsForDisplay = useMemo<Surah[]>(
     () => sortedItems.map((item) => {
       const ch = chapterMap[item.surahId] || ({} as Partial<Chapter>);
+      const offlineMeta = getOfflineSurahMetadata(item.surahId);
       const verifiedReciter = VERIFIED_RECITERS.find(
         (r) => Number(r.id) === Number(item.reciterId),
       );
       const reciter = verifiedReciter || {
         ...(currentReciter || DEFAULT_RECITER),
         id: item.reciterId,
-        reciter_name: item.reciterName || currentReciter?.reciter_name || 'Sheikh',
+        reciter_name: item.reciterName || currentReciter?.reciter_name || '',
       };
 
       return {
         ...ch,
         id: item.surahId,
         chapter_id: item.surahId,
-        name_simple: item.surahName || ch.name_simple || `Surah ${item.surahId}`,
-        name_arabic: item.arabicName || ch.name_arabic || '',
+        name_simple: item.surahName || ch.name_simple || offlineMeta?.name_simple || `Surah ${item.surahId}`,
+        name_arabic: item.arabicName || ch.name_arabic || offlineMeta?.name_arabic || '',
         audio_url: item.sourceUrl || '',
         reciter_id: item.reciterId,
         reciter_name: item.reciterName || reciter.reciter_name || '',
         size_bytes: item.sizeBytes,
         downloaded_at: item.downloadedAt,
         downloadKey: item.key,
-        revelation_place: ch.revelation_place || 'makkah',
-        verses_count: ch.verses_count || 0,
+        revelation_place: ch.revelation_place || offlineMeta?.revelation_place || 'makkah',
+        verses_count: ch.verses_count || offlineMeta?.verses_count || 0,
         translated_name: ch.translated_name || {
           language_name: 'english',
-          name: item.reciterName || 'Offline Recitation',
+          name: offlineMeta?.translated_name || item.reciterName || t('common.holyQuran'),
         },
         reciter,
       };
     }),
-    [sortedItems, chapterMap, currentReciter],
+    [sortedItems, chapterMap, currentReciter, t],
   );
 
-  // Discovered reciters for filter tabs
   const availableReciters = useMemo<{ id: number; name: string }[]>(() => {
     const map = new Map<number, string>();
     (sortedItems || []).forEach((item) => {
       if (item.reciterId && !map.has(item.reciterId)) {
-        map.set(item.reciterId, item.reciterName || `Reciter #${item.reciterId}`);
+        const displayName = getLocalizedReciterName(
+          { id: item.reciterId, reciterName: item.reciterName },
+          currentLang,
+        );
+        map.set(item.reciterId, displayName || `#${item.reciterId}`);
       }
     });
     return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
-  }, [sortedItems]);
+  }, [sortedItems, currentLang]);
 
-  // Filtered dataset
   const filteredSurahs = useMemo<Surah[]>(() => {
     let list = surahsForDisplay;
 
@@ -131,6 +138,7 @@ const Downloads: React.FC = () => {
           || s.name_simple?.toLowerCase().includes(q)
           || s.name_arabic?.includes(q)
           || s.reciter_name?.toLowerCase().includes(q)
+          || s.reciter?.arabic_name?.includes(q)
           || s.translated_name?.name?.toLowerCase().includes(q),
       );
     }
@@ -167,10 +175,12 @@ const Downloads: React.FC = () => {
   if (!hydrated) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-slate-400 text-sm">
-        Loading offline library…
+        {t('downloads.loadingLibrary')}
       </div>
     );
   }
+
+  const formattedTotalSize = formatBytes(totalBytes, currentLang);
 
   return (
     <div className="flex flex-col space-y-3.5">
@@ -179,10 +189,10 @@ const Downloads: React.FC = () => {
         <div className="flex items-start gap-3 px-3.5 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-100/90 text-xs shadow-sm">
           <FiWifiOff className="shrink-0 mt-0.5 text-amber-300" size={15} />
           <div className="leading-relaxed">
-            <span className="font-semibold text-amber-100">Offline Mode Active</span>
+            <span className="font-semibold text-amber-100">{t('downloads.offlineBannerTitle')}</span>
             <span className="text-amber-200/80 mx-1.5">·</span>
             <span>
-              Listening to downloaded recitations and reading cached Mushaf pages.
+              {t('downloads.offlineBannerDesc')}
             </span>
           </div>
         </div>
@@ -191,34 +201,32 @@ const Downloads: React.FC = () => {
       {/* Editorial Sanctuary Masthead */}
       <div className="pt-1 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-midnight-800/80">
         <div>
-          <div className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-1">
-            <span className="font-arabic text-sm text-emerald-400/90 font-normal">
-              تلاوات بدون إنترنت
+          <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-400 mb-1">
+            <span className="text-emerald-400/90 font-medium">
+              {t('downloads.eyebrow')}
             </span>
             <span className="text-slate-600">·</span>
-            <span>المكتبة المحفوظة</span>
+            <span>{t('downloads.savedLibrary')}</span>
             <span className="text-slate-600">·</span>
             <span>
-              {sortedItems.length} {sortedItems.length === 1 ? 'سورة' : 'سور'}
+              {t('downloads.savedSurahsCount', { count: formatNumber(sortedItems.length, currentLang) as unknown as number })}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight flex items-baseline gap-3">
-            <span>Offline Downloads</span>
-            <span className="font-arabic font-normal text-xl sm:text-2xl text-slate-400">
-              التلاوات المحفوظة
-            </span>
+            <span>{t('downloads.heroTitle')}</span>
           </h1>
         </div>
 
-        {/* Right Header Actions: Storage Badge + Clear All Downloads Button */}
+        {/* Header Actions: Storage Badge + Clear All Downloads Button */}
         <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
           {sortedItems.length > 0 && (
             <div className="text-xs text-slate-400 bg-midnight-850/80 border border-midnight-700/60 rounded-xl px-3 py-2 shadow-sm flex items-center gap-1.5">
-              <span className="font-semibold text-slate-200">{sortedItems.length}</span>
-              <span>saved</span>
+              <span className="font-semibold text-slate-200">
+                {t('downloads.savedSurahsCount', { count: formatNumber(sortedItems.length, currentLang) as unknown as number })}
+              </span>
               <span className="text-slate-600 mx-1">·</span>
               <span className="font-semibold text-indigo-300 font-mono">
-                {formatBytes(totalBytes)}
+                {formattedTotalSize}
               </span>
             </div>
           )}
@@ -227,12 +235,12 @@ const Downloads: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsClearAllOpen(true)}
-              aria-label="Clear all downloaded recitations"
-              title="Remove all downloaded audio to free up device space"
+              aria-label={t('downloads.clearAllAria')}
+              title={t('downloads.clearAllTitle')}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:border-rose-500/50 transition-all shadow-sm"
             >
               <FiTrash2 size={13} />
-              <span>Clear All</span>
+              <span>{t('downloads.clearAll')}</span>
             </button>
           )}
 
@@ -241,7 +249,7 @@ const Downloads: React.FC = () => {
               to="/"
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-midnight-850/80 hover:bg-midnight-800 text-slate-300 hover:text-white border border-midnight-700/70 hover:border-midnight-600 transition-all shadow-sm"
             >
-              <span>+ Browse Surahs</span>
+              <span>+ {t('downloads.browseSurahs')}</span>
             </Link>
           )}
         </div>
@@ -254,19 +262,17 @@ const Downloads: React.FC = () => {
             <FiDownload size={24} />
           </div>
           <h2 className="text-lg font-bold text-slate-100 mb-1">
-            No offline recitations yet
+            {t('downloads.emptyTitle')}
           </h2>
           <p className="text-sm text-slate-400 max-w-md mb-6 leading-relaxed">
-            {isOnline
-              ? 'Download your favorite Surahs from the Discover library to listen anytime without an internet connection. Audio files are saved directly to this device.'
-              : 'You are currently offline and have no downloaded recitations saved. Reconnect to download Surahs for offline playback.'}
+            {isOnline ? t('downloads.emptyDescOnline') : t('downloads.emptyDescOffline')}
           </p>
           {isOnline && (
             <Link
               to="/"
               className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-500/20 text-indigo-200 border border-indigo-500/40 hover:bg-indigo-500/30 transition shadow-sm"
             >
-              Browse Surah Library
+              {t('downloads.browseLibrary')}
             </Link>
           )}
         </div>
@@ -279,7 +285,7 @@ const Downloads: React.FC = () => {
               <Searchbar
                 value={searchQuery}
                 onChange={setSearchQuery}
-                placeholder="Search downloaded surahs or reciters..."
+                placeholder={t('downloads.searchPlaceholder')}
               />
             </div>
 
@@ -296,7 +302,7 @@ const Downloads: React.FC = () => {
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    All ({sortedItems.length})
+                    {t('discover.tabs.all')} ({formatNumber(sortedItems.length, currentLang)})
                   </button>
                   {availableReciters.map((r) => {
                     const count = sortedItems.filter(
@@ -313,7 +319,7 @@ const Downloads: React.FC = () => {
                             : 'text-slate-400 hover:text-white'
                         }`}
                       >
-                        {r.name} ({count})
+                        {r.name} ({formatNumber(count, currentLang)})
                       </button>
                     );
                   })}
@@ -321,10 +327,9 @@ const Downloads: React.FC = () => {
               )}
 
               {/* Result Count & View Mode Toggle */}
-              <div className="flex items-center space-x-2.5 text-xs text-slate-400 shrink-0 ml-auto">
+              <div className="flex items-center gap-2.5 text-xs text-slate-400 shrink-0 ms-auto">
                 <span className="font-mono text-slate-400 text-xs hidden sm:inline">
-                  {filteredSurahs.length}{' '}
-                  {filteredSurahs.length === 1 ? 'Surah' : 'Surahs'}
+                  {t('common.surahsCount', { count: formatNumber(filteredSurahs.length, currentLang) as unknown as number })}
                 </span>
 
                 <ViewModeToggle
@@ -343,10 +348,10 @@ const Downloads: React.FC = () => {
                   <FiSearch size={18} />
                 </div>
                 <p className="text-sm font-semibold text-slate-200">
-                  No downloaded Surahs match &ldquo;{searchQuery}&rdquo;
+                  {t('downloads.noMatchTitle')}
                 </p>
                 <p className="text-xs text-slate-400 mt-1">
-                  Try searching by Surah name, number, or reciter.
+                  {t('downloads.noMatchDesc')}
                 </p>
               </div>
             ) : (
@@ -389,7 +394,7 @@ const Downloads: React.FC = () => {
         isOpen={isClearAllOpen}
         mode="all"
         totalCount={sortedItems.length}
-        formattedSize={formatBytes(totalBytes)}
+        formattedSize={formattedTotalSize}
         onClose={() => setIsClearAllOpen(false)}
         onConfirm={handleConfirmClearAll}
       />

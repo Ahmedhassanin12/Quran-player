@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { getCurrentLanguage } from '../i18n';
+import { getLocalizedSurahName, getLocalizedReciterName } from '../utils/quranUtils';
 import type { Surah } from '../types/quran';
 import type { Reciter } from '../types/reciter';
 
@@ -34,16 +36,20 @@ export const useMediaSession = ({
       return undefined;
     }
 
-    const surahTitle = activeSura.name_simple || activeSura.name || `Surah ${activeSura.chapter_id || activeSura.id}`;
-    const arabicTitle = activeSura.name_arabic ? ` - ${activeSura.name_arabic}` : '';
-    const reciterName = currentReciter?.reciter_name || 'Holy Quran Recitation';
+    const currentLang = getCurrentLanguage();
+    const surahTitle = getLocalizedSurahName(activeSura, currentLang);
+    const reciterName = getLocalizedReciterName(currentReciter, currentLang)
+      || (currentLang === 'ar' ? 'تلاوات القرآن الكريم' : 'Holy Quran Recitation');
+    const album = currentLang === 'ar'
+      ? `القرآن الكريم • سورة رقم ${activeSura.chapter_id || activeSura.id}`
+      : `Holy Quran • Chapter ${activeSura.chapter_id || activeSura.id}`;
 
     // Set metadata for OS lockscreen and notifications
     if (typeof MediaMetadata !== 'undefined') {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: `${surahTitle}${arabicTitle}`,
+        title: surahTitle,
         artist: reciterName,
-        album: `Holy Quran • Chapter ${activeSura.chapter_id || activeSura.id}`,
+        album,
         artwork: [
           {
             src: currentReciter?.photo_url || '/favicon.ico',

@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BsFillVolumeUpFill,
   BsFillVolumeDownFill,
@@ -12,6 +13,7 @@ export interface VolumeBarProps {
 }
 
 const VolumeBar: React.FC<VolumeBarProps> = ({ value = 0.8, onChange, setVolume }) => {
+  const { t } = useTranslation();
   const prevVolumeRef = useRef<number>(0.8);
 
   const toggleMute = () => {
@@ -26,11 +28,11 @@ const VolumeBar: React.FC<VolumeBarProps> = ({ value = 0.8, onChange, setVolume 
   const percentage = Math.min(100, Math.max(0, value * 100));
 
   return (
-    <div className="hidden lg:flex items-center space-x-2.5 min-w-[130px] justify-end select-none">
+    <div dir="ltr" className="hidden lg:flex items-center space-x-2.5 min-w-[130px] justify-end select-none">
       <button
         type="button"
         onClick={toggleMute}
-        aria-label={value === 0 ? 'Unmute volume' : 'Mute volume'}
+        aria-label={value === 0 ? t('player.unmuteAria') : t('player.muteAria')}
         className="text-slate-300 hover:text-indigo-400 transition-colors p-1"
       >
         {value === 0 && <BsFillVolumeMuteFill size={20} />}
@@ -53,7 +55,7 @@ const VolumeBar: React.FC<VolumeBarProps> = ({ value = 0.8, onChange, setVolume 
           min="0"
           max="1"
           onChange={onChange}
-          aria-label="Volume level"
+          aria-label={t('player.volumeAria')}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         />
       </div>

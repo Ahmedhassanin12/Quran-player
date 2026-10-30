@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const formatTime = (time: number): string => {
   if (Number.isNaN(time) || time === null || time === undefined) return '0:00';
@@ -20,6 +21,7 @@ export interface TopScrubberProps {
 }
 
 const TopScrubber: React.FC<TopScrubberProps> = ({ appTime = 0, duration = 0, onSeek }) => {
+  const { t } = useTranslation();
   const barRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
@@ -170,6 +172,7 @@ const TopScrubber: React.FC<TopScrubberProps> = ({ appTime = 0, duration = 0, on
   return (
     <div
       ref={barRef}
+      dir="ltr"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -185,7 +188,7 @@ const TopScrubber: React.FC<TopScrubberProps> = ({ appTime = 0, duration = 0, on
       onKeyDown={handleKeyDown}
       role="slider"
       tabIndex={0}
-      aria-label="Seek recitation timeline tape"
+      aria-label={t('player.seekTimelineAria')}
       aria-valuemin={0}
       aria-valuemax={safeDuration || 100}
       aria-valuenow={Math.round(activeTime)}

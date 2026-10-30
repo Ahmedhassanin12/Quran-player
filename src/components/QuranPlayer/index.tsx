@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiMaximize2 } from 'react-icons/fi';
 
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -38,6 +39,7 @@ import TopScrubber from './TopScrubber';
 import { useMediaSession } from '../../hooks/useMediaSession';
 
 const QuranPlayer: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const activeSura = useAppSelector(selectActiveSura);
   const currentSura = useAppSelector(selectCurrentSura);
@@ -84,7 +86,6 @@ const QuranPlayer: React.FC = () => {
   const handleDurationUpdate = useCallback((e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
     const audio = e.target as HTMLAudioElement;
     const next = Number(audio?.duration);
-    // iOS Safari often reports Infinity/NaN until metadata is ready
     if (Number.isFinite(next) && next > 0) {
       setDuration(next);
     }
@@ -95,7 +96,6 @@ const QuranPlayer: React.FC = () => {
     const next = Number(audio?.currentTime);
     if (!Number.isFinite(next) || next < 0) return;
     setAppTime((prev) => {
-      // Avoid noisy re-renders from tiny float jitter
       if (Math.abs(prev - next) < 0.05) return prev;
       return next;
     });
@@ -249,9 +249,9 @@ const QuranPlayer: React.FC = () => {
 
   const formatTimerBadge = (): string | null => {
     if (!sleepTimer.active) return null;
-    if (sleepTimer.mode === 'surah') return 'Surah';
+    if (sleepTimer.mode === 'surah') return t('player.sleepTimerEndOfSurah');
     const mins = Math.ceil(sleepTimer.remainingSeconds / 60);
-    return `${mins}m`;
+    return t('player.sleepTimerMinutes', { minutes: mins });
   };
 
   return (
@@ -261,7 +261,7 @@ const QuranPlayer: React.FC = () => {
         <footer
           className="w-full lg:max-w-6xl lg:pointer-events-auto relative bg-midnight-900/98 lg:bg-midnight-900/92 backdrop-blur-xl lg:backdrop-blur-lg sm:border-t sm:border-midnight-700/80 lg:border lg:rounded-2xl lg:shadow-[0_12px_40px_rgba(0,0,0,0.65)] lg:ring-1 lg:ring-white/[0.06] px-2.5 sm:px-6 lg:px-8 py-2 sm:py-0 min-h-[4.25rem] sm:h-20 lg:h-20 flex items-center justify-between transition-all duration-200 pb-[env(safe-area-inset-bottom,0px)] lg:pb-0 hover:border-midnight-600/80"
           role="region"
-          aria-label="Audio Player"
+          aria-label={t('player.regionLabel')}
         >
           {/* Interactive Top-Edge "Tape" Timeline Scrubber (mobile) */}
           <TopScrubber
@@ -271,7 +271,7 @@ const QuranPlayer: React.FC = () => {
             onSeek={handleSeekDirect}
           />
 
-          {/* Left: Active Surah Track Information */}
+          {/* Active Surah Track Information */}
           <Track
             isPlaying={isPlaying}
             isActive={isActive}
@@ -318,29 +318,29 @@ const QuranPlayer: React.FC = () => {
             />
           </div>
 
-          {/* Right: Audio Tools (Speed, Sleep Sanctuary, Volume, Expand) */}
-          <div className="flex items-center space-x-1 sm:space-x-2 select-none justify-end shrink-0 sm:min-w-[150px] lg:min-w-[200px]">
+          {/* Audio Tools (Speed, Sleep Sanctuary, Volume, Expand) */}
+          <div className="flex items-center gap-1 sm:gap-2 select-none justify-end shrink-0 sm:min-w-[150px] lg:min-w-[200px]">
             {/* Recitation Pace Button */}
             <button
               type="button"
               onClick={() => setIsSpeedModalOpen(true)}
-              aria-label={`Playback speed: ${playbackSpeed.toFixed(2)}x`}
-              title={`Recitation Speed (${playbackSpeed.toFixed(2)}x)`}
+              aria-label={t('player.speedAria', { speed: playbackSpeed.toFixed(2) })}
+              title={t('player.speedTitle', { speed: playbackSpeed.toFixed(2) })}
               className={`px-1.5 sm:px-2 py-1 rounded-lg text-[11px] sm:text-xs font-semibold transition border ${
                 playbackSpeed !== 1.0
                   ? 'bg-midnight-750 text-indigo-300 border-indigo-500/50'
                   : 'bg-midnight-800 text-slate-400 border-midnight-700 hover:text-slate-200'
               }`}
             >
-              {playbackSpeed.toFixed(2)}x
+              <span dir="ltr">{playbackSpeed.toFixed(2)}x</span>
             </button>
 
             {/* Sleep Sanctuary Timer Button */}
             <button
               type="button"
               onClick={() => setIsSleepModalOpen(true)}
-              aria-label="Sleep Sanctuary Timer"
-              title={sleepTimer.active ? `Sleep Timer: ${formatTimerBadge()}` : 'Sleep Sanctuary Timer'}
+              aria-label={t('player.sleepTimerTitle')}
+              title={sleepTimer.active ? `${t('player.sleepTimerTitle')}: ${formatTimerBadge()}` : t('player.sleepTimerTitle')}
               className={`relative p-1.5 sm:p-2 rounded-lg text-xs font-medium transition flex items-center gap-1 border ${
                 sleepTimer.active
                   ? 'bg-midnight-750 text-indigo-300 border-indigo-500/50'
@@ -373,8 +373,8 @@ const QuranPlayer: React.FC = () => {
             <button
               type="button"
               onClick={() => dispatch(setIsExpanded(true))}
-              aria-label="Expand Player"
-              title="Expand Player (Fullscreen)"
+              aria-label={t('player.expandPlayerAria')}
+              title={t('player.expandPlayerTitle')}
               className="p-1.5 sm:p-2 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-midnight-800 transition"
             >
               <FiMaximize2 size={16} />

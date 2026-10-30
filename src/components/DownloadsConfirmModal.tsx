@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiAlertTriangle, FiTrash2, FiX } from 'react-icons/fi';
+import { formatNumber } from '../utils/formatters';
+import { getLocalizedReciterName, getLocalizedSurahName } from '../utils/quranUtils';
+import { normalizeLanguage } from '../i18n';
 import type { Surah } from '../types/quran';
 import type { DownloadedSurahMetadata } from '../types/downloads';
 
@@ -24,6 +28,9 @@ const DownloadsConfirmModal: React.FC<DownloadsConfirmModalProps> = ({
   onClose,
   onConfirm,
 }) => {
+  const { t, i18n } = useTranslation();
+  const currentLang = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
+
   useEffect(() => {
     if (!isOpen) return undefined;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -39,6 +46,8 @@ const DownloadsConfirmModal: React.FC<DownloadsConfirmModalProps> = ({
   if (!isOpen) return null;
 
   const isClearAll = mode === 'all';
+  const surahName = getLocalizedSurahName(item, currentLang);
+  const reciterName = getLocalizedReciterName(item, currentLang);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -53,7 +62,7 @@ const DownloadsConfirmModal: React.FC<DownloadsConfirmModalProps> = ({
       onClick={handleBackdropClick}
     >
       <div
-        className="w-full max-w-sm rounded-2xl bg-midnight-900 border border-midnight-700/80 p-5 sm:p-6 shadow-2xl relative text-left"
+        className="w-full max-w-sm rounded-2xl bg-midnight-900 border border-midnight-700/80 p-5 sm:p-6 shadow-2xl relative text-start"
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-modal-title"
@@ -61,8 +70,8 @@ const DownloadsConfirmModal: React.FC<DownloadsConfirmModalProps> = ({
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-midnight-800 transition-colors"
-          aria-label="Close dialog"
+          className="absolute top-4 end-4 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-midnight-800 transition-colors"
+          aria-label={t('common.close')}
         >
           <FiX size={16} />
         </button>
@@ -72,41 +81,19 @@ const DownloadsConfirmModal: React.FC<DownloadsConfirmModalProps> = ({
         </div>
 
         <h3 id="confirm-modal-title" className="text-base sm:text-lg font-bold text-slate-100">
-          {isClearAll ? 'Clear all downloads?' : 'Remove downloaded recitation?'}
+          {isClearAll ? t('downloads.modal.clearAllTitle') : t('downloads.modal.removeSingleTitle')}
         </h3>
 
         <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed">
-          {isClearAll ? (
-            <>
-              Are you sure you want to delete all{' '}
-              <span className="font-semibold text-slate-200">{totalCount}</span> downloaded recitations
-              {formattedSize && (
-                <>
-                  {' '}(<span className="font-semibold text-indigo-300">{formattedSize}</span>)
-                </>
-              )}
-              {' '}from this device? You can re-download them anytime when online.
-            </>
-          ) : (
-            <>
-              Remove the offline audio for{' '}
-              <span className="font-semibold text-slate-200">
-                {item?.name_simple || item?.surahName || `Surah ${item?.id || item?.surahId}`}
-              </span>
-              {item?.name_arabic && (
-                <span className="font-arabic font-normal text-slate-300 mx-1">
-                  ({item.name_arabic})
-                </span>
-              )}
-              {item?.reciter_name && (
-                <>
-                  {' '}recited by{' '}
-                  <span className="font-medium text-slate-300">{item.reciter_name}</span>
-                </>
-              )}
-              ? The surah will remain in your online library.
-            </>
-          )}
+          {isClearAll
+            ? t('downloads.modal.clearAllMessage', {
+              count: formatNumber(totalCount, currentLang) as unknown as number,
+              size: formattedSize,
+            })
+            : t('downloads.modal.removeSingleMessage', {
+              surahName,
+              reciterName,
+            })}
         </p>
 
         <div className="flex items-center justify-end gap-2.5 mt-6 pt-3 border-t border-midnight-800">
@@ -115,7 +102,7 @@ const DownloadsConfirmModal: React.FC<DownloadsConfirmModalProps> = ({
             onClick={onClose}
             className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-midnight-800 hover:bg-midnight-750 text-slate-300 border border-midnight-700 hover:border-midnight-600 transition"
           >
-            Cancel
+            {t('downloads.modal.cancel')}
           </button>
           <button
             type="button"
@@ -125,7 +112,7 @@ const DownloadsConfirmModal: React.FC<DownloadsConfirmModalProps> = ({
             }}
             className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-500/40 hover:border-rose-500/60 transition shadow-sm"
           >
-            {isClearAll ? 'Clear All Downloads' : 'Remove Download'}
+            {isClearAll ? t('downloads.modal.confirmClearAll') : t('downloads.modal.confirmRemoveSingle')}
           </button>
         </div>
       </div>

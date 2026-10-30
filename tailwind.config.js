@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
@@ -36,7 +38,7 @@ module.exports = {
         black: '#08090B',
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', '"IBM Plex Sans Arabic"', 'Inter', 'system-ui', 'sans-serif'],
         arabic: ['"Amiri"', '"Scheherazade New"', 'Traditional Arabic', 'serif'],
         quran: ['"Scheherazade New"', '"Amiri"', 'Traditional Arabic', 'serif'],
       },
@@ -76,5 +78,37 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(({ matchUtilities, addUtilities, theme }) => {
+      matchUtilities(
+        {
+          ms: (value) => ({ marginInlineStart: value }),
+          me: (value) => ({ marginInlineEnd: value }),
+        },
+        { values: theme('margin'), supportsNegativeValues: true },
+      );
+      matchUtilities(
+        {
+          ps: (value) => ({ paddingInlineStart: value }),
+          pe: (value) => ({ paddingInlineEnd: value }),
+        },
+        { values: theme('padding') },
+      );
+      matchUtilities(
+        {
+          start: (value) => ({ insetInlineStart: value }),
+          end: (value) => ({ insetInlineEnd: value }),
+        },
+        { values: theme('inset'), supportsNegativeValues: true },
+      );
+      addUtilities({
+        '.text-start': { textAlign: 'start' },
+        '.text-end': { textAlign: 'end' },
+        '.border-s': { borderInlineStartWidth: '1px' },
+        '.border-e': { borderInlineEndWidth: '1px' },
+        '.border-s-0': { borderInlineStartWidth: '0px' },
+        '.border-e-0': { borderInlineEndWidth: '0px' },
+      });
+    }),
+  ],
 };

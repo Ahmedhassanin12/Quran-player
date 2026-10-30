@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { BsFillPlayFill, BsFillPauseFill } from 'react-icons/bs';
 import type { Surah } from '../types/quran';
 
@@ -21,13 +22,14 @@ const PlayPause: React.FC<PlayPauseProps> = ({
   handlePlay,
   size = 'md',
 }) => {
+  const { t } = useTranslation();
   const isCurrent = Boolean(
-    activeSura &&
-    sura &&
-    ((activeSura.chapter_id &&
-      (sura.chapter_id || sura.id) === activeSura.chapter_id) ||
-      activeSura.id === sura.id ||
-      activeSura.name_simple === sura.name_simple),
+    activeSura
+    && sura
+    && ((activeSura.chapter_id
+      && (sura.chapter_id || sura.id) === activeSura.chapter_id)
+      || activeSura.id === sura.id
+      || activeSura.name_simple === sura.name_simple),
   );
 
   const isCurrentAndPlaying = isPlaying && isCurrent;
@@ -50,7 +52,7 @@ const PlayPause: React.FC<PlayPauseProps> = ({
   return isCurrentAndPlaying ? (
     <button
       type="button"
-      aria-label="Pause recitation"
+      aria-label={t('player.pauseAria')}
       onClick={(e) => {
         e.stopPropagation();
         handlePause();
@@ -62,12 +64,12 @@ const PlayPause: React.FC<PlayPauseProps> = ({
   ) : (
     <button
       type="button"
-      aria-label="Play recitation"
+      aria-label={t('player.playAria')}
       onClick={(e) => {
         e.stopPropagation();
         handlePlay();
       }}
-      className={`${btnDimension} flex items-center justify-center rounded-full bg-midnight-800 hover:bg-midnight-750 text-slate-200 hover:text-white border border-midnight-700/80 hover:border-midnight-600 shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 pl-0.5`}
+      className={`${btnDimension} flex items-center justify-center rounded-full bg-midnight-800 hover:bg-midnight-750 text-slate-200 hover:text-white border border-midnight-700/80 hover:border-midnight-600 shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 ps-0.5`}
     >
       <BsFillPlayFill size={iconSize} />
     </button>

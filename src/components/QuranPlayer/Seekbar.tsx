@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { formatPlaybackTime } from '../../utils/formatters';
 
 export interface SeekbarProps {
@@ -14,6 +15,7 @@ const Seekbar: React.FC<SeekbarProps> = ({
   onInput,
   appTime = 0,
 }) => {
+  const { t } = useTranslation();
   const safeMax = Number.isFinite(max) && max > 0 ? max : 0;
   const safeTime = Number.isFinite(appTime) && appTime > 0
     ? Math.min(appTime, safeMax || appTime)
@@ -24,7 +26,7 @@ const Seekbar: React.FC<SeekbarProps> = ({
   const rangeMax = safeMax > 0 ? safeMax : 1;
 
   return (
-    <div className="w-full flex items-center space-x-3 select-none">
+    <div dir="ltr" className="w-full flex items-center space-x-3 select-none">
       <span className="text-[11px] font-medium text-slate-400 w-11 text-right shrink-0 tabular-nums">
         {formatPlaybackTime(safeTime)}
       </span>
@@ -46,7 +48,7 @@ const Seekbar: React.FC<SeekbarProps> = ({
           max={rangeMax}
           disabled={safeMax <= 0}
           onChange={onInput}
-          aria-label="Seek recitation timeline"
+          aria-label={t('player.seekTimelineAria')}
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-default"
         />
       </div>

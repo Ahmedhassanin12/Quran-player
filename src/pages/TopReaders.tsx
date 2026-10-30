@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ArtistCard, Searchbar } from '../components';
 import { VERIFIED_RECITERS } from '../assets/recitersData';
 import type { VerifiedReciter } from '../types';
@@ -6,6 +7,7 @@ import type { VerifiedReciter } from '../types';
 type StyleFilter = 'all' | 'Murattal' | 'Mujawwad' | 'Muallim';
 
 const TopReaders: React.FC = () => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedStyle, setSelectedStyle] = useState<StyleFilter>('all');
 
@@ -21,10 +23,9 @@ const TopReaders: React.FC = () => {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter(
-        (r) =>
-          r.reciter_name.toLowerCase().includes(q) ||
-          (r.arabic_name && r.arabic_name.includes(q)) ||
-          (r.country && r.country.toLowerCase().includes(q)),
+        (r) => r.reciter_name.toLowerCase().includes(q)
+          || (r.arabic_name && r.arabic_name.includes(q))
+          || (r.country && r.country.toLowerCase().includes(q)),
       );
     }
 
@@ -36,18 +37,15 @@ const TopReaders: React.FC = () => {
       {/* Editorial Header */}
       <div className="pt-1 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-midnight-800/80">
         <div>
-          <div className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-1">
-            <span>Verified Qari Roster</span>
+          <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-400 mb-1">
+            <span>{t('reciters.verifiedRoster')}</span>
             <span className="text-slate-600">·</span>
-            <span>12 Global Masters</span>
+            <span>{t('reciters.globalMasters')}</span>
             <span className="text-slate-600">·</span>
-            <span>رواية حفص عن عاصم</span>
+            <span>{t('reciters.riwayah')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight flex items-baseline gap-3">
-            <span>Quran Reciters</span>
-            <span className="font-arabic font-normal text-xl sm:text-2xl text-slate-400">
-              قراء القرآن الكريم
-            </span>
+            <span>{t('reciters.heroTitle')}</span>
           </h1>
         </div>
       </div>
@@ -58,7 +56,7 @@ const TopReaders: React.FC = () => {
           <Searchbar
             value={searchQuery}
             onChange={setSearchQuery}
-            placeholder="Search reciter by English or Arabic name..."
+            placeholder={t('reciters.searchPlaceholder')}
           />
         </div>
 
@@ -73,7 +71,7 @@ const TopReaders: React.FC = () => {
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            All Styles
+            {t('reciters.styles.All')}
           </button>
           <button
             type="button"
@@ -84,7 +82,7 @@ const TopReaders: React.FC = () => {
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            Murattal (مرتل)
+            {t('reciters.styles.Murattal')}
           </button>
           <button
             type="button"
@@ -95,7 +93,7 @@ const TopReaders: React.FC = () => {
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            Mujawwad (مجود)
+            {t('reciters.styles.Mujawwad')}
           </button>
           <button
             type="button"
@@ -106,7 +104,7 @@ const TopReaders: React.FC = () => {
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            Muallim (معلم)
+            {t('reciters.styles.Muallim')}
           </button>
         </div>
       </div>
@@ -115,16 +113,16 @@ const TopReaders: React.FC = () => {
       {filteredReciters.length === 0 ? (
         <div className="p-12 text-center rounded-lg bg-midnight-850 border border-midnight-700/60">
           <p className="text-base text-slate-300 font-semibold">
-            No reciters found matching &ldquo;{searchQuery}&rdquo;
+            {t('reciters.emptyTitle')}
           </p>
           <p className="text-xs text-slate-400 mt-1">
-            Try searching with a different name or changing the style filter.
+            {t('reciters.emptyDesc')}
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-4 gap-2 sm:gap-3">
           {filteredReciters.map((reader) => (
-            <ArtistCard key={reader.id} reader={reader} />
+            <ArtistCard key={`${reader.id}-${reader.style}`} reader={reader} />
           ))}
         </div>
       )}

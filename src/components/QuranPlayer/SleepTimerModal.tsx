@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { setSleepTimer, clearSleepTimer, selectSleepTimer } from '../../redux/features/playerSlice';
 import type { SleepTimerMode } from '../../types/player';
@@ -8,28 +9,27 @@ export interface SleepTimerModalProps {
   onClose: () => void;
 }
 
-interface TimerOption {
-  label: string;
+interface TimerOptionConfig {
   mode: SleepTimerMode;
   minutes: number | null;
-  desc: string;
 }
 
-const TIMER_OPTIONS: TimerOption[] = [
-  { label: 'End of Surah', mode: 'surah', minutes: null, desc: 'Stop gently when recitation finishes' },
-  { label: '15 Minutes', mode: '15', minutes: 15, desc: 'Quick rest or nap' },
-  { label: '30 Minutes', mode: '30', minutes: 30, desc: 'Standard evening relaxation' },
-  { label: '45 Minutes', mode: '45', minutes: 45, desc: 'Extended nocturnal reflection' },
-  { label: '60 Minutes', mode: '60', minutes: 60, desc: 'One hour continuous recitation' },
+const TIMER_OPTION_CONFIGS: TimerOptionConfig[] = [
+  { mode: 'surah', minutes: null },
+  { mode: '15', minutes: 15 },
+  { mode: '30', minutes: 30 },
+  { mode: '45', minutes: 45 },
+  { mode: '60', minutes: 60 },
 ];
 
 const SleepTimerModal: React.FC<SleepTimerModalProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const sleepTimer = useAppSelector(selectSleepTimer);
 
   if (!isOpen) return null;
 
-  const handleSelect = (option: TimerOption) => {
+  const handleSelect = (option: TimerOptionConfig) => {
     dispatch(setSleepTimer({ mode: option.mode, minutes: option.minutes || undefined }));
     onClose();
   };
@@ -48,15 +48,15 @@ const SleepTimerModal: React.FC<SleepTimerModalProps> = ({ isOpen, onClose }) =>
   return (
     <div
       role="presentation"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-midnight-950/80 backdrop-blur-sm animate-slowfade"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-midnight-950/80 backdrop-blur-sm animate-slowfade select-none"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm rounded-xl bg-midnight-900 border border-midnight-700 p-6 shadow-2xl relative text-left"
+        className="w-full max-w-sm rounded-xl bg-midnight-900 border border-midnight-700 p-6 shadow-2xl relative text-start"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label="Sleep Sanctuary Timer"
+        aria-label={t('sleepTimer.title')}
       >
         <div className="flex items-center justify-between pb-4 border-b border-midnight-700/60">
           <div className="flex items-center gap-3">
@@ -71,15 +71,15 @@ const SleepTimerModal: React.FC<SleepTimerModalProps> = ({ isOpen, onClose }) =>
               </svg>
             </div>
             <div>
-              <h3 className="text-base font-semibold text-slate-100">Sleep Sanctuary</h3>
-              <p className="text-xs text-slate-400">Timer with smooth 30s volume fade</p>
+              <h3 className="text-base font-semibold text-slate-100">{t('sleepTimer.title')}</h3>
+              <p className="text-xs text-slate-400">{t('sleepTimer.subtitle')}</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-midnight-800 transition"
-            aria-label="Close dialog"
+            aria-label={t('common.close')}
           >
             ✕
           </button>
@@ -89,29 +89,35 @@ const SleepTimerModal: React.FC<SleepTimerModalProps> = ({ isOpen, onClose }) =>
         {sleepTimer.active && (
           <div className="mt-4 p-3 rounded-lg bg-indigo-950/40 border border-indigo-500/30 flex items-center justify-between">
             <div className="text-xs text-indigo-300">
-              <span className="font-semibold block text-slate-200">Active Timer:</span>
-              {sleepTimer.mode === 'surah' ? 'End of Surah' : `${formatRemaining(sleepTimer.remainingSeconds)} remaining`}
+              <span className="font-semibold block text-slate-200">{t('sleepTimer.activeTimer')}:</span>
+              {sleepTimer.mode === 'surah'
+                ? t('sleepTimer.endOfCurrentSurah')
+                : t('sleepTimer.remaining', { time: formatRemaining(sleepTimer.remainingSeconds) })}
             </div>
             <button
               type="button"
               onClick={handleClear}
               className="px-2.5 py-1 text-xs font-medium text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 rounded-lg transition"
             >
-              Turn Off
+              {t('sleepTimer.turnOff')}
             </button>
           </div>
         )}
 
         {/* Timer Options List */}
         <div className="mt-4 space-y-2">
-          {TIMER_OPTIONS.map((opt) => {
+          {TIMER_OPTION_CONFIGS.map((opt) => {
             const isSelected = sleepTimer.active && sleepTimer.mode === opt.mode;
+            const modeKey = opt.mode as 'surah' | '15' | '30' | '45' | '60';
+            const label = t(`sleepTimer.options.${modeKey}.label`);
+            const desc = t(`sleepTimer.options.${modeKey}.description`);
+
             return (
               <button
                 key={String(opt.mode)}
                 type="button"
                 onClick={() => handleSelect(opt)}
-                className={`w-full text-left p-3 rounded-lg transition flex items-center justify-between border ${
+                className={`w-full text-start p-3 rounded-lg transition flex items-center justify-between border ${
                   isSelected
                     ? 'bg-indigo-600/20 border-indigo-500/60 text-slate-100'
                     : 'bg-midnight-850/60 border-midnight-700/50 hover:bg-midnight-800 text-slate-300'
@@ -119,15 +125,15 @@ const SleepTimerModal: React.FC<SleepTimerModalProps> = ({ isOpen, onClose }) =>
               >
                 <div>
                   <div className="text-sm font-medium flex items-center gap-2">
-                    {opt.label}
+                    {label}
                     {isSelected && (
                       <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
                     )}
                   </div>
-                  <div className="text-xs text-slate-400 mt-0.5">{opt.desc}</div>
+                  <div className="text-xs text-slate-400 mt-0.5">{desc}</div>
                 </div>
                 <span className="text-xs font-semibold text-indigo-400">
-                  {isSelected ? 'Selected' : 'Set'}
+                  {isSelected ? t('sleepTimer.selected') : t('sleepTimer.set')}
                 </span>
               </button>
             );
@@ -140,7 +146,7 @@ const SleepTimerModal: React.FC<SleepTimerModalProps> = ({ isOpen, onClose }) =>
             onClick={handleClear}
             className="w-full mt-4 py-2.5 text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-midnight-800 rounded-lg transition border border-midnight-700/60"
           >
-            Cancel Timer
+            {t('sleepTimer.cancelTimer')}
           </button>
         )}
       </div>

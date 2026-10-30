@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { IconType } from 'react-icons';
 import {
   FiSun,
@@ -12,6 +13,8 @@ import {
 import { useAppDispatch } from '../redux/hooks';
 import { CURATED_COLLECTIONS } from '../assets/collectionsData';
 import { setActiveSura, playPause } from '../redux/features/playerSlice';
+import { formatNumber } from '../utils/formatters';
+import { normalizeLanguage } from '../i18n';
 import type { Surah, AudioFile } from '../types/quran';
 import type { Reciter } from '../types/reciter';
 import type { CuratedCollection } from '../types/collections';
@@ -23,6 +26,13 @@ const COLLECTION_ICONS: Record<string, IconType> = {
   heart: FiHeart,
   'book-open': FiBookOpen,
 };
+
+type CollectionKey =
+  | 'friday-kahf'
+  | 'night-protection'
+  | 'fortress-muawwidhat'
+  | 'heart-softeners'
+  | 'juz-amma';
 
 export interface CuratedCollectionsProps {
   onSelectCollection: (id: string | null) => void;
@@ -39,6 +49,8 @@ const CuratedCollections: React.FC<CuratedCollectionsProps> = ({
   audioFiles,
   currentReciter,
 }) => {
+  const { t, i18n } = useTranslation();
+  const currentLang = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
   const dispatch = useAppDispatch();
 
   const activeCollection = CURATED_COLLECTIONS.find(
@@ -49,9 +61,9 @@ const CuratedCollections: React.FC<CuratedCollectionsProps> = ({
     e.stopPropagation();
     if (!allSurahs || allSurahs.length === 0) return;
 
-    const collectionSurahs = allSurahs.filter((s) =>
-      collection.surahIds.includes(Number(s.id)),
-    );
+    const collectionSurahs = allSurahs.filter((s) => (
+      collection.surahIds.includes(Number(s.id))
+    ));
     if (collectionSurahs.length === 0) return;
 
     dispatch(
@@ -66,17 +78,28 @@ const CuratedCollections: React.FC<CuratedCollectionsProps> = ({
     dispatch(playPause(true));
   };
 
+  const getLocalizedCollectionField = (
+    col: CuratedCollection,
+    field: 'title' | 'badge' | 'description' | 'citation',
+  ): string => {
+    const key = col.id as CollectionKey;
+    return t(`discover.collections.items.${key}.${field}`, {
+      defaultValue: field === 'title' ? col.title : col[field],
+    });
+  };
+
   return (
     <div className="py-1">
       {/* Editorial Pill Ribbon */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none select-none">
-        <span className="text-xs text-slate-400 font-medium whitespace-nowrap shrink-0 pl-0.5">
-          مجموعات السور:
+        <span className="text-xs text-slate-400 font-medium whitespace-nowrap shrink-0 ps-0.5">
+          {t('discover.collections.header')}:
         </span>
 
         {CURATED_COLLECTIONS.map((col) => {
           const isSelected = selectedCollectionId === col.id;
           const IconComponent = COLLECTION_ICONS[col.icon] || FiBookOpen;
+          const localizedTitle = getLocalizedCollectionField(col, 'title');
 
           return (
             <button
@@ -93,12 +116,9 @@ const CuratedCollections: React.FC<CuratedCollectionsProps> = ({
                 size={13}
                 className={isSelected ? 'text-indigo-400' : 'text-slate-400'}
               />
-              <span className="font-arabic">{col.arabic_title}</span>
-              <span className="text-slate-500 text-[11px] hidden sm:inline">
-                ({col.title})
-              </span>
+              <span className="font-medium">{localizedTitle}</span>
               <span className="text-[10px] font-mono text-slate-400 bg-midnight-900/60 px-1.5 py-0.5 rounded">
-                {col.surahIds.length}
+                {formatNumber(col.surahIds.length, currentLang)}
               </span>
             </button>
           );
@@ -110,30 +130,30 @@ const CuratedCollections: React.FC<CuratedCollectionsProps> = ({
             type="button"
             onClick={() => onSelectCollection(null)}
             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs text-slate-400 hover:text-slate-200 bg-midnight-850/40 hover:bg-midnight-800 border border-midnight-700/50 transition shrink-0"
-            title="عرض الكل / Show all surahs"
+            title={t('discover.collections.showAll')}
           >
             <FiX size={13} />
-            <span>عرض الكل</span>
+            <span>{t('discover.collections.showAll')}</span>
           </button>
         )}
       </div>
 
-      {/* When a collection is actively selected, show a subtle contextual banner with its citation and play button */}
+      {/* Contextual banner when a collection is selected */}
       {activeCollection && (
         <div className="mt-2 px-4 py-2.5 rounded-xl bg-midnight-850/40 border border-indigo-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div className="min-w-0">
-            <div className="flex items-center gap-2 text-slate-300">
-              <span className="font-semibold text-slate-100 font-arabic">
-                {activeCollection.arabic_title}
+            <div className="flex flex-wrap items-center gap-2 text-slate-300">
+              <span className="font-semibold text-slate-100">
+                {getLocalizedCollectionField(activeCollection, 'title')}
               </span>
               <span className="text-slate-500">·</span>
-              <span className="text-slate-400">{activeCollection.description}</span>
+              <span className="text-slate-400">
+                {getLocalizedCollectionField(activeCollection, 'description')}
+              </span>
             </div>
-            {activeCollection.citation && (
-              <p className="text-[11px] text-indigo-300/80 mt-0.5 font-medium">
-                {activeCollection.citation}
-              </p>
-            )}
+            <p className="text-[11px] text-indigo-300/80 mt-0.5 font-medium">
+              {getLocalizedCollectionField(activeCollection, 'citation')}
+            </p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -143,7 +163,9 @@ const CuratedCollections: React.FC<CuratedCollectionsProps> = ({
               className="px-3 py-1.5 rounded-lg bg-midnight-750 hover:bg-midnight-700 border border-midnight-600 text-slate-100 font-medium transition flex items-center gap-1.5 shadow-sm"
             >
               <FiPlay size={12} className="fill-current" />
-              <span>تشغيل المجموعة ({activeCollection.surahIds.length})</span>
+              <span>
+                {t('discover.collections.playCollection')} ({formatNumber(activeCollection.surahIds.length, currentLang)})
+              </span>
             </button>
           </div>
         </div>

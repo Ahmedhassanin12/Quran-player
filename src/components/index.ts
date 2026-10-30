@@ -13,6 +13,7 @@ import InstallPwaButton from './InstallPwaButton';
 import DownloadSurahButton from './DownloadSurahButton';
 import ViewModeToggle from './ViewModeToggle';
 import DownloadsConfirmModal from './DownloadsConfirmModal';
+import LanguageSwitcher from './LanguageSwitcher';
 import {
   MushafPageRenderer,
   MushafNavigation,
@@ -41,6 +42,7 @@ export {
   DownloadSurahButton,
   ViewModeToggle,
   DownloadsConfirmModal,
+  LanguageSwitcher,
   MushafPageRenderer,
   MushafNavigation,
   MushafAyahModal,

@@ -1,10 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { BsFillPlayFill } from 'react-icons/bs';
 import { ReciterAvatar } from './IslamicArtwork';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { setReciter, selectCurrentReciter, selectIsPlaying } from '../redux/features/playerSlice';
 import { getReciterById } from '../assets/recitersData';
+import { formatNumber } from '../utils/formatters';
+import { normalizeLanguage } from '../i18n';
 import type { Reciter } from '../types/reciter';
 
 export interface ArtistCardProps {
@@ -12,6 +15,8 @@ export interface ArtistCardProps {
 }
 
 const ArtistCard: React.FC<ArtistCardProps> = ({ reader }) => {
+  const { t, i18n } = useTranslation();
+  const currentLang = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const currentReciter = useAppSelector(selectCurrentReciter);
@@ -21,9 +26,11 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ reader }) => {
   const reciterId = reader?.id || verified.id;
   const englishName = reader?.reciter_name || reader?.translated_name?.name || verified.reciter_name;
   const arabicName = verified.arabic_name || reader?.translated_name?.name || 'القارئ';
-  const style = reader?.style || verified.style || 'Murattal';
+  const style = (reader?.style || verified.style || 'Murattal') as 'Murattal' | 'Mujawwad' | 'Muallim';
   const photoUrl = verified.photo_url;
   const isSelected = currentReciter?.id === reciterId;
+
+  const localizedStyle = t(`reciters.styles.${style}`, { defaultValue: style });
 
   const handleSelectReciter = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -66,12 +73,12 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ reader }) => {
       {/* Top Header: Style Badge & Active Indicator */}
       <div className="relative z-10 flex items-center justify-between mb-3">
         <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 bg-midnight-800 border border-midnight-700 px-2.5 py-0.5 rounded-full">
-          {style}
+          {localizedStyle}
         </span>
         {isSelected && (
           <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Active
+            {t('reciters.active')}
           </span>
         )}
       </div>
@@ -88,12 +95,12 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ reader }) => {
         />
 
         {/* Full Arabic Name */}
-        <h4 className="font-arabic text-xl font-bold text-slate-100 group-hover:text-indigo-300 transition-colors leading-normal w-full">
+        <h4 className="font-arabic text-xl font-bold text-slate-100 group-hover:text-indigo-300 transition-colors leading-normal w-full" lang="ar" dir="rtl">
           {arabicName}
         </h4>
 
         {/* English Name */}
-        <h3 className="font-semibold text-sm text-slate-300 mt-0.5 leading-snug w-full">
+        <h3 className="font-semibold text-sm text-slate-300 mt-0.5 leading-snug w-full" dir="ltr">
           {englishName}
         </h3>
       </div>
@@ -101,20 +108,20 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ reader }) => {
       {/* Bottom Bar: Surah Count & Select Button */}
       <div className="relative z-10 flex items-center justify-between pt-3 border-t border-midnight-700/40">
         <span className="text-xs text-slate-400 font-mono">
-          114 Surahs
+          {t('common.surahsCount', { count: formatNumber(114, currentLang) as unknown as number })}
         </span>
 
         <button
           type="button"
           onClick={handleSelectReciter}
-          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             isSelected
               ? 'bg-indigo-500 text-white shadow-sm'
               : 'bg-midnight-800 hover:bg-midnight-750 text-slate-300 hover:text-white border border-midnight-700/80'
           }`}
         >
           <BsFillPlayFill size={14} />
-          <span>{isSelected ? 'Selected' : 'Select'}</span>
+          <span>{isSelected ? t('reciters.selected') : t('reciters.select')}</span>
         </button>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { BsFillPlayFill } from 'react-icons/bs';
 import { DetailsHeader, Error, Loader, SurahCard, Searchbar } from '../components';
 import {
@@ -23,6 +24,7 @@ interface LocationState {
 }
 
 const ArtistDetails: React.FC = () => {
+  const { t } = useTranslation();
   const { id: readerId } = useParams<{ id: string }>();
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -35,7 +37,6 @@ const ArtistDetails: React.FC = () => {
 
   const numericReaderId = Number(readerId) || 7;
 
-  // Retrieve reciter metadata from verified dataset or location state
   const verifiedReciter = useMemo<Reciter | VerifiedReciter>(() => {
     const fromData = getReciterById(numericReaderId);
     if (fromData) return fromData;
@@ -62,7 +63,6 @@ const ArtistDetails: React.FC = () => {
     error: chaptersError,
   } = useGetAllChaptersQuery();
 
-  // Audio map by chapter_id
   const audioMap = useMemo<Record<number, AudioFile>>(() => {
     const map: Record<number, AudioFile> = {};
     if (audioData?.audio_files && Array.isArray(audioData.audio_files)) {
@@ -75,7 +75,6 @@ const ArtistDetails: React.FC = () => {
     return map;
   }, [audioData]);
 
-  // Combined Surah list for this specific reciter
   const reciterSurahs = useMemo<Surah[]>(() => {
     if (!surahData?.chapters) return [];
 
@@ -91,16 +90,14 @@ const ArtistDetails: React.FC = () => {
     });
   }, [surahData, audioMap, numericReaderId]);
 
-  // Filtered by search
   const filteredSurahs = useMemo<Surah[]>(() => {
     if (!searchQuery.trim()) return reciterSurahs;
     const q = searchQuery.toLowerCase().trim();
     return reciterSurahs.filter(
-      (s) =>
-        String(s.id) === q ||
-        s.name_simple?.toLowerCase().includes(q) ||
-        s.name_arabic?.includes(q) ||
-        s.translated_name?.name?.toLowerCase().includes(q),
+      (s) => String(s.id) === q
+        || s.name_simple?.toLowerCase().includes(q)
+        || s.name_arabic?.includes(q)
+        || s.translated_name?.name?.toLowerCase().includes(q),
     );
   }, [reciterSurahs, searchQuery]);
 
@@ -122,11 +119,11 @@ const ArtistDetails: React.FC = () => {
   };
 
   if (isFetchingAudio || isFetchingChapters) {
-    return <Loader title="Loading reciter profile & recordings..." />;
+    return <Loader title={t('artistDetails.loadingProfile')} />;
   }
 
   if (audioError || chaptersError) {
-    return <Error message="Unable to load reciter profile. Please check your connection." />;
+    return <Error message={t('error.connectionInterrupted')} />;
   }
 
   return (
@@ -143,19 +140,19 @@ const ArtistDetails: React.FC = () => {
 
       {/* Reciter Action Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-2 p-2 md:p-5 rounded-lg bg-midnight-850/80 border border-midnight-700/80">
-        <div className="flex items-center space-x-3 w-full">
+        <div className="flex items-center gap-3 w-full">
           <button
             type="button"
             onClick={handleSetAsActiveReciter}
-            className="flex items-center space-x-2 px-2.5 md:px-5 py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white font-semibold text-sm shadow-md shadow-indigo-950/40 transition-transform transform active:scale-95"
+            className="flex items-center gap-2 px-2.5 md:px-5 py-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-400 text-white font-semibold text-sm shadow-md shadow-indigo-950/40 transition-transform transform active:scale-95"
           >
             <BsFillPlayFill size={20} />
-            <span>Play Full Quran</span>
+            <span>{t('artistDetails.playFullQuran')}</span>
           </button>
 
           {isCurrentReciter ? (
             <span className="text-xs font-semibold text-indigo-300 bg-midnight-800 border border-indigo-500/30 px-3 py-1.5 rounded-lg">
-              ✓ Active Reciter
+              ✓ {t('artistDetails.activeReciter')}
             </span>
           ) : (
             <button
@@ -163,7 +160,7 @@ const ArtistDetails: React.FC = () => {
               onClick={() => dispatch(setReciter(verifiedReciter))}
               className="text-xs font-medium text-slate-300 hover:text-white px-3 py-1.5 rounded-lg bg-midnight-750 hover:bg-midnight-700 transition-colors"
             >
-              Set as Default
+              {t('artistDetails.setAsDefault')}
             </button>
           )}
         </div>
@@ -171,7 +168,7 @@ const ArtistDetails: React.FC = () => {
         <Searchbar
           value={searchQuery}
           onChange={setSearchQuery}
-          placeholder="Filter surahs in this recitation..."
+          placeholder={t('artistDetails.filterPlaceholder')}
         />
       </div>
 

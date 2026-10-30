@@ -1,8 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiMaximize2 } from 'react-icons/fi';
 import { SurahMedallion } from '../IslamicArtwork';
 import { useAppDispatch } from '../../redux/hooks';
 import { toggleExpanded } from '../../redux/features/playerSlice';
+import { getLocalizedReciterName, getLocalizedSurahName } from '../../utils/quranUtils';
+import { normalizeLanguage } from '../../i18n';
 import type { Surah } from '../../types/quran';
 import type { Reciter } from '../../types/reciter';
 
@@ -14,12 +17,16 @@ export interface TrackProps {
 }
 
 const Track: React.FC<TrackProps> = ({ isPlaying = false, isActive = false, activeSura, currentReciter }) => {
+  const { t, i18n } = useTranslation();
+  const currentLang = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
   const dispatch = useAppDispatch();
 
   const surahId = activeSura?.chapter_id || activeSura?.id || 1;
-  const nameSimple = activeSura?.name_simple || 'Select a Surah';
-  const nameArabic = activeSura?.name_arabic || 'القرآن الكريم';
-  const reciterName = currentReciter?.reciter_name || activeSura?.reciter_name || 'Sheikh';
+  const localizedSurahName = activeSura
+    ? getLocalizedSurahName(activeSura, currentLang)
+    : t('player.selectSurah');
+  const arabicName = activeSura?.name_arabic || '';
+  const localizedReciterName = getLocalizedReciterName(currentReciter || activeSura, currentLang);
 
   const handleOpenExpanded = () => {
     dispatch(toggleExpanded());
@@ -28,8 +35,8 @@ const Track: React.FC<TrackProps> = ({ isPlaying = false, isActive = false, acti
   return (
     <div
       onClick={handleOpenExpanded}
-      className="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0 flex-1 sm:flex-initial sm:w-60 lg:w-72 max-w-[48%] sm:max-w-sm select-none cursor-pointer group"
-      title="Tap to open full player"
+      className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1 sm:flex-initial sm:w-60 lg:w-72 max-w-[48%] sm:max-w-sm select-none cursor-pointer group"
+      title={t('player.tapToExpand')}
     >
       {/* Clickable Medallion Artwork with Expand indicator */}
       <div className="hidden sm:block relative shrink-0">
@@ -45,16 +52,18 @@ const Track: React.FC<TrackProps> = ({ isPlaying = false, isActive = false, acti
 
       {/* Track Information */}
       <div className="min-w-0 flex-1">
-        <div className="flex items-baseline space-x-1.5 sm:space-x-2">
+        <div className="flex items-baseline gap-1.5 sm:gap-2">
           <p className="font-semibold text-xs sm:text-sm text-slate-100 truncate group-hover:text-indigo-300 transition-colors">
-            {nameSimple}
+            {localizedSurahName}
           </p>
-          <span className="font-arabic font-bold text-xs sm:text-sm text-indigo-300 shrink-0 hidden xs:inline">
-            {nameArabic}
-          </span>
+          {arabicName && currentLang !== 'ar' && (
+            <span className="font-arabic font-bold text-xs sm:text-sm text-indigo-300 shrink-0 hidden xs:inline" lang="ar" dir="rtl">
+              {arabicName}
+            </span>
+          )}
         </div>
         <p className="text-[11px] sm:text-xs text-slate-400 truncate mt-0.5">
-          {reciterName}
+          {localizedReciterName}
         </p>
       </div>
     </div>

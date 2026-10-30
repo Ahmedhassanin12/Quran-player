@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FiMic, FiBookmark, FiClock } from 'react-icons/fi';
 import {
   Error,
@@ -26,11 +27,16 @@ import {
   selectRecents,
 } from '../redux/features/playerSlice';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { formatNumber } from '../utils/formatters';
+import { getLocalizedReciterName, getLocalizedSurahName } from '../utils/quranUtils';
+import { normalizeLanguage } from '../i18n';
 import type { Surah, AudioFile, RecentRecitation } from '../types';
 
 type ActiveTab = 'all' | 'makkah' | 'madinah' | 'favorites' | 'history';
 
 const Discover: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const currentLang = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
   const dispatch = useAppDispatch();
   const activeSura = useAppSelector(selectActiveSura);
   const isPlaying = useAppSelector(selectIsPlaying);
@@ -52,7 +58,6 @@ const Discover: React.FC = () => {
   const { data: surahData, isFetching: isFetchingSurahs, error: surahError } = useGetAllChaptersQuery();
   const { data: audioData, isFetching: isFetchingAudio, error: audioError } = useGetAllSurahAudioQuery(reciterId);
 
-  // Map audio files by chapter_id for exact matching
   const audioMap = useMemo<Record<number, AudioFile>>(() => {
     const map: Record<number, AudioFile> = {};
     if (audioData?.audio_files && Array.isArray(audioData.audio_files)) {
@@ -65,7 +70,6 @@ const Discover: React.FC = () => {
     return map;
   }, [audioData]);
 
-  // Combined surah dataset with verified metadata and audio files
   const allSurahsWithAudio = useMemo<Surah[]>(() => {
     if (!surahData?.chapters) return [];
 
@@ -81,11 +85,9 @@ const Discover: React.FC = () => {
     });
   }, [surahData, audioMap, reciterId]);
 
-  // Filtered by tab, collection, and search
   const filteredSurahs = useMemo<Surah[]>(() => {
     let list = allSurahsWithAudio;
 
-    // 1. Tab filter
     if (activeTab === 'makkah') {
       list = list.filter((s) => s.revelation_place?.toLowerCase() === 'makkah');
     } else if (activeTab === 'madinah') {
@@ -94,7 +96,6 @@ const Discover: React.FC = () => {
       list = list.filter((s) => favorites.includes(Number(s.id)));
     }
 
-    // 2. Curated collection filter
     if (selectedCollectionId) {
       const col = CURATED_COLLECTIONS.find((c) => c.id === selectedCollectionId);
       if (col) {
@@ -102,7 +103,6 @@ const Discover: React.FC = () => {
       }
     }
 
-    // 3. Search query filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter(
@@ -133,51 +133,50 @@ const Discover: React.FC = () => {
   }, [allSurahsWithAudio, audioData?.audio_files, currentReciter, dispatch]);
 
   if (isFetchingSurahs || (isFetchingAudio && allSurahsWithAudio.length === 0)) {
-    return <Loader title="Loading Holy Quran Surahs..." />;
+    return <Loader title={t('common.loading')} />;
   }
 
   if (surahError || audioError) {
-    return <Error message="Unable to load Surah recitations. Please verify your connection." />;
+    return <Error message={t('error.connectionInterrupted')} />;
   }
+
+  const currentReciterDisplayName = getLocalizedReciterName(currentReciter, currentLang);
 
   return (
     <div className="flex flex-col space-y-3.5">
       {/* Editorial Sanctuary Masthead */}
       <div className="pt-1 pb-3 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-midnight-800/80">
         <div>
-          <div className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-1">
-            <span className="font-arabic text-sm text-amber-400/90 font-normal">
-              بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
+          <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-slate-400 mb-1">
+            <span className="font-arabic text-sm text-amber-400/90 font-normal" lang="ar" dir="rtl">
+              {t('common.bismillah')}
             </span>
             <span className="text-slate-600">·</span>
-            <span>المصحف الشريف</span>
+            <span>{t('discover.blessedMushaf')}</span>
             <span className="text-slate-600">·</span>
-            <span>١١٤ سورة</span>
+            <span>{t('discover.complete114')}</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight flex items-baseline gap-3">
-            <span>Discover Surahs</span>
-            <span className="font-arabic font-normal text-xl sm:text-2xl text-slate-400">
-              تلاوات القرآن الكريم
-            </span>
+            <span>{t('discover.heroTitle')}</span>
           </h1>
         </div>
 
         {/* Current Reciter Switcher */}
         <Link
           to="/top-reciters"
-          className="flex items-center space-x-3 px-3.5 py-2 rounded-xl bg-midnight-850/80 hover:bg-midnight-800 border border-midnight-700/70 hover:border-midnight-600 text-left transition-all group shadow-sm shrink-0"
+          className="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-midnight-850/80 hover:bg-midnight-800 border border-midnight-700/70 hover:border-midnight-600 text-start transition-all group shadow-sm shrink-0"
         >
           <div className="w-8 h-8 rounded-full bg-midnight-750 border border-midnight-700 flex items-center justify-center text-slate-300 group-hover:text-indigo-300 transition-colors shrink-0">
             <FiMic size={14} />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider text-slate-400">
-              <span>Reciter</span>
+              <span>{t('nav.currentReciter')}</span>
               <span className="text-slate-600">·</span>
-              <span className="text-indigo-400 font-normal">Change ▾</span>
+              <span className="text-indigo-400 font-normal">{t('nav.change')} ▾</span>
             </div>
-            <p className="text-xs font-semibold text-slate-200 truncate max-w-[170px] group-hover:text-white">
-              {currentReciter?.reciter_name || 'Sheikh'}
+            <p className="text-xs font-semibold text-slate-200 truncate max-w-[190px] group-hover:text-white">
+              {currentReciterDisplayName}
             </p>
           </div>
         </Link>
@@ -205,13 +204,12 @@ const Discover: React.FC = () => {
           <Searchbar
             value={searchQuery}
             onChange={setSearchQuery}
-            placeholder="Search by name, number, or Arabic title..."
+            placeholder={t('discover.searchPlaceholder')}
           />
         </div>
 
         {/* Filter Segmented Controls + Result Count & View Mode */}
         <div className="flex flex-wrap items-center justify-between gap-2.5 flex-1 min-w-0 lg:justify-end">
-          {/* Tabs: All (114), Meccan, Medinan, Favorites, History */}
           <div className="flex items-center gap-1 p-1 rounded-xl bg-midnight-850/80 border border-midnight-700/60 text-xs shadow-sm overflow-x-auto max-w-full">
             <button
               type="button"
@@ -225,7 +223,7 @@ const Discover: React.FC = () => {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              All (114)
+              {t('discover.tabs.all')} ({formatNumber(114, currentLang)})
             </button>
             <button
               type="button"
@@ -236,7 +234,7 @@ const Discover: React.FC = () => {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              مكية
+              {t('discover.tabs.meccan')}
             </button>
             <button
               type="button"
@@ -247,7 +245,7 @@ const Discover: React.FC = () => {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              مدنية
+              {t('discover.tabs.medinan')}
             </button>
             <button
               type="button"
@@ -259,7 +257,7 @@ const Discover: React.FC = () => {
               }`}
             >
               <FiBookmark className="w-3.5 h-3.5" />
-              <span>Favorites ({favorites.length})</span>
+              <span>{t('discover.tabs.favorites')} ({formatNumber(favorites.length, currentLang)})</span>
             </button>
             <button
               type="button"
@@ -271,14 +269,14 @@ const Discover: React.FC = () => {
               }`}
             >
               <FiClock className="w-3.5 h-3.5" />
-              <span>History ({recents.length})</span>
+              <span>{t('discover.tabs.history')} ({formatNumber(recents.length, currentLang)})</span>
             </button>
           </div>
 
           {/* Result Count & View Mode Toggle */}
-          <div className="flex items-center space-x-2.5 text-xs text-slate-400 shrink-0">
+          <div className="flex items-center gap-2.5 text-xs text-slate-400 shrink-0">
             <span className="font-mono text-slate-400 text-xs hidden sm:inline">
-              {filteredSurahs.length} {filteredSurahs.length === 1 ? 'Surah' : 'Surahs'}
+              {t('common.surahsCount', { count: formatNumber(filteredSurahs.length, currentLang) as unknown as number })}
             </span>
 
             <ViewModeToggle viewMode={viewMode} onChange={handleViewModeChange} />
@@ -290,8 +288,10 @@ const Discover: React.FC = () => {
       {activeTab === 'history' ? (
         <div className="space-y-3 pt-1">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-slate-200">Recently Played Recitations</h3>
-            <span className="text-xs text-slate-400">Last {recents.length} played</span>
+            <h3 className="text-sm font-semibold text-slate-200">{t('discover.recentlyPlayed')}</h3>
+            <span className="text-xs text-slate-400">
+              {t('discover.lastPlayedCount', { count: formatNumber(recents.length, currentLang) as unknown as number })}
+            </span>
           </div>
 
           {recents.length === 0 ? (
@@ -299,42 +299,53 @@ const Discover: React.FC = () => {
               <div className="w-12 h-12 rounded-xl bg-midnight-800 border border-midnight-700/80 flex items-center justify-center text-slate-400 mb-3 mx-auto">
                 <FiClock size={22} />
               </div>
-              <p className="text-sm text-slate-300 font-semibold">No listening history yet</p>
+              <p className="text-sm text-slate-300 font-semibold">{t('discover.empty.noHistoryTitle')}</p>
               <p className="text-xs text-slate-400 mt-1">
-                Your played recitations will automatically appear here as you listen.
+                {t('discover.empty.noHistoryDesc')}
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-              {recents.map((item, idx) => (
-                <div
-                  key={`${item.surahId}-${item.reciterId}-${idx}`}
-                  onClick={() => handlePlayRecent(item)}
-                  className="p-4 rounded-xl bg-midnight-850/50 hover:bg-midnight-800/70 border border-midnight-700/50 hover:border-midnight-600 transition cursor-pointer flex items-center justify-between group shadow-sm"
-                >
-                  <div className="min-w-0 pr-2">
-                    <div className="text-[11px] font-mono text-slate-400">
-                      Surah {String(item.surahId).padStart(3, '0')}
-                    </div>
-                    <div className="text-sm font-semibold text-slate-100 group-hover:text-indigo-300 transition-colors truncate">
-                      {item.surahName} {item.arabicName && <span className="font-arabic font-normal text-slate-300">({item.arabicName})</span>}
-                    </div>
-                    <div className="text-xs text-slate-400 mt-0.5 truncate">
-                      {item.reciterName}
-                    </div>
-                  </div>
+              {recents.map((item, idx) => {
+                const localizedSurah = getLocalizedSurahName(
+                  { id: item.surahId, surahName: item.surahName, name_arabic: item.arabicName },
+                  currentLang,
+                );
+                const localizedReciter = getLocalizedReciterName(
+                  { id: item.reciterId, reciterName: item.reciterName },
+                  currentLang,
+                );
 
-                  <button
-                    type="button"
-                    className="w-8 h-8 rounded-full bg-midnight-750 group-hover:bg-midnight-700 border border-midnight-600 text-slate-200 flex items-center justify-center transition shrink-0"
-                    aria-label={`Play Surah ${item.surahName}`}
+                return (
+                  <div
+                    key={`${item.surahId}-${item.reciterId}-${idx}`}
+                    onClick={() => handlePlayRecent(item)}
+                    className="p-4 rounded-xl bg-midnight-850/50 hover:bg-midnight-800/70 border border-midnight-700/50 hover:border-midnight-600 transition cursor-pointer flex items-center justify-between group shadow-sm"
                   >
-                    <svg className="w-3.5 h-3.5 fill-current pl-0.5" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </button>
-                </div>
-              ))}
+                    <div className="min-w-0 pe-2">
+                      <div className="text-[11px] font-mono text-slate-400" dir="ltr">
+                        #{String(item.surahId).padStart(3, '0')}
+                      </div>
+                      <div className="text-sm font-semibold text-slate-100 group-hover:text-indigo-300 transition-colors truncate">
+                        {localizedSurah}
+                      </div>
+                      <div className="text-xs text-slate-400 mt-0.5 truncate">
+                        {localizedReciter}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="w-8 h-8 rounded-full bg-midnight-750 group-hover:bg-midnight-700 border border-midnight-600 text-slate-200 flex items-center justify-center transition shrink-0"
+                      aria-label={localizedSurah}
+                    >
+                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    </button>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -349,19 +360,19 @@ const Discover: React.FC = () => {
                     <FiBookmark size={22} />
                   </div>
                   <p className="text-base text-slate-300 font-semibold">
-                    No favorite Surahs saved yet
+                    {t('discover.empty.noFavoritesTitle')}
                   </p>
                   <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-                    Click the bookmark icon on any Surah card to pin your favorite chapters here for quick access.
+                    {t('discover.empty.noFavoritesDesc')}
                   </p>
                 </>
               ) : (
                 <>
                   <p className="text-base text-slate-300 font-semibold">
-                    No Surahs found matching &ldquo;{searchQuery}&rdquo;
+                    {t('discover.empty.noMatchTitle')}
                   </p>
                   <p className="text-xs text-slate-400 mt-1">
-                    Try searching with an English transliteration (e.g., &ldquo;Baqarah&rdquo;) or Arabic name.
+                    {t('discover.empty.noMatchDesc')}
                   </p>
                 </>
               )}

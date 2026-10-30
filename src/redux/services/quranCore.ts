@@ -51,14 +51,27 @@ export const quranCoreApi = createApi({
     baseUrl: 'https://api.quran.com/api/v4/',
   }),
   endpoints: (builder) => ({
-    getAllChapters: builder.query<ChaptersResponse, void>({
-      query: () => 'chapters?language=en',
+    getAllChapters: builder.query<ChaptersResponse, string | void>({
+      query: (language = 'en') => `chapters?language=${language || 'en'}`,
     }),
-    getChapterId: builder.query<ChapterResponse, number | string>({
-      query: (chapterId) => `chapters/${chapterId}?language=en`,
+    getChapterId: builder.query<ChapterResponse, number | string | { chapterId: number | string; language?: string }>({
+      query: (arg) => {
+        if (typeof arg === 'object' && arg !== null) {
+          return `chapters/${arg.chapterId}?language=${arg.language || 'en'}`;
+        }
+        return `chapters/${arg}?language=en`;
+      },
     }),
-    getChapterInfo: builder.query<ChapterInfoResponse, number | string>({
-      query: (chapterId) => `chapters/${chapterId}/info?language=en`,
+    getChapterInfo: builder.query<
+      ChapterInfoResponse,
+      number | string | { chapterId: number | string; language?: string }
+    >({
+      query: (arg) => {
+        if (typeof arg === 'object' && arg !== null) {
+          return `chapters/${arg.chapterId}/info?language=${arg.language || 'en'}`;
+        }
+        return `chapters/${arg}/info?language=en`;
+      },
     }),
     getSuraAyat: builder.query<VersesResponse, number | string>({
       query: (chapterId) => `quran/verses/uthmani?chapter_number=${chapterId}`,
@@ -70,8 +83,8 @@ export const quranCoreApi = createApi({
       query: ({ chapterId, translationId = 20 }) =>
         `verses/by_chapter/${chapterId}?translations=${translationId}&fields=text_uthmani&per_page=300`,
     }),
-    getAllRecitations: builder.query<RecitationsResponse, void>({
-      query: () => 'resources/recitations?language=en',
+    getAllRecitations: builder.query<RecitationsResponse, string | void>({
+      query: (language = 'en') => `resources/recitations?language=${language || 'en'}`,
     }),
     getAllSurahAudio: builder.query<AudioFilesResponse, number | string | void>({
       query: (reader = 7) => `chapter_recitations/${reader || 7}?language=en`,

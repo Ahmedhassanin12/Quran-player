@@ -2,7 +2,11 @@
 import type { LastSession, UserSettings, RecentRecitation } from '../types/player';
 import type { MushafBookmark } from '../types/mushaf';
 
+export type AppLanguage = 'ar' | 'en';
+export const DEFAULT_LANGUAGE: AppLanguage = 'ar';
+
 const STORAGE_KEYS = {
+  LANGUAGE: 'quran_player_language',
   LAST_SESSION: 'quran_player_last_session',
   FAVORITES: 'quran_player_favorites',
   FAVORITE_RECITERS: 'quran_player_favorite_reciters',
@@ -36,6 +40,25 @@ const safeSet = <T>(key: string, value: T): void => {
 };
 
 export const storageService = {
+  // User interface language ('ar' | 'en', defaults to 'ar' for new users)
+  getLanguage: (): AppLanguage => {
+    try {
+      if (typeof window === 'undefined' || !window.localStorage) return DEFAULT_LANGUAGE;
+      const raw = window.localStorage.getItem(STORAGE_KEYS.LANGUAGE);
+      if (!raw) return DEFAULT_LANGUAGE;
+      const cleaned = raw.replace(/^"|"$/g, '').trim().toLowerCase();
+      if (cleaned.startsWith('en')) return 'en';
+      if (cleaned.startsWith('ar')) return 'ar';
+      return DEFAULT_LANGUAGE;
+    } catch {
+      return DEFAULT_LANGUAGE;
+    }
+  },
+  saveLanguage: (lang: AppLanguage | string): void => {
+    const normalized: AppLanguage = String(lang).toLowerCase().startsWith('en') ? 'en' : 'ar';
+    safeSet(STORAGE_KEYS.LANGUAGE, normalized);
+  },
+
   // View mode (grid | list) across Surah Library and Downloads
   getViewMode: (): 'grid' | 'list' => safeGet<'grid' | 'list'>(STORAGE_KEYS.VIEW_MODE, 'grid'),
   saveViewMode: (mode: 'grid' | 'list' | string): void => {
