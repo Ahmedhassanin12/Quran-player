@@ -98,7 +98,6 @@ const DownloadSurahButton: React.FC<DownloadSurahButtonProps> = ({
     <button
       type="button"
       onClick={handleClick}
-
       aria-label={title}
       title={title}
       className={`inline-flex items-center gap-1.5 rounded-lg border font-semibold transition ${sizeClasses} ${stateClasses} ${className}`}
@@ -107,7 +106,6 @@ const DownloadSurahButton: React.FC<DownloadSurahButtonProps> = ({
         size={iconSize}
         className={isDownloading ? 'animate-spin' : undefined}
       />
-
     </button>
   );
 };

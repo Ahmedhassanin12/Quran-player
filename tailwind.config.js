@@ -46,7 +46,7 @@ module.exports = {
         slideleft: 'slideleft 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
         slideright: 'slideright 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
         wave: 'wave 1.2s ease-in-out infinite',
-        slowfade: 'slowfade 0.4s ease-out',
+        slowfade: 'slowfade 0.15s cubic-bezier(0.16, 1, 0.3, 1)',
       },
       keyframes: {
         slowfade: {
